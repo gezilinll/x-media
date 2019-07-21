@@ -85,7 +85,7 @@ class ExampleFilters : public bigg::Application
 //        mTime = 0.0f;
         mOutput = new XImagePictureOutput();
         mOutput->initWithPath("images/fengjing.jpg");
-        mFilter = new XImageFilter();
+        mFilter = new XImageFilter("vs_filter_normal", "fs_filter_normal");
         mOutput->addTarget(mFilter);
         mOutput->notifyTargetsAboutNewOutputTexture();
 	}

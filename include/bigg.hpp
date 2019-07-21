@@ -10,17 +10,10 @@
 #include <glm/glm.hpp>
 
 #include <bx/allocator.h>
-#include "bimg/bimg.h"
-#include "bimg/decode.h"
+
 
 namespace bigg
 {
-	// bgfx utils
-    bgfx::TextureHandle loadTexture(const char* _name, uint64_t _flags = BGFX_TEXTURE_NONE|BGFX_SAMPLER_NONE, uint8_t _skip = 0, bgfx::TextureInfo* _info = NULL, bimg::Orientation::Enum* _orientation = NULL);
-	const bgfx::Memory* loadMemory( const char* filename );
-	bgfx::ShaderHandle loadShader( const char* shader );
-	bgfx::ProgramHandle loadProgram( const char* vsName, const char* fsName );
-
 	// allocator
 	class Allocator : public bx::AllocatorI
 	{

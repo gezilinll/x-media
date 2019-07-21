@@ -3,7 +3,7 @@
 //
 
 #include "XImageFilter.hpp"
-#include "bigg.hpp"
+#include "XImageUtils.hpp"
 
 //顶点以及纹理坐标对象
 struct PosTexVertex
@@ -42,7 +42,9 @@ static const uint16_t s_triList[] =
                 1, 3, 2,
         };
 
-XImageFilter::XImageFilter() {
+XImageFilter::XImageFilter(std::string vertex, std::string fragment) {
+    mVertexShaderPath = vertex;
+    mFragmentShaderPath = fragment;
     mProgram = BGFX_INVALID_HANDLE;
     mUniformTexture = BGFX_INVALID_HANDLE;
     mVertexBuffer = BGFX_INVALID_HANDLE;
@@ -55,7 +57,7 @@ void XImageFilter::setInputFrameBuffer(XImageFrameBuffer *input) {
 
 void XImageFilter::newFrameReadyAtProgress(float progress, int index) {
     if (!bgfx::isValid(mProgram)) {
-        mProgram = bigg::loadProgram("shaders/metal/vs_filter_normal.bin", "shaders/metal/fs_filter_normal.bin");
+        mProgram = XImageUtils::loadProgram(mVertexShaderPath.data(), mFragmentShaderPath.data());
         mUniformTexture = bgfx::createUniform("s_texColor", bgfx::UniformType::Sampler);
         // Create vertex stream declaration.
         PosTexVertex::init();

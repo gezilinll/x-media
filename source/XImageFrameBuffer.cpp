@@ -3,11 +3,21 @@
 //
 
 #include "XImageFrameBuffer.hpp"
+#include "XImageUtils.hpp"
 
-void XImageFrameBuffer::init(bgfx::TextureHandle texture) {
-    mTextureHandle = texture;
+XImageFrameBuffer::XImageFrameBuffer() {
+    mHandle = BGFX_INVALID_HANDLE;
 }
 
+void XImageFrameBuffer::loadFromPicture(std::string path) {
+    bgfx::TextureHandle textureHandle = XImageUtils::loadTexture(path.data());
+    if (!bgfx::isValid(textureHandle)) {
+        //todo: log
+    }
+    mHandle = bgfx::createFrameBuffer(1, &textureHandle, true);
+}
+
+
 bgfx::TextureHandle XImageFrameBuffer::getTexture() {
-    return mTextureHandle;
+    return bgfx::getTexture(mHandle);
 }

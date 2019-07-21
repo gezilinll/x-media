@@ -10,12 +10,14 @@
 
 class XImageFilter: public XImageInput, public XImageOutput {
 public:
-    XImageFilter();
+    XImageFilter(std::string vertex, std::string fragment);
     
     void newFrameReadyAtProgress(float progress, int index);
 
     void setInputFrameBuffer(XImageFrameBuffer* input);
 protected:
+    std::string mVertexShaderPath;
+    std::string mFragmentShaderPath;
     bgfx::ProgramHandle mProgram;
     bgfx::UniformHandle mUniformTexture;
     bgfx::VertexBufferHandle mVertexBuffer;

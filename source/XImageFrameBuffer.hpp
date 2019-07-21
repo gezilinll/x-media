@@ -6,14 +6,17 @@
 #define GPUIMAGE_X_XIMAGEFRAMEBUFFER_HPP
 
 #include "bgfx/bgfx.h"
+#include <string>
 
 class XImageFrameBuffer {
 public:
-    void init(bgfx::TextureHandle texture);
+    XImageFrameBuffer();
+
+    void loadFromPicture(std::string path);
 
     bgfx::TextureHandle getTexture();
 private:
-    bgfx::TextureHandle mTextureHandle;
+    bgfx::FrameBufferHandle mHandle;
 };
 
 

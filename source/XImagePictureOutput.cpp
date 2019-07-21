@@ -6,9 +6,7 @@
 #include "bigg.hpp"
 
 void XImagePictureOutput::initWithPath(std::string path) {
-    bgfx::TextureHandle textureHandle = bigg::loadTexture("images/fengjing.jpg");
-    bool isInvalid = bgfx::isValid(textureHandle);
-    mOutputFrameBuffer->init(textureHandle);
+    mOutputFrameBuffer->loadFromPicture(path);
 }
 
 void XImagePictureOutput::processPicture() {

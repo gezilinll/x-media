@@ -11,7 +11,9 @@
 #include <bx/string.h>
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/euler_angles.hpp> 
+#include <glm/gtx/euler_angles.hpp>
+
+#include "XImageUtils.hpp"
 
 struct PosColorVertex
 {
@@ -75,7 +77,7 @@ class ExampleCubes : public bigg::Application
 		bx::strCopy( fsName, BX_COUNTOF(fsName), shaderPath );
 		bx::strCat( fsName, BX_COUNTOF(fsName), "fs_cubes.bin" );
 
-		mProgram = bigg::loadProgram( vsName, fsName );
+		mProgram = XImageUtils::loadProgram( vsName, fsName );
 		mVbh = bgfx::createVertexBuffer( bgfx::makeRef(s_cubeVertices, sizeof(s_cubeVertices) ), PosColorVertex::ms_decl );
 		mIbh = bgfx::createIndexBuffer( bgfx::makeRef(s_cubeTriList, sizeof(s_cubeTriList) ) );
 		bgfx::setDebug( BGFX_DEBUG_TEXT );
