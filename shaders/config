@@ -1,0 +1,3 @@
+FS_NORMAL:fs_filter_normal.sc,filter.varying.def.sc
+FS_SATURATION:fs_filter_saturation.sc,filter.varying.def.sc
+VS_NORMAL:vs_filter_normal.sc,filter.varying.def.sc
