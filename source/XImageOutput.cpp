@@ -17,6 +17,10 @@ void XImageOutput::addTarget(XImageInput *target) {
     mTargets.push_back(target);
 }
 
+void XImageOutput::clearTarget() {
+    mTargets.clear();
+}
+
 void XImageOutput::notifyTargetsAboutNewOutputTexture() {
     auto iter = mTargets.begin();
     while (iter != mTargets.end()) {

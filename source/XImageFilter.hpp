@@ -15,6 +15,8 @@ public:
     void newFrameReadyAtProgress(float progress, int index);
 
     void setInputFrameBuffer(XImageFrameBuffer* input);
+    
+    void setFloat(std::string paramName, float paramValue);
 protected:
     std::string mVertexShaderPath;
     std::string mFragmentShaderPath;

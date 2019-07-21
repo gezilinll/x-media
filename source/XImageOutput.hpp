@@ -16,6 +16,9 @@ public:
     ~XImageOutput();
 
     void addTarget(XImageInput* target);
+    
+    void clearTarget();
+    
     void notifyTargetsAboutNewOutputTexture();
 
 protected:

@@ -90,3 +90,12 @@ void XImageFilter::newFrameReadyAtProgress(float progress, int index) {
     bgfx::setTexture(0, mUniformTexture, mFirstInputFrameBuffer->getTexture());//设置对应的u_Texture这个着色器参数的纹理资源
     bgfx::submit(0, mProgram);//提交绘制单张纹理的Program
 }
+
+void XImageFilter::setFloat(std::string paramName, float paramValue) {
+    // bgfx only support use vec4.x as float value
+    bgfx::UniformHandle hanle = bgfx::createUniform(paramName.data(), bgfx::UniformType::Vec4);
+    float resultValue[] = {paramValue, 0.0f, 0.0f, 0.0f};
+    bgfx::setUniform(hanle, resultValue);
+    //todo: will be black and white first time if dstroy immediately.
+//    bgfx::destroy(hanle);
+}
