@@ -43,7 +43,7 @@ class ExampleFilters : public bigg::Application
         ImGui::Begin("GPUImage-X");
         {
             ImGui::SetWindowSize(ImVec2(0, 0));
-            const char* filterItems[] = { "None", "Saturation"};
+            const char* filterItems[] = { "None", "Saturation", "Contrast", "Brightness", "Exposure", "RGB", "HUE"};
             static int filterItemCurrent = 0;
             ImGui::Combo("Filter Selector",  &filterItemCurrent, filterItems, IM_ARRAYSIZE(filterItems), 5);
             {
@@ -63,7 +63,24 @@ class ExampleFilters : public bigg::Application
             mFilter = new XImageFilter("vs_filter_normal", "fs_filter_normal");
         } else if (index == 1) {
             mFilter = new XImageFilter("vs_filter_normal", "fs_filter_saturation");
-            mFilter->setFloat("saturation", 1.5);
+            mFilter->setFloat("saturation", 5.0);
+        } else if (index == 2) {
+            mFilter = new XImageFilter("vs_filter_normal", "fs_filter_contrast");
+            mFilter->setFloat("contrast", 2.5);
+        } else if (index == 3) {
+            mFilter = new XImageFilter("vs_filter_normal", "fs_filter_brightness");
+            mFilter->setFloat("brightness", 0.3);
+        } else if (index == 4) {
+            mFilter = new XImageFilter("vs_filter_normal", "fs_filter_exposure");
+            mFilter->setFloat("exposure", -2.0);
+        } else if (index == 5) {
+            mFilter = new XImageFilter("vs_filter_normal", "fs_filter_rgb");
+            mFilter->setFloat("redAdjustment", 0.3);
+            mFilter->setFloat("greenAdjustment", 0.1);
+            mFilter->setFloat("blueAdjustment", 0.5);
+        } else if (index == 6) {
+            mFilter = new XImageFilter("vs_filter_normal", "fs_filter_hue");
+            mFilter->setFloat("hueAdjust", 5.0);
         }
        
         mOutput->addTarget(mFilter);
