@@ -4,4 +4,7 @@ FS_BRIGHTNESS:fs_filter_brightness.sc,filter.varying.def.sc
 FS_CONTRAST:fs_filter_contrast.sc,filter.varying.def.sc
 FS_EXPOSURE:fs_filter_exposure.sc,filter.varying.def.sc
 FS_HUE:fs_filter_hue.sc,filter.varying.def.sc
-
+FS_LEVELS:fs_filter_levels.sc,filter.varying.def.sc
+FS_WHITE_BALANCE:fs_filter_white_balance.sc,filter.varying.def.sc
+FS_MONOCHROME:fs_filter_monochrome.sc,filter.varying.def.sc
+VS_NORMAL:vs_filter_normal.sc,filter.varying.def.sc

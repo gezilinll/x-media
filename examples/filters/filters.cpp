@@ -20,32 +20,29 @@
 
 USING_NS_X_IMAGE
 
-class ExampleFilters : public bigg::Application
-{
-	void initialize( int _argc, char** _argv )
-	{
+class ExampleFilters : public bigg::Application {
+    void initialize(int _argc, char **_argv) {
 
         mOutput = new XImagePictureOutput();
         mOutput->initWithPath("images/fengjing.jpg");
         mFilter = nullptr;
-	}
+    }
 
-	void onReset()
-	{
-		bgfx::setViewClear( 0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0 );
-		bgfx::setViewRect( 0, 0, 0, uint16_t( getWidth() ), uint16_t( getHeight() ) );
-	}
+    void onReset() {
+        bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0);
+        bgfx::setViewRect(0, 0, 0, uint16_t(getWidth()), uint16_t(getHeight()));
+    }
 
-	void update( float dt )
-	{
+    void update(float dt) {
         mOutput->processPicture();
-        
+
         ImGui::Begin("GPUImage-X");
         {
             ImGui::SetWindowSize(ImVec2(0, 0));
-            const char* filterItems[] = { "None", "Saturation", "Contrast", "Brightness", "Exposure", "RGB", "HUE"};
+            const char *filterItems[] = {"None", "Saturation", "Contrast", "Brightness", "Exposure", "RGB", "HUE",
+                                         "Levels", "WhiteBalance", "Monochrome"};
             static int filterItemCurrent = 0;
-            ImGui::Combo("Filter Selector",  &filterItemCurrent, filterItems, IM_ARRAYSIZE(filterItems), 5);
+            ImGui::Combo("Filter Selector", &filterItemCurrent, filterItems, IM_ARRAYSIZE(filterItems), 5);
             {
                 if (mCurrentIndex != filterItemCurrent) {
                     mOutput->clearTarget();
@@ -56,8 +53,8 @@ class ExampleFilters : public bigg::Application
             }
         }
         ImGui::End();
-	}
-    
+    }
+
     void createAndAddFilter(int index) {
         if (index == 0) {
             mFilter = new XImageFilter("vs_filter_normal", "fs_filter_normal");
@@ -81,13 +78,29 @@ class ExampleFilters : public bigg::Application
         } else if (index == 6) {
             mFilter = new XImageFilter("vs_filter_normal", "fs_filter_hue");
             mFilter->setFloat("hueAdjust", 5.0);
+        } else if (index == 7) {
+            mFilter = new XImageFilter("vs_filter_normal", "fs_filter_levels");
+            mFilter->setVec3("levelMinimum", new float[3]{0.0f, 0.0f, 0.0f});
+            mFilter->setVec3("levelMiddle", new float[3]{0.5f, 0.5f, 0.5f});
+            mFilter->setVec3("levelMaximum", new float[3]{1.0f, 1.0f, 1.0f});
+            mFilter->setVec3("minOutput", new float[3]{0.0f, 0.0f, 0.0f});
+            mFilter->setVec3("maxOutput", new float[3]{1.0f, 1.0f, 1.0f});
+        } else if (index == 8) {
+            mFilter = new XImageFilter("vs_filter_normal", "fs_filter_white_balance");
+            mFilter->setFloat("temperature", 10);
+            mFilter->setFloat("tint", 5);
+        } else if (index == 9) {
+            mFilter = new XImageFilter("vs_filter_normal", "fs_filter_monochrome");
+            mFilter->setFloat("intensity", 0.8);
+            mFilter->setVec3("filterColor", new float[3]{0.4f, 0.2f, 0.6f});
         }
-       
+
         mOutput->addTarget(mFilter);
     }
+
 public:
-	ExampleFilters()
-		: bigg::Application( "Filters", 960, 720 ) {}
+    ExampleFilters()
+            : bigg::Application("Filters", 960, 720) {}
 
 private:
     XImagePictureOutput *mOutput;
@@ -95,8 +108,7 @@ private:
     int mCurrentIndex = -1;
 };
 
-int main( int argc, char** argv )
-{
-	ExampleFilters app;
-	return app.run( argc, argv );
+int main(int argc, char **argv) {
+    ExampleFilters app;
+    return app.run(argc, argv);
 }

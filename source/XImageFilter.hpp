@@ -18,6 +18,10 @@ public:
     void setInputFrameBuffer(XImageFrameBuffer* input);
     
     void setFloat(std::string paramName, float paramValue);
+
+    void setVec3(std::string paramName, float *paramValue);
+
+    void setVec4(std::string paramName, float *paramValue);
 protected:
     std::string mVertexShaderPath;
     std::string mFragmentShaderPath;
