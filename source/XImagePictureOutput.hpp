@@ -8,12 +8,13 @@
 #include "XImageOutput.hpp"
 #include <string>
 
+NS_X_IMAGE_BEGIN
 class XImagePictureOutput: public XImageOutput {
 public:
     void initWithPath(std::string path);
 
     void processPicture();
 };
-
+NS_X_IMAGE_END
 
 #endif //GPUIMAGE_X_XIMAGEPICTUREOUTPUT_HPP

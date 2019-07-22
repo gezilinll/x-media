@@ -5,6 +5,7 @@
 #include "XImageFilter.hpp"
 #include "XImageUtils.hpp"
 
+NS_X_IMAGE_BEGIN
 //顶点以及纹理坐标对象
 struct PosTexVertex
 {
@@ -99,3 +100,4 @@ void XImageFilter::setFloat(std::string paramName, float paramValue) {
     //todo: will be black and white first time if dstroy immediately.
 //    bgfx::destroy(hanle);
 }
+NS_X_IMAGE_END

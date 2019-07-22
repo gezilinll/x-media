@@ -6,8 +6,10 @@
 #define GPUIMAGE_X_XIMAGEFRAMEBUFFER_HPP
 
 #include "bgfx/bgfx.h"
+#include "XMacros.hpp"
 #include <string>
 
+NS_X_IMAGE_BEGIN
 class XImageFrameBuffer {
 public:
     XImageFrameBuffer();
@@ -18,6 +20,6 @@ public:
 private:
     bgfx::FrameBufferHandle mHandle;
 };
-
+NS_X_IMAGE_END
 
 #endif //GPUIMAGE_X_XIMAGEFRAMEBUFFER_HPP

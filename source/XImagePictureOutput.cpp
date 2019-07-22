@@ -5,6 +5,7 @@
 #include "XImagePictureOutput.hpp"
 #include "bigg.hpp"
 
+NS_X_IMAGE_BEGIN
 void XImagePictureOutput::initWithPath(std::string path) {
     mOutputFrameBuffer->loadFromPicture(path);
 }
@@ -17,3 +18,4 @@ void XImagePictureOutput::processPicture() {
         iter++;
     }
 }
+NS_X_IMAGE_END

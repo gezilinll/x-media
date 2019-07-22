@@ -9,6 +9,7 @@
 #include "XImageFrameBuffer.hpp"
 #include <vector>
 
+NS_X_IMAGE_BEGIN
 class XImageOutput {
 public:
     XImageOutput();
@@ -26,6 +27,6 @@ protected:
     std::vector<XImageInput *> mTargets;
 
 };
-
+NS_X_IMAGE_END
 
 #endif //GPUIMAGE_X_XIMAGEOUTPUT_H

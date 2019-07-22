@@ -10,7 +10,9 @@
 #include "bimg/decode.h"
 #include <bx/allocator.h>
 #include "bx/file.h"
+#include "XMacros.hpp"
 
+NS_X_IMAGE_BEGIN
 class XImageUtils {
 public:
     static bgfx::TextureHandle
@@ -32,6 +34,6 @@ private:
 
     static bx::FileReaderI* getFileReader();
 };
-
+NS_X_IMAGE_END
 
 #endif //GPUIMAGE_X_XIMAGEUTILS_HPP

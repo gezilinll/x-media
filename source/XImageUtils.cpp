@@ -3,7 +3,9 @@
 //
 
 #include "XImageUtils.hpp"
+#include "XLog.hpp"
 
+NS_X_IMAGE_BEGIN
 #ifndef ENTRY_CONFIG_IMPLEMENT_DEFAULT_ALLOCATOR
 #    define ENTRY_CONFIG_IMPLEMENT_DEFAULT_ALLOCATOR 1
 #endif // ENTRY_CONFIG_IMPLEMENT_DEFAULT_ALLOCATOR
@@ -211,7 +213,7 @@ const bgfx::Memory *XImageUtils::loadMem(bx::FileReaderI *reader, const char *fi
         return mem;
     }
 
-    //todo: log
+    LOGE("XImageUtils::loadMem open failed.");
     return nullptr;
 }
 
@@ -222,3 +224,4 @@ bx::FileReaderI *XImageUtils::getFileReader() {
     }
     return sFileReader;
 }
+NS_X_IMAGE_END

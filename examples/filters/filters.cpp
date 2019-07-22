@@ -18,6 +18,8 @@
 
 #include <iostream>
 
+USING_NS_X_IMAGE
+
 class ExampleFilters : public bigg::Application
 {
 	void initialize( int _argc, char** _argv )

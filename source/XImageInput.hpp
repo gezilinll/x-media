@@ -7,12 +7,13 @@
 
 #include "XImageFrameBuffer.hpp"
 
+NS_X_IMAGE_BEGIN
 class XImageInput {
 public:
     virtual void newFrameReadyAtProgress(float progress, int index);
 
     virtual void setInputFrameBuffer(XImageFrameBuffer* input);
 };
-
+NS_X_IMAGE_END
 
 #endif //GPUIMAGE_X_XIMAGEINPUT_H

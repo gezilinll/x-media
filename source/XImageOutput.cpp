@@ -3,13 +3,15 @@
 //
 
 #include "XImageOutput.hpp"
+#include "XMacros.hpp"
 
+NS_X_IMAGE_BEGIN
 XImageOutput::XImageOutput() {
     mOutputFrameBuffer = new XImageFrameBuffer();
 }
 
 XImageOutput::~XImageOutput() {
-    delete(mOutputFrameBuffer);
+    SAFE_DELETE(mOutputFrameBuffer);
     mTargets.clear();
 }
 
@@ -29,3 +31,4 @@ void XImageOutput::notifyTargetsAboutNewOutputTexture() {
         ++iter;
     }
 }
+NS_X_IMAGE_END

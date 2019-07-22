@@ -8,6 +8,7 @@
 #include "XImageOutput.hpp"
 #include <string>
 
+NS_X_IMAGE_BEGIN
 class XImageFilter: public XImageInput, public XImageOutput {
 public:
     XImageFilter(std::string vertex, std::string fragment);
@@ -27,6 +28,6 @@ protected:
     XImageFrameBuffer* mFirstInputFrameBuffer;
 
 };
-
+NS_X_IMAGE_END
 
 #endif //GPUIMAGE_X_XIMAGEFILTER_HPP
