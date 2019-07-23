@@ -21,6 +21,10 @@ public:
 
     static bgfx::ProgramHandle loadProgram( const char* vsName, const char* fsName );
 
+    static float* wrapFloatToVec4(float value);
+
+    static float* wrapVec3ToVec4(float x, float y, float z);
+
 private:
     static bgfx::TextureHandle
     loadTexture(bx::FileReaderI *reader, const char *filePath, uint64_t flags, uint8_t skip,

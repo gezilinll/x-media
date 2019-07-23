@@ -15,17 +15,25 @@
 
 #include "XImagePictureOutput.hpp"
 #include "XImageFilter.hpp"
+#include "XLog.hpp"
+#include "XImageUtils.hpp"
 
 #include <iostream>
 
 USING_NS_X_IMAGE
-
+const char *FILTER_ITEMS[] = {"None", "Saturation", "Contrast", "Brightness", "Exposure", "RGB", "HUE",
+                             "Levels", "WhiteBalance", "Monochrome"};
+const char *FILTER_FRAGMENT_SHADERS[] = {"fs_filter_normal", "fs_filter_saturation", "fs_filter_contrast",
+                                         "fs_filter_brightness", "fs_filter_exposure", "fs_filter_rgb", "fs_filter_hue",
+                                         "fs_filter_levels", "fs_filter_white_balance", "fs_filter_monochrome"};
 class ExampleFilters : public bigg::Application {
     void initialize(int _argc, char **_argv) {
 
         mOutput = new XImagePictureOutput();
         mOutput->initWithPath("images/fengjing.jpg");
         mFilter = nullptr;
+        mRatio = 0.0f;
+        mOffset = 0.001f;
     }
 
     void onReset() {
@@ -34,68 +42,66 @@ class ExampleFilters : public bigg::Application {
     }
 
     void update(float dt) {
+        mRatio = mRatio + mOffset;
+        if (mRatio > 1.0f) {
+            mOffset = -0.001;
+            mRatio = 1.0f;
+        } else if (mRatio < 0.0f) {
+            mOffset = 0.001;
+            mRatio = 0.0f;
+        }
+
         mOutput->processPicture();
 
         ImGui::Begin("GPUImage-X");
         {
             ImGui::SetWindowSize(ImVec2(0, 0));
-            const char *filterItems[] = {"None", "Saturation", "Contrast", "Brightness", "Exposure", "RGB", "HUE",
-                                         "Levels", "WhiteBalance", "Monochrome"};
             static int filterItemCurrent = 0;
-            ImGui::Combo("Filter Selector", &filterItemCurrent, filterItems, IM_ARRAYSIZE(filterItems), 5);
+            ImGui::Combo("Filter Selector", &filterItemCurrent, FILTER_ITEMS, IM_ARRAYSIZE(FILTER_ITEMS), 5);
             {
                 if (mCurrentIndex != filterItemCurrent) {
                     mOutput->clearTarget();
-                    createAndAddFilter(filterItemCurrent);
+                    mFilter = new XImageFilter("vs_filter_normal", FILTER_FRAGMENT_SHADERS[filterItemCurrent]);
+                    mOutput->addTarget(mFilter);
                     mCurrentIndex = filterItemCurrent;
                 }
+                updateFilter(filterItemCurrent, mRatio);
                 mOutput->notifyTargetsAboutNewOutputTexture();
             }
         }
         ImGui::End();
     }
 
-    void createAndAddFilter(int index) {
-        if (index == 0) {
-            mFilter = new XImageFilter("vs_filter_normal", "fs_filter_normal");
-        } else if (index == 1) {
-            mFilter = new XImageFilter("vs_filter_normal", "fs_filter_saturation");
-            mFilter->setFloat("saturation", 5.0);
-        } else if (index == 2) {
-            mFilter = new XImageFilter("vs_filter_normal", "fs_filter_contrast");
-            mFilter->setFloat("contrast", 2.5);
-        } else if (index == 3) {
-            mFilter = new XImageFilter("vs_filter_normal", "fs_filter_brightness");
-            mFilter->setFloat("brightness", 0.3);
-        } else if (index == 4) {
-            mFilter = new XImageFilter("vs_filter_normal", "fs_filter_exposure");
-            mFilter->setFloat("exposure", -2.0);
-        } else if (index == 5) {
-            mFilter = new XImageFilter("vs_filter_normal", "fs_filter_rgb");
-            mFilter->setFloat("redAdjustment", 0.3);
-            mFilter->setFloat("greenAdjustment", 0.1);
-            mFilter->setFloat("blueAdjustment", 0.5);
-        } else if (index == 6) {
-            mFilter = new XImageFilter("vs_filter_normal", "fs_filter_hue");
-            mFilter->setFloat("hueAdjust", 5.0);
-        } else if (index == 7) {
-            mFilter = new XImageFilter("vs_filter_normal", "fs_filter_levels");
-            mFilter->setVec3("levelMinimum", new float[3]{0.0f, 0.0f, 0.0f});
-            mFilter->setVec3("levelMiddle", new float[3]{0.5f, 0.5f, 0.5f});
-            mFilter->setVec3("levelMaximum", new float[3]{1.0f, 1.0f, 1.0f});
-            mFilter->setVec3("minOutput", new float[3]{0.0f, 0.0f, 0.0f});
-            mFilter->setVec3("maxOutput", new float[3]{1.0f, 1.0f, 1.0f});
-        } else if (index == 8) {
-            mFilter = new XImageFilter("vs_filter_normal", "fs_filter_white_balance");
-            mFilter->setFloat("temperature", 10);
-            mFilter->setFloat("tint", 5);
-        } else if (index == 9) {
-            mFilter = new XImageFilter("vs_filter_normal", "fs_filter_monochrome");
-            mFilter->setFloat("intensity", 0.8);
-            mFilter->setVec3("filterColor", new float[3]{0.4f, 0.2f, 0.6f});
+    void updateFilter(int index, float ratio) {
+        const char *type = FILTER_ITEMS[index];
+        if (strcmp("None", type) == 0) {
+        } else if (strcmp("Saturation", type) == 0) {
+            mFilter->setVec4("saturation", XImageUtils::wrapFloatToVec4(2.0 * ratio));
+        } else if (strcmp("Contrast", type) == 0) {
+            mFilter->setVec4("contrast", XImageUtils::wrapFloatToVec4(4.0 * ratio));
+        } else if (strcmp("Brightness", type) == 0) {
+            mFilter->setVec4("brightness", XImageUtils::wrapFloatToVec4(-1.0 + 2.0 * ratio));
+        } else if (strcmp("Exposure", type) == 0) {
+            mFilter->setVec4("exposure", XImageUtils::wrapFloatToVec4(-10.0 + 20.0 * ratio));
+        } else if (strcmp("RGB", type) == 0) {
+            mFilter->setVec4("redAdjustment", XImageUtils::wrapFloatToVec4(1.0 * ratio));
+            mFilter->setVec4("greenAdjustment", XImageUtils::wrapFloatToVec4(1.0 * ratio));
+            mFilter->setVec4("blueAdjustment", XImageUtils::wrapFloatToVec4(1.0 * ratio));
+        } else if (strcmp("HUE", type) == 0) {
+            mFilter->setVec4("hueAdjust", XImageUtils::wrapFloatToVec4(360 * ratio));
+        } else if (strcmp("Levels", type) == 0) {
+            mFilter->setVec4("levelMinimum", XImageUtils::wrapVec3ToVec4(0.0f, 0.0f, 0.0f));
+            mFilter->setVec4("levelMiddle", XImageUtils::wrapVec3ToVec4(0.5f * ratio, 0.5f * ratio, 0.5f * ratio));
+            mFilter->setVec4("levelMaximum", XImageUtils::wrapVec3ToVec4(1.0f * ratio, 1.0f * ratio, 1.0f * ratio));
+            mFilter->setVec4("minOutput", XImageUtils::wrapVec3ToVec4(0.0f, 0.0f, 0.0f));
+            mFilter->setVec4("maxOutput", XImageUtils::wrapVec3ToVec4(1.0f * ratio, 1.0f * ratio, 1.0f * ratio));
+        } else if (strcmp("WhiteBalance", type) == 0) {
+            mFilter->setVec4("temperature", XImageUtils::wrapFloatToVec4(10 * ratio));
+            mFilter->setVec4("tint", XImageUtils::wrapFloatToVec4(5 * ratio));
+        } else if (strcmp("Monochrome", type) == 0) {
+            mFilter->setVec4("intensity", XImageUtils::wrapFloatToVec4(1.0 * ratio));
+            mFilter->setVec4("filterColor", XImageUtils::wrapVec3ToVec4(0.6f * ratio, 0.3f * ratio, 0.8f * ratio));
         }
-
-        mOutput->addTarget(mFilter);
     }
 
 public:
@@ -106,6 +112,8 @@ private:
     XImagePictureOutput *mOutput;
     XImageFilter *mFilter;
     int mCurrentIndex = -1;
+    float mRatio;
+    float mOffset;
 };
 
 int main(int argc, char **argv) {

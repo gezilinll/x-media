@@ -224,4 +224,12 @@ bx::FileReaderI *XImageUtils::getFileReader() {
     }
     return sFileReader;
 }
+
+float* XImageUtils::wrapFloatToVec4(float value) {
+    return new float[4]{value, 1.0f, 1.0f, 1.0f};
+}
+
+float* XImageUtils::wrapVec3ToVec4(float x, float y, float z) {
+    return new float[4]{x, y, z, 1.0f};
+}
 NS_X_IMAGE_END

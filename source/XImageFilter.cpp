@@ -92,23 +92,10 @@ void XImageFilter::newFrameReadyAtProgress(float progress, int index) {
     bgfx::submit(0, mProgram);//提交绘制单张纹理的Program
 }
 
-void XImageFilter::setFloat(std::string paramName, float paramValue) {
-    // bgfx only support use vec4.x as float value
-    bgfx::UniformHandle handle = bgfx::createUniform(paramName.data(), bgfx::UniformType::Vec4);
-    float resultValue[] = {paramValue, 0.0f, 0.0f, 0.0f};
-    bgfx::setUniform(handle, resultValue);
-    //todo: will be black and white first time if dstroy immediately.
-//    bgfx::destroy(hanle);
-}
-
-void XImageFilter::setVec3(std::string paramName, float *paramValue) {
-    bgfx::UniformHandle handle = bgfx::createUniform(paramName.data(), bgfx::UniformType::Vec4);
-    float resultValue[] = {paramValue[0], paramValue[1], paramValue[2], 1.0f};
-    bgfx::setUniform(handle, resultValue);
-}
-
 void XImageFilter::setVec4(std::string paramName, float *paramValue) {
     bgfx::UniformHandle handle = bgfx::createUniform(paramName.data(), bgfx::UniformType::Vec4);
     bgfx::setUniform(handle, paramValue);
+    //todo: will be black and white first time if dstroy immediately.
+//    bgfx::destroy(hanle);
 }
 NS_X_IMAGE_END
