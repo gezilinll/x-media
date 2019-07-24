@@ -22,7 +22,7 @@ class XImageOutput {
 public:
     XImageOutput();
 
-    ~XImageOutput();
+    virtual ~XImageOutput();
 
     /**
      * @brief adds a target to receive notifications when new frames are available.

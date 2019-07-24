@@ -42,6 +42,11 @@ class ExampleFilters : public bigg::Application {
         bgfx::setViewRect(0, 0, 0, uint16_t(getWidth()), uint16_t(getHeight()));
     }
 
+    int shutdown() {
+        SAFE_DELETE(mOutput);
+        SAFE_DELETE(mFilter);
+    }
+
     void update(float dt) {
         mRatio = mRatio + mOffset;
         if (mRatio > 1.0f) {
@@ -62,8 +67,10 @@ class ExampleFilters : public bigg::Application {
             {
                 if (mCurrentIndex != filterItemCurrent) {
                     mOutput->clearTarget();
+                    SAFE_DELETE(mFilter);
                     mFilter = new XImageFilter(getShaderPath("vs_filter_normal"),
                             getShaderPath(FILTER_FRAGMENT_SHADERS[filterItemCurrent]));
+                    mFilter->setViewRect(0, 0, 960, 720);
                     mOutput->addTarget(mFilter);
                     mCurrentIndex = filterItemCurrent;
                 }

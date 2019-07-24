@@ -196,4 +196,45 @@ float* XImageUtils::wrapVec3ToVec4(float *xyz) {
     return new float[4]{xyz[0], xyz[1], xyz[2], 1.0f};
 }
 
+void XImageUtils::destroy(bgfx::ProgramHandle &handle) {
+    if (bgfx::isValid(handle)) {
+        bgfx::destroy(handle);
+        handle = BGFX_INVALID_HANDLE;
+    }
+}
+
+void XImageUtils::destroy(bgfx::TextureHandle &handle) {
+    if (bgfx::isValid(handle)) {
+        bgfx::destroy(handle);
+        handle = BGFX_INVALID_HANDLE;
+    }
+}
+
+void XImageUtils::destroy(bgfx::FrameBufferHandle &handle) {
+    if (bgfx::isValid(handle)) {
+        bgfx::destroy(handle);
+        handle = BGFX_INVALID_HANDLE;
+    }
+}
+
+void XImageUtils::destroy(bgfx::VertexBufferHandle &handle) {
+    if (bgfx::isValid(handle)) {
+        bgfx::destroy(handle);
+        handle = BGFX_INVALID_HANDLE;
+    }
+}
+
+void XImageUtils::destroy(bgfx::IndexBufferHandle &handle) {
+    if (bgfx::isValid(handle)) {
+        bgfx::destroy(handle);
+        handle = BGFX_INVALID_HANDLE;
+    }
+}
+
+void XImageUtils::destroy(bgfx::UniformHandle &handle) {
+    if (bgfx::isValid(handle)) {
+        bgfx::destroy(handle);
+        handle = BGFX_INVALID_HANDLE;
+    }
+}
 NS_X_IMAGE_END

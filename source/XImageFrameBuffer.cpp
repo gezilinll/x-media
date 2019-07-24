@@ -11,10 +11,14 @@ XImageFrameBuffer::XImageFrameBuffer() {
     mHandle = BGFX_INVALID_HANDLE;
 }
 
+XImageFrameBuffer::~XImageFrameBuffer() {
+    XImageUtils::destroy(mHandle);
+}
+
 void XImageFrameBuffer::loadFromPicture(std::string path) {
     if (bgfx::isValid(mHandle)) {
         LOGW("XImageFrameBuffer::loadFromPicture recycle existed FrameBufferHandle, path=%s", path.data());
-        bgfx::destroy(mHandle);
+        XImageUtils::destroy(mHandle);
     }
     bgfx::TextureHandle textureHandle = XImageUtils::loadTexture(path.data());
     if (!bgfx::isValid(textureHandle)) {

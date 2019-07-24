@@ -17,6 +17,8 @@ class XImageFrameBuffer {
 public:
     XImageFrameBuffer();
 
+    ~XImageFrameBuffer();
+
     /**
      * @brief load picture to FBO
      * @param[in] path picture's absolute path

@@ -7,6 +7,7 @@
 
 #include "XImageOutput.hpp"
 #include <string>
+#include <unordered_map>
 
 NS_X_IMAGE_BEGIN
 /**
@@ -27,9 +28,20 @@ public:
      */
     XImageFilter(std::string vertex, std::string fragment);
 
+    ~XImageFilter();
+
     void newFrameReadyAtProgress(float progress, int index) override;
 
     void setInputFrameBuffer(XImageFrameBuffer* input) override ;
+
+    /**
+     * @brief set view rect to show render result
+     * @param[in] x start x position of rect
+     * @param[in] y start y position of rect
+     * @param[in] width width of rect
+     * @param[in] height height of rect
+     */
+    void setViewRect(int x, int y, int width, int height);
 
     /**
      * @brief set param value of shader, this param must be Vec4 type because of bgfx only support vec4 type as uniform param
@@ -39,14 +51,25 @@ public:
      * @param[in] paramValue value of param
      */
     void setVec4(std::string paramName, float *paramValue);
+
+private:
+    /**
+     * @brief check if the view rect args is valid
+     * @retval true YES
+     * @retval false NO
+     */
+    bool isViewRectValid();
+
 protected:
     std::string mVertexShaderPath; /// vertex shader path
     std::string mFragmentShaderPath; /// fragment shader path
     bgfx::ProgramHandle mProgram; /// filter program handle
-    bgfx::UniformHandle mUniformTexture; /// filter texture param handle
+    std::unordered_map<std::string, bgfx::UniformHandle> mUniformHandles; /// filter params of uniform type
     bgfx::VertexBufferHandle mVertexBuffer; /// filter vertex buffer handle
     bgfx::IndexBufferHandle mIndexBuffer; /// filter index buffer handle
     XImageFrameBuffer* mFirstInputFrameBuffer; /// filter input frame buffer which is used to be texture
+
+    int mViewRectX, mViewRectY, mViewRectWidth, mViewRectHeight; /// rect to show result
 };
 NS_X_IMAGE_END
 

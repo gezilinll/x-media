@@ -65,6 +65,43 @@ public:
      */
     static float* wrapVec3ToVec4(float* xyz);
 
+    /**
+     * @brief destroy program loaded by bgfx safely
+     * @param[in] handle loaded program handle
+     */
+    static void destroy(bgfx::ProgramHandle &handle);
+
+    /**
+     * @brief destroy frame buffer loaded by bgfx safely
+     * @param[in] handle loaded frame buffer handle
+     */
+    static void destroy(bgfx::FrameBufferHandle &handle);
+
+    /**
+     * @brief destroy texture loaded by bgfx safely
+     * @param[in] handle loaded texture handle
+     */
+    static void destroy(bgfx::TextureHandle &handle);
+
+    /**
+     * @brief destroy vertex buffer loaded by bgfx safely
+     * @param[in] handle loaded vertex buffer handle
+     */
+    static void destroy(bgfx::VertexBufferHandle &handle);
+
+
+
+    /**
+     * @brief destroy index buffer loaded by bgfx safely
+     * @param[in] handle loaded index buffer handle
+     */
+    static void destroy(bgfx::IndexBufferHandle &handle);
+
+    /**
+     * @brief destroy uniform created by bgfx safely
+     * @param[in] handle created uniform handle
+     */
+    static void destroy(bgfx::UniformHandle &handle);
 private:
     /**
      * @brief load texture from file path

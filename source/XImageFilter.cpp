@@ -4,6 +4,7 @@
 
 #include "XImageFilter.hpp"
 #include "XImageUtils.hpp"
+#include "XLog.hpp"
 
 NS_X_IMAGE_BEGIN
 //顶点以及纹理坐标对象
@@ -47,19 +48,48 @@ XImageFilter::XImageFilter(std::string vertex, std::string fragment) {
     mVertexShaderPath = vertex;
     mFragmentShaderPath = fragment;
     mProgram = BGFX_INVALID_HANDLE;
-    mUniformTexture = BGFX_INVALID_HANDLE;
     mVertexBuffer = BGFX_INVALID_HANDLE;
     mIndexBuffer = BGFX_INVALID_HANDLE;
+
+    mViewRectX = 0;
+    mViewRectY = 0;
+    mViewRectWidth = 0;
+    mViewRectHeight = 0;
+}
+
+XImageFilter::~XImageFilter() {
+    XImageUtils::destroy(mProgram);
+    XImageUtils::destroy(mVertexBuffer);
+    XImageUtils::destroy(mIndexBuffer);
+
+    auto iter = mUniformHandles.begin();
+    while (iter != mUniformHandles.end()) {
+        XImageUtils::destroy(iter->second);
+        iter++;
+    }
+    mUniformHandles.clear();
 }
 
 void XImageFilter::setInputFrameBuffer(XImageFrameBuffer *input) {
     mFirstInputFrameBuffer = input;
 }
 
+void XImageFilter::setViewRect(int x, int y, int width, int height) {
+    mViewRectX = x;
+    mViewRectY = y;
+    mViewRectWidth = width;
+    mViewRectHeight = height;
+}
+
 void XImageFilter::newFrameReadyAtProgress(float progress, int index) {
+    if (!isViewRectValid()) {
+        LOGE("XImageFilter::newFrameReadyAtProgress view rect args is invalid.");
+        return;
+    }
     if (!bgfx::isValid(mProgram)) {
         mProgram = XImageUtils::loadProgram(mVertexShaderPath.data(), mFragmentShaderPath.data());
-        mUniformTexture = bgfx::createUniform("s_texColor", bgfx::UniformType::Sampler);
+        bgfx::UniformHandle texture = bgfx::createUniform("s_texColor", bgfx::UniformType::Sampler);
+        mUniformHandles.insert(std::make_pair("s_texColor", texture));
         // Create vertex stream declaration.
         PosTexVertex::init();
 
@@ -84,18 +114,27 @@ void XImageFilter::newFrameReadyAtProgress(float progress, int index) {
                      | BGFX_STATE_WRITE_A
                      | UINT64_C(0)
     ;
-    bgfx::setViewRect(0, 0, 0, 960, 720);//设置View0的视口
-    bgfx::setVertexBuffer(0, mVertexBuffer);//设置stream0的vertexBuffer，注意第一个参数不是viewId
-    bgfx::setIndexBuffer(mIndexBuffer);//设置顶点索引buffer数据
-    bgfx::setState(state);//设置控制绘制信息的标志位
-    bgfx::setTexture(0, mUniformTexture, mFirstInputFrameBuffer->getTexture());//设置对应的u_Texture这个着色器参数的纹理资源
-    bgfx::submit(0, mProgram);//提交绘制单张纹理的Program
+    bgfx::setViewRect(index, mViewRectX, mViewRectY, mViewRectWidth, mViewRectHeight);
+    bgfx::setVertexBuffer(0, mVertexBuffer);
+    bgfx::setIndexBuffer(mIndexBuffer);
+    bgfx::setState(state);
+    bgfx::setTexture(0, mUniformHandles.find("s_texColor")->second, mFirstInputFrameBuffer->getTexture());
+    bgfx::submit(index, mProgram);
 }
 
 void XImageFilter::setVec4(std::string paramName, float *paramValue) {
-    bgfx::UniformHandle handle = bgfx::createUniform(paramName.data(), bgfx::UniformType::Vec4);
+    bgfx::UniformHandle handle;
+    auto iter = mUniformHandles.find(paramName);
+    if (iter == mUniformHandles.end()) {
+        handle = bgfx::createUniform(paramName.data(), bgfx::UniformType::Vec4);
+        mUniformHandles.insert(std::make_pair(paramName, handle));
+    } else {
+        handle = iter->second;
+    }
     bgfx::setUniform(handle, paramValue);
-    /// @todo will be black and white first time if dstroy immediately.
-//    bgfx::destroy(hanle);
+}
+
+bool XImageFilter::isViewRectValid() {
+    return mViewRectWidth > 0 && mViewRectHeight > 0;
 }
 NS_X_IMAGE_END
