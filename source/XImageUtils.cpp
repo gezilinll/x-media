@@ -136,26 +136,26 @@ XImageUtils::loadTexture(bx::FileReaderI *reader, const char *filePath, uint64_t
 }
 
 bgfx::TextureHandle
-XImageUtils::loadTexture(const char *name, uint64_t flags, uint8_t skip, bgfx::TextureInfo *info,
+XImageUtils::loadTexture(const char *path, uint64_t flags, uint8_t skip, bgfx::TextureInfo *info,
                          bimg::Orientation::Enum *orientation) {
-    return loadTexture(getFileReader(), name, flags, skip, info, orientation);
+    return loadTexture(getFileReader(), path, flags, skip, info, orientation);
 }
 
 bgfx::ProgramHandle XImageUtils::loadProgram(const char *vsName, const char *fsName) {
     return loadProgram(getFileReader(), vsName, fsName);
 }
 
-bgfx::ProgramHandle XImageUtils::loadProgram(bx::FileReaderI *reader, const char *vsName, const char *fsName) {
-    bgfx::ShaderHandle vsh = loadShader(reader, vsName);
+bgfx::ProgramHandle XImageUtils::loadProgram(bx::FileReaderI *reader, const char *vsPath, const char *fsPath) {
+    bgfx::ShaderHandle vsh = loadShader(reader, vsPath);
     bgfx::ShaderHandle fsh = BGFX_INVALID_HANDLE;
-    if (NULL != fsName) {
-        fsh = loadShader(reader, fsName);
+    if (NULL != fsPath) {
+        fsh = loadShader(reader, fsPath);
     }
 
     return bgfx::createProgram(vsh, fsh, true /* destroy shaders when program is destroyed */);
 }
 
-bgfx::ShaderHandle XImageUtils::loadShader(bx::FileReaderI *reader, const char *name) {
+bgfx::ShaderHandle XImageUtils::loadShader(bx::FileReaderI *reader, const char *path) {
     char filePath[512];
 
     const char *shaderPath = "???";
@@ -194,11 +194,11 @@ bgfx::ShaderHandle XImageUtils::loadShader(bx::FileReaderI *reader, const char *
     }
 
     bx::strCopy(filePath, BX_COUNTOF(filePath), shaderPath);
-    bx::strCat(filePath, BX_COUNTOF(filePath), name);
+    bx::strCat(filePath, BX_COUNTOF(filePath), path);
     bx::strCat(filePath, BX_COUNTOF(filePath), ".bin");
 
     bgfx::ShaderHandle handle = bgfx::createShader(loadMem(reader, filePath));
-    bgfx::setName(handle, name);
+    bgfx::setName(handle, path);
 
     return handle;
 }

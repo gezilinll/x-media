@@ -10,7 +10,8 @@
 
 NS_X_IMAGE_BEGIN
 /**
- * XImage's base filter class and control all of effects unless they have params isn't common, which means we switch effect by shader path not filter class.
+ * @brief XImage's base filter class and control all of effects unless they have params isn't common, which means we switch effect by shader path not filter class.
+ *
  * Like one pass, two pass, three pass, ..., group, they all have their own action, params and logic.
  * Filters and other subsequent elements in the chain inherit to the XImageInput class,
  * which lets them take in the supplied or processed texture from the previous link in the chain and do something with it.
@@ -19,31 +20,22 @@ NS_X_IMAGE_BEGIN
 class XImageFilter: public XImageInput, public XImageOutput {
 public:
     /**
-     * XImage's filter constructor
-     * @param vertex vertex shader path
-     * @param fragment fragment shader path
+     * @brief XImage's filter constructor
+     * @param[in] vertex vertex shader path
+     * @param[in] fragment fragment shader path
      */
     XImageFilter(std::string vertex, std::string fragment);
 
-    /**
-     * Notify new frame is ready and can process it
-     * @param progress current progress, [0.0, 1.0]
-     * @param index index of this filter in the render sequence
-     */
-    void newFrameReadyAtProgress(float progress, int index);
+    void newFrameReadyAtProgress(float progress, int index) override;
+
+    void setInputFrameBuffer(XImageFrameBuffer* input) override ;
 
     /**
-     * Set frame buffer to be processing
-     * @param input frame buffer
-     */
-    void setInputFrameBuffer(XImageFrameBuffer* input);
-
-    /**
-     * Set param value of shader, this param must be Vec4 type Because of bgfx only support vec4 type as uniform param
+     * @brief set param value of shader, this param must be Vec4 type because of bgfx only support vec4 type as uniform param
      * The filter's param such as float/vec2... can pass value like this: {floatValue, 1.0f, 1.0f, 1.0f}/{x, y, 1.0f, 1.0f}
-     * Perhaps you would like to use {@link XImageUtils} to wrap your value easily
-     * @param paramName name of param
-     * @param paramValue value of param
+     * Perhaps you would like to use \link XImageUtils \endlink to wrap your value easily
+     * @param[in] paramName name of param
+     * @param[in] paramValue value of param
      */
     void setVec4(std::string paramName, float *paramValue);
 protected:
