@@ -19,7 +19,7 @@ NS_X_IMAGE_BEGIN
 class XImageUtils {
 public:
     /**
-     * @brief load texture from absolute image path
+     * @brief load texture from image path
      * @param[in] path frame path
      * @param[in] flags Texture creation (see `BGFX_TEXTURE_*`.), and sampler (see `BGFX_SAMPLER_*`)
      *              Default texture sampling mode is linear, and wrap mode is repeat.
@@ -35,7 +35,7 @@ public:
                 bgfx::TextureInfo *info = NULL, bimg::Orientation::Enum *orientation = NULL);
 
     /**
-     * @brief load program from vertex and fragment shader absolute path
+     * @brief load program from vertex and fragment shader path
      * @param[in] vsPath absolute path of vertex shader
      * @param[in] fsPath absolute path of fragment shader
      * @return handle of program
@@ -54,13 +54,20 @@ public:
      * @param[in] x first float value
      * @param[in] y second float value
      * @param[in] z third float value
-     * @return float array, length:4
+     * @return float array, length is 4
      */
     static float* wrapVec3ToVec4(float x, float y, float z);
 
+    /**
+     * @brief wrap three float value to vec4 needed form
+     * @param[in] xyz length is 3
+     * @return float array, length is 4
+     */
+    static float* wrapVec3ToVec4(float* xyz);
+
 private:
     /**
-     * @brief load texture from absolute file path
+     * @brief load texture from file path
      * @param reader file reader
      * @param filePath frame path
      * @param[in] flags Texture creation (see `BGFX_TEXTURE_*`.), and sampler (see `BGFX_SAMPLER_*`)
@@ -77,7 +84,7 @@ private:
                 bgfx::TextureInfo *_info, bimg::Orientation::Enum *orientation);
 
     /**
-     * @brief load program from vertex and fragment shader absolute path
+     * @brief load program from vertex and fragment shader path
      * @param reader file reader
      * @param[in] vsPath absolute path of vertex shader
      * @param[in] fsPath absolute path of fragment shader
@@ -86,7 +93,7 @@ private:
     static bgfx::ProgramHandle loadProgram(bx::FileReaderI* reader, const char* vsPath, const char* fsPath);
 
     /**
-     * @brief load shader from absolute file path
+     * @brief load shader from file path
      * @param[in] reader file reader
      * @param[in] path file path
      * @return handle of shader

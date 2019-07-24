@@ -11,11 +11,12 @@
 NS_X_IMAGE_BEGIN
 /**
  * @brief XImage's base filter class and control all of effects unless they have params isn't common, which means we switch effect by shader path not filter class.
- *
  * Like one pass, two pass, three pass, ..., group, they all have their own action, params and logic.
  * Filters and other subsequent elements in the chain inherit to the XImageInput class,
  * which lets them take in the supplied or processed texture from the previous link in the chain and do something with it.
  * Objects one step further down the chain are considered targets, and processing can be branched by adding multiple targets to a single output or filter.
+ *
+ * As to shader you can see \link XImageShaderInfo.hpp XImageShaderInfo \endlink for more information.
  */
 class XImageFilter: public XImageInput, public XImageOutput {
 public:

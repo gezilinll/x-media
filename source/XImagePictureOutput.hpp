@@ -15,7 +15,7 @@ NS_X_IMAGE_BEGIN
 class XImagePictureOutput: public XImageOutput {
 public:
     /**
-     * @brief load picture to output frame buffer from its absoulte path
+     * @brief load picture to output frame buffer from its path
      * @param[in] path file's absolute path
      */
     void initWithPath(std::string path);

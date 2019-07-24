@@ -17,6 +17,7 @@
 #include "XImageFilter.hpp"
 #include "XLog.hpp"
 #include "XImageUtils.hpp"
+#include "XImageShaderInfo.hpp"
 
 #include <iostream>
 
@@ -61,7 +62,8 @@ class ExampleFilters : public bigg::Application {
             {
                 if (mCurrentIndex != filterItemCurrent) {
                     mOutput->clearTarget();
-                    mFilter = new XImageFilter("vs_filter_normal", FILTER_FRAGMENT_SHADERS[filterItemCurrent]);
+                    mFilter = new XImageFilter(getShaderPath("vs_filter_normal"),
+                            getShaderPath(FILTER_FRAGMENT_SHADERS[filterItemCurrent]));
                     mOutput->addTarget(mFilter);
                     mCurrentIndex = filterItemCurrent;
                 }
@@ -76,32 +78,97 @@ class ExampleFilters : public bigg::Application {
         const char *type = FILTER_ITEMS[index];
         if (strcmp("None", type) == 0) {
         } else if (strcmp("Saturation", type) == 0) {
-            mFilter->setVec4("saturation", XImageUtils::wrapFloatToVec4(2.0 * ratio));
+            Saturation saturation;
+            mFilter->setVec4(saturation.paramName, XImageUtils::wrapFloatToVec4(saturation.paramMax * ratio));
         } else if (strcmp("Contrast", type) == 0) {
-            mFilter->setVec4("contrast", XImageUtils::wrapFloatToVec4(4.0 * ratio));
+            Contrast contrast;
+            mFilter->setVec4(contrast.paramName, XImageUtils::wrapFloatToVec4(contrast.paramMax * ratio));
         } else if (strcmp("Brightness", type) == 0) {
-            mFilter->setVec4("brightness", XImageUtils::wrapFloatToVec4(-1.0 + 2.0 * ratio));
+            Brightness brightness;
+            mFilter->setVec4(brightness.paramName,
+                             XImageUtils::wrapFloatToVec4(brightness.paramMin + 2 * brightness.paramMax * ratio));
         } else if (strcmp("Exposure", type) == 0) {
-            mFilter->setVec4("exposure", XImageUtils::wrapFloatToVec4(-10.0 + 20.0 * ratio));
+            Exposure exposure;
+            mFilter->setVec4(exposure.paramName,
+                             XImageUtils::wrapFloatToVec4(exposure.paramMin + 2 * exposure.paramMax * ratio));
         } else if (strcmp("RGB", type) == 0) {
-            mFilter->setVec4("redAdjustment", XImageUtils::wrapFloatToVec4(1.0 * ratio));
-            mFilter->setVec4("greenAdjustment", XImageUtils::wrapFloatToVec4(1.0 * ratio));
-            mFilter->setVec4("blueAdjustment", XImageUtils::wrapFloatToVec4(1.0 * ratio));
+            RGB rgb;
+            mFilter->setVec4(rgb.paramRedName, XImageUtils::wrapFloatToVec4(2.0 * ratio));
+            mFilter->setVec4(rgb.paramGreenName, XImageUtils::wrapFloatToVec4(2.0 * ratio));
+            mFilter->setVec4(rgb.paramBlueName, XImageUtils::wrapFloatToVec4(2.0 * ratio));
         } else if (strcmp("HUE", type) == 0) {
-            mFilter->setVec4("hueAdjust", XImageUtils::wrapFloatToVec4(360 * ratio));
+            HUE hue;
+            mFilter->setVec4(hue.paramName, XImageUtils::wrapFloatToVec4(hue.paramMax * ratio));
         } else if (strcmp("Levels", type) == 0) {
-            mFilter->setVec4("levelMinimum", XImageUtils::wrapVec3ToVec4(0.0f, 0.0f, 0.0f));
-            mFilter->setVec4("levelMiddle", XImageUtils::wrapVec3ToVec4(0.5f * ratio, 0.5f * ratio, 0.5f * ratio));
-            mFilter->setVec4("levelMaximum", XImageUtils::wrapVec3ToVec4(1.0f * ratio, 1.0f * ratio, 1.0f * ratio));
-            mFilter->setVec4("minOutput", XImageUtils::wrapVec3ToVec4(0.0f, 0.0f, 0.0f));
-            mFilter->setVec4("maxOutput", XImageUtils::wrapVec3ToVec4(1.0f * ratio, 1.0f * ratio, 1.0f * ratio));
+            Levels levels;
+            mFilter->setVec4(levels.paramMinLevelName, XImageUtils::wrapVec3ToVec4(levels.paramMin));
+            mFilter->setVec4(levels.paramMiddleLevelName,
+                             XImageUtils::wrapVec3ToVec4(2.0f * ratio, 2.0f * ratio, 2.0f * ratio));
+            mFilter->setVec4(levels.paramMaxLevelName, XImageUtils::wrapVec3ToVec4(levels.paramMax[0] * ratio,
+                                                                                   levels.paramMax[1] * ratio,
+                                                                                   levels.paramMax[2] * ratio));
+            mFilter->setVec4(levels.paramMinOutName, XImageUtils::wrapVec3ToVec4(levels.paramMin));
+            mFilter->setVec4(levels.paramMaxOutName, XImageUtils::wrapVec3ToVec4(levels.paramMax[0] * ratio,
+                                                                                 levels.paramMax[1] * ratio,
+                                                                                 levels.paramMax[2] * ratio));
         } else if (strcmp("WhiteBalance", type) == 0) {
-            mFilter->setVec4("temperature", XImageUtils::wrapFloatToVec4(10 * ratio));
-            mFilter->setVec4("tint", XImageUtils::wrapFloatToVec4(5 * ratio));
+            WhiteBalance whiteBalance;
+            mFilter->setVec4(whiteBalance.paramTemperatureName, XImageUtils::wrapFloatToVec4(10 * ratio));
+            mFilter->setVec4(whiteBalance.paramTintName, XImageUtils::wrapFloatToVec4(5 * ratio));
         } else if (strcmp("Monochrome", type) == 0) {
-            mFilter->setVec4("intensity", XImageUtils::wrapFloatToVec4(1.0 * ratio));
-            mFilter->setVec4("filterColor", XImageUtils::wrapVec3ToVec4(0.6f * ratio, 0.3f * ratio, 0.8f * ratio));
+            Monochrome monochrome;
+            mFilter->setVec4(monochrome.paramIntensityName,
+                             XImageUtils::wrapFloatToVec4(monochrome.paramIntensityMax * ratio));
+            mFilter->setVec4(monochrome.paramFilterColorName,
+                             XImageUtils::wrapVec3ToVec4(monochrome.paramFilterColorMax[0] * ratio,
+                                                         monochrome.paramFilterColorMax[1] * ratio,
+                                                         monochrome.paramFilterColorMax[2] * ratio));
         }
+    }
+
+    char* getShaderPath(const char* shaderName) {
+        char filePath[512];
+
+        const char *shaderPath = "???";
+
+        switch (bgfx::getRendererType()) {
+            case bgfx::RendererType::Noop:
+            case bgfx::RendererType::Direct3D9:
+                shaderPath = "shaders/dx9/";
+                break;
+            case bgfx::RendererType::Direct3D11:
+            case bgfx::RendererType::Direct3D12:
+                shaderPath = "shaders/dx11/";
+                break;
+            case bgfx::RendererType::Gnm:
+                shaderPath = "shaders/pssl/";
+                break;
+            case bgfx::RendererType::Metal:
+                shaderPath = "shaders/metal/";
+                break;
+            case bgfx::RendererType::Nvn:
+                shaderPath = "shaders/nvn/";
+                break;
+            case bgfx::RendererType::OpenGL:
+                shaderPath = "shaders/glsl/";
+                break;
+            case bgfx::RendererType::OpenGLES:
+                shaderPath = "shaders/essl/";
+                break;
+            case bgfx::RendererType::Vulkan:
+                shaderPath = "shaders/spirv/";
+                break;
+
+            case bgfx::RendererType::Count:
+                BX_CHECK(false, "You should not be here!");
+                break;
+        }
+
+        bx::strCopy(filePath, BX_COUNTOF(filePath), shaderPath);
+        bx::strCat(filePath, BX_COUNTOF(filePath), shaderName);
+        bx::strCat(filePath, BX_COUNTOF(filePath), ".bin");
+
+        return filePath;
     }
 
 public:

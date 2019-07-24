@@ -141,8 +141,8 @@ XImageUtils::loadTexture(const char *path, uint64_t flags, uint8_t skip, bgfx::T
     return loadTexture(getFileReader(), path, flags, skip, info, orientation);
 }
 
-bgfx::ProgramHandle XImageUtils::loadProgram(const char *vsName, const char *fsName) {
-    return loadProgram(getFileReader(), vsName, fsName);
+bgfx::ProgramHandle XImageUtils::loadProgram(const char *vsPath, const char *fsPath) {
+    return loadProgram(getFileReader(), vsPath, fsPath);
 }
 
 bgfx::ProgramHandle XImageUtils::loadProgram(bx::FileReaderI *reader, const char *vsPath, const char *fsPath) {
@@ -156,48 +156,7 @@ bgfx::ProgramHandle XImageUtils::loadProgram(bx::FileReaderI *reader, const char
 }
 
 bgfx::ShaderHandle XImageUtils::loadShader(bx::FileReaderI *reader, const char *path) {
-    char filePath[512];
-
-    const char *shaderPath = "???";
-
-    switch (bgfx::getRendererType()) {
-        case bgfx::RendererType::Noop:
-        case bgfx::RendererType::Direct3D9:
-            shaderPath = "shaders/dx9/";
-            break;
-        case bgfx::RendererType::Direct3D11:
-        case bgfx::RendererType::Direct3D12:
-            shaderPath = "shaders/dx11/";
-            break;
-        case bgfx::RendererType::Gnm:
-            shaderPath = "shaders/pssl/";
-            break;
-        case bgfx::RendererType::Metal:
-            shaderPath = "shaders/metal/";
-            break;
-        case bgfx::RendererType::Nvn:
-            shaderPath = "shaders/nvn/";
-            break;
-        case bgfx::RendererType::OpenGL:
-            shaderPath = "shaders/glsl/";
-            break;
-        case bgfx::RendererType::OpenGLES:
-            shaderPath = "shaders/essl/";
-            break;
-        case bgfx::RendererType::Vulkan:
-            shaderPath = "shaders/spirv/";
-            break;
-
-        case bgfx::RendererType::Count:
-            BX_CHECK(false, "You should not be here!");
-            break;
-    }
-
-    bx::strCopy(filePath, BX_COUNTOF(filePath), shaderPath);
-    bx::strCat(filePath, BX_COUNTOF(filePath), path);
-    bx::strCat(filePath, BX_COUNTOF(filePath), ".bin");
-
-    bgfx::ShaderHandle handle = bgfx::createShader(loadMem(reader, filePath));
+    bgfx::ShaderHandle handle = bgfx::createShader(loadMem(reader, path));
     bgfx::setName(handle, path);
 
     return handle;
@@ -218,7 +177,7 @@ const bgfx::Memory *XImageUtils::loadMem(bx::FileReaderI *reader, const char *fi
 }
 
 bx::FileReaderI *XImageUtils::getFileReader() {
-    //todo: concurrent
+    /// @todo concurrent
     if (sFileReader == nullptr) {
         sFileReader = BX_NEW(allocator, FileReader);
     }
@@ -232,4 +191,9 @@ float* XImageUtils::wrapFloatToVec4(float value) {
 float* XImageUtils::wrapVec3ToVec4(float x, float y, float z) {
     return new float[4]{x, y, z, 1.0f};
 }
+
+float* XImageUtils::wrapVec3ToVec4(float *xyz) {
+    return new float[4]{xyz[0], xyz[1], xyz[2], 1.0f};
+}
+
 NS_X_IMAGE_END

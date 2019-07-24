@@ -95,7 +95,7 @@ void XImageFilter::newFrameReadyAtProgress(float progress, int index) {
 void XImageFilter::setVec4(std::string paramName, float *paramValue) {
     bgfx::UniformHandle handle = bgfx::createUniform(paramName.data(), bgfx::UniformType::Vec4);
     bgfx::setUniform(handle, paramValue);
-    //todo: will be black and white first time if dstroy immediately.
+    /// @todo will be black and white first time if dstroy immediately.
 //    bgfx::destroy(hanle);
 }
 NS_X_IMAGE_END
