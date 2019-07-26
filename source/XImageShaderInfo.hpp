@@ -7,7 +7,7 @@
 
 #include <limits>
 
-struct Normal {
+struct Shader {
     std::string vsName = "vs_filter_normal";
     std::string fsName = "fs_filter_normal";
 };
@@ -73,7 +73,9 @@ struct Levels {
     float paramMin[3] = {0.0f, 0.0f, 0.0f};
     float paramMax[3] = {1.0f, 1.0f, 1.0f};
     float paramMiddleLevelMin[3] = {0.0f, 0.0f, 0.0f};
-    float paramMiddleLevelMax[3] = {std::numeric_limits<float >::max(), std::numeric_limits<float >::max(), std::numeric_limits<float >::max()};
+    float paramMinNormal[3] = {0.0f, 0.0f, 0.0f};
+    float paramMaxNormal[3] = {1.0f, 1.0f, 1.0f};
+    float paramMiddleNormal[3] = {1.0f, 1.0f, 1.0f};
 };
 
 /**
@@ -100,6 +102,7 @@ struct RGB {
     std::string paramGreenName = "greenAdjustment";
     std::string paramBlueName = "blueAdjustment";
     float paramMin = 0.0f;
+    float paramNormal = 1.0;
 };
 
 /**
@@ -108,8 +111,9 @@ struct RGB {
 struct HUE {
     std::string fsName = "fs_filter_hue";
     std::string paramName = "hueAdjust";
-    float paramMin = 0;
-    float paramMax = 360.0f;
+    float paramMin = 0.0f;
+    float paramMax = 2 * M_PI;
+    float paramNormal = 0.0f;
 };
 
 /**
@@ -121,6 +125,8 @@ struct WhiteBalance {
     std::string fsName = "fs_filter_white_balance";
     std::string paramTemperatureName = "temperature"; /// choose color temperature, in degrees Kelvin
     std::string paramTintName = "tint"; /// adjust tint to compensate
+    float paramTemperatureDefault = 0.0f;
+    float paramTintDefault = 0.0f;
 };
 
 /**
@@ -132,6 +138,7 @@ struct Monochrome {
     std::string paramFilterColorName = "filterColor";
     float paramIntensityMin = 0.0f;
     float paramIntensityMax = 1.0f;
+    float paramIntensityNormal = 0.0f;
     float paramFilterColorMin[3] = {0.0f, 0.0f, 0.0f};
     float paramFilterColorMax[3] = {1.0f, 1.0f, 1.0f};
 };

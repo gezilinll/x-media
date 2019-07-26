@@ -16,7 +16,7 @@
 #include "entry/entry.h"
 #include "imgui/imgui.h"
 #include "bgfx_utils.h"
-
+#include <unordered_map>
 #include <iostream>
 
 USING_NS_X_IMAGE
@@ -92,11 +92,18 @@ public:
                             , uint16_t(mWidth)
                             , uint16_t(mHeight)
                             );
-            
-            showExampleDialog(this);
-        
-            bgfx::touch(0);
-            
+            ImGui::SetNextWindowPos(
+                    ImVec2(mWidth - mWidth / 4.0f - 10.0f, 10.0f)
+                    , ImGuiCond_FirstUseEver
+            );
+            ImGui::SetNextWindowSize(
+                    ImVec2(mWidth / 3.0f, mWidth / 3.0f)
+                    , ImGuiCond_FirstUseEver
+            );
+            ImGui::Begin("Settings"
+                    , NULL
+            );
+
             mRatio = mRatio + mOffset;
             if (mRatio > 1.0f) {
                 mOffset = -0.001;
@@ -107,7 +114,7 @@ public:
             }
             
             static int filterItemCurrent = 0;
-            ImGui::Combo("Filter Selector", &filterItemCurrent, FILTER_ITEMS, IM_ARRAYSIZE(FILTER_ITEMS), 5);
+            ImGui::Combo("Filter Selected", &filterItemCurrent, FILTER_ITEMS, IM_ARRAYSIZE(FILTER_ITEMS), 5);
             {
                 if (mCurrentIndex != filterItemCurrent) {
                     mOutput->clearTarget();
@@ -117,11 +124,15 @@ public:
                     mFilter->setViewRect(0, 0, mWidth, mHeight);
                     mOutput->addTarget(mFilter);
                     mCurrentIndex = filterItemCurrent;
+                    updateFilterSettings(filterItemCurrent, mRatio, false);
+                } else {
+                    updateFilterSettings(filterItemCurrent, mRatio, true);
                 }
-                updateFilter(filterItemCurrent, mRatio);
+
                 mOutput->notifyTargetsAboutNewOutputTexture();
             }
 
+            ImGui::End();
             imguiEndFrame();
             
             mOutput->processPicture();
@@ -136,55 +147,265 @@ public:
         return false;
     }
 
-    void updateFilter(int index, float ratio) {
+    void updateFilterSettings(int index, float ratio, bool updateOnly) {
+        ImGui::Separator();
         const char *type = FILTER_ITEMS[index];
         if (strcmp("None", type) == 0) {
         } else if (strcmp("Saturation", type) == 0) {
             Saturation saturation;
-            mFilter->setVec4(saturation.paramName, XImageUtils::wrapFloatToVec4(saturation.paramMax * ratio));
+            if (!updateOnly) {
+                mValues[saturation.paramName] = saturation.paramNormal;
+            }
+            ImGui::SliderFloat(saturation.paramName.data()
+                    , &mValues[saturation.paramName]
+                    , saturation.paramMin
+                    , saturation.paramMax
+            );
+            mFilter->setVec4(saturation.paramName, XImageUtils::wrapFloatToVec4(mValues[saturation.paramName]));
         } else if (strcmp("Contrast", type) == 0) {
             Contrast contrast;
-            mFilter->setVec4(contrast.paramName, XImageUtils::wrapFloatToVec4(contrast.paramMax * ratio));
+            if (!updateOnly) {
+                mValues[contrast.paramName] = contrast.paramNormal;
+            }
+            ImGui::SliderFloat(contrast.paramName.data()
+                    , &mValues[contrast.paramName]
+                    , contrast.paramMin
+                    , contrast.paramMax
+            );
+            mFilter->setVec4(contrast.paramName, XImageUtils::wrapFloatToVec4(mValues[contrast.paramName]));
         } else if (strcmp("Brightness", type) == 0) {
             Brightness brightness;
+            if (!updateOnly) {
+                mValues[brightness.paramName] = brightness.paramNormal;
+            }
+            ImGui::SliderFloat(brightness.paramName.data()
+                    , &mValues[brightness.paramName]
+                    , brightness.paramMin
+                    , brightness.paramMax
+            );
             mFilter->setVec4(brightness.paramName,
-                             XImageUtils::wrapFloatToVec4(brightness.paramMin + 2 * brightness.paramMax * ratio));
+                             XImageUtils::wrapFloatToVec4(mValues[brightness.paramName]));
         } else if (strcmp("Exposure", type) == 0) {
             Exposure exposure;
+            if (!updateOnly) {
+                mValues[exposure.paramName] = exposure.paramNormal;
+            }
+            ImGui::SliderFloat(exposure.paramName.data()
+                    , &mValues[exposure.paramName]
+                    , exposure.paramMin
+                    , exposure.paramMax
+            );
             mFilter->setVec4(exposure.paramName,
-                             XImageUtils::wrapFloatToVec4(exposure.paramMin + 2 * exposure.paramMax * ratio));
+                             XImageUtils::wrapFloatToVec4(mValues[exposure.paramName]));
         } else if (strcmp("RGB", type) == 0) {
             RGB rgb;
-            mFilter->setVec4(rgb.paramRedName, XImageUtils::wrapFloatToVec4(2.0 * ratio));
-            mFilter->setVec4(rgb.paramGreenName, XImageUtils::wrapFloatToVec4(2.0 * ratio));
-            mFilter->setVec4(rgb.paramBlueName, XImageUtils::wrapFloatToVec4(2.0 * ratio));
+            if (!updateOnly) {
+                mValues[rgb.paramRedName] = rgb.paramNormal;
+                mValues[rgb.paramBlueName] = rgb.paramNormal;
+                mValues[rgb.paramGreenName] = rgb.paramNormal;
+            }
+            ImGui::SliderFloat(rgb.paramRedName.data()
+                    , &mValues[rgb.paramRedName]
+                    , rgb.paramMin
+                    , 10.0f
+            );
+            ImGui::SliderFloat(rgb.paramGreenName.data()
+                    , &mValues[rgb.paramGreenName]
+                    , rgb.paramMin
+                    , 10.0f
+            );
+            ImGui::SliderFloat(rgb.paramBlueName.data()
+                    , &mValues[rgb.paramBlueName]
+                    , rgb.paramMin
+                    , 10.0f
+            );
+            mFilter->setVec4(rgb.paramRedName, XImageUtils::wrapFloatToVec4(mValues[rgb.paramRedName]));
+            mFilter->setVec4(rgb.paramGreenName, XImageUtils::wrapFloatToVec4(mValues[rgb.paramRedName]));
+            mFilter->setVec4(rgb.paramBlueName, XImageUtils::wrapFloatToVec4(mValues[rgb.paramBlueName]));
         } else if (strcmp("HUE", type) == 0) {
             HUE hue;
-            mFilter->setVec4(hue.paramName, XImageUtils::wrapFloatToVec4(hue.paramMax * ratio));
+            if (!updateOnly) {
+                mValues[hue.paramName] = hue.paramNormal;
+            }
+            ImGui::SliderFloat(hue.paramName.data()
+                    , &mValues[hue.paramName]
+                    , hue.paramMin
+                    , hue.paramMax
+            );
+            mFilter->setVec4(hue.paramName, XImageUtils::wrapFloatToVec4(mValues[hue.paramName]));
         } else if (strcmp("Levels", type) == 0) {
             Levels levels;
-            mFilter->setVec4(levels.paramMinLevelName, XImageUtils::wrapVec3ToVec4(levels.paramMin));
+            if (!updateOnly) {
+                mValues[levels.paramMinLevelName + "r"] = levels.paramMinNormal[0];
+                mValues[levels.paramMinLevelName + "g"] = levels.paramMinNormal[1];
+                mValues[levels.paramMinLevelName + "b"] = levels.paramMinNormal[2];
+                mValues[levels.paramMaxLevelName + "r"] = levels.paramMaxNormal[0];
+                mValues[levels.paramMaxLevelName + "g"] = levels.paramMaxNormal[1];
+                mValues[levels.paramMaxLevelName + "b"] = levels.paramMaxNormal[2];
+                mValues[levels.paramMiddleLevelName + "r"] = levels.paramMiddleNormal[0];
+                mValues[levels.paramMiddleLevelName + "g"] = levels.paramMiddleNormal[1];
+                mValues[levels.paramMiddleLevelName + "b"] = levels.paramMiddleNormal[2];
+                mValues[levels.paramMinOutName + "r"] = levels.paramMinNormal[0];
+                mValues[levels.paramMinOutName + "g"] = levels.paramMinNormal[1];
+                mValues[levels.paramMinOutName + "b"] = levels.paramMinNormal[2];
+                mValues[levels.paramMaxOutName + "r"] = levels.paramMaxNormal[0];
+                mValues[levels.paramMaxOutName + "g"] = levels.paramMaxNormal[1];
+                mValues[levels.paramMaxOutName + "b"] = levels.paramMaxNormal[2];
+            }
+            ImGui::SliderFloat((levels.paramMinLevelName + "r").data()
+                    , &mValues[levels.paramMinLevelName + "r"]
+                    , levels.paramMin[0]
+                    , levels.paramMax[0]
+            );
+            ImGui::SliderFloat((levels.paramMinLevelName + "g").data()
+                    , &mValues[levels.paramMinLevelName + "g"]
+                    , levels.paramMin[1]
+                    , levels.paramMax[1]
+            );
+            ImGui::SliderFloat((levels.paramMinLevelName + "b").data()
+                    , &mValues[levels.paramMinLevelName + "b"]
+                    , levels.paramMin[2]
+                    , levels.paramMax[2]
+            );
+            ImGui::Separator();
+            ImGui::SliderFloat((levels.paramMaxLevelName + "r").data()
+                    , &mValues[levels.paramMaxLevelName + "r"]
+                    , levels.paramMin[0]
+                    , levels.paramMax[0]
+            );
+            ImGui::SliderFloat((levels.paramMaxLevelName + "g").data()
+                    , &mValues[levels.paramMaxLevelName + "g"]
+                    , levels.paramMin[1]
+                    , levels.paramMax[1]
+            );
+            ImGui::SliderFloat((levels.paramMaxLevelName + "b").data()
+                    , &mValues[levels.paramMaxLevelName + "b"]
+                    , levels.paramMin[2]
+                    , levels.paramMax[2]
+            );
+            ImGui::Separator();
+            ImGui::SliderFloat((levels.paramMiddleLevelName + "r").data()
+                    , &mValues[levels.paramMiddleLevelName + "r"]
+                    , levels.paramMin[0]
+                    , 100.0f
+            );
+            ImGui::SliderFloat((levels.paramMiddleLevelName + "g").data()
+                    , &mValues[levels.paramMiddleLevelName + "g"]
+                    , levels.paramMin[1]
+                    , 100.0f
+            );
+            ImGui::SliderFloat((levels.paramMiddleLevelName + "b").data()
+                    , &mValues[levels.paramMiddleLevelName + "b"]
+                    , levels.paramMin[2]
+                    , 100.0f
+            );
+            ImGui::Separator();
+            ImGui::SliderFloat((levels.paramMinOutName + "r").data()
+                    , &mValues[levels.paramMinOutName + "r"]
+                    , levels.paramMin[0]
+                    , levels.paramMax[0]
+            );
+            ImGui::SliderFloat((levels.paramMinOutName + "g").data()
+                    , &mValues[levels.paramMinOutName + "g"]
+                    , levels.paramMin[1]
+                    , levels.paramMax[1]
+            );
+            ImGui::SliderFloat((levels.paramMinOutName + "b").data()
+                    , &mValues[levels.paramMinOutName + "b"]
+                    , levels.paramMin[2]
+                    , levels.paramMax[2]
+            );
+            ImGui::Separator();
+            ImGui::SliderFloat((levels.paramMaxOutName + "r").data()
+                    , &mValues[levels.paramMaxOutName + "r"]
+                    , levels.paramMin[0]
+                    , levels.paramMax[0]
+            );
+            ImGui::SliderFloat((levels.paramMaxOutName + "g").data()
+                    , &mValues[levels.paramMaxOutName + "g"]
+                    , levels.paramMin[1]
+                    , levels.paramMax[1]
+            );
+            ImGui::SliderFloat((levels.paramMaxOutName + "b").data()
+                    , &mValues[levels.paramMaxOutName + "b"]
+                    , levels.paramMin[2]
+                    , levels.paramMax[2]
+            );
+            mFilter->setVec4(levels.paramMinLevelName,
+                             XImageUtils::wrapVec3ToVec4(mValues[levels.paramMinLevelName + "r"],
+                                                         mValues[levels.paramMinLevelName + "g"],
+                                                         mValues[levels.paramMinLevelName + "b"]));
             mFilter->setVec4(levels.paramMiddleLevelName,
-                             XImageUtils::wrapVec3ToVec4(2.0f * ratio, 2.0f * ratio, 2.0f * ratio));
-            mFilter->setVec4(levels.paramMaxLevelName, XImageUtils::wrapVec3ToVec4(levels.paramMax[0] * ratio,
-                                                                                   levels.paramMax[1] * ratio,
-                                                                                   levels.paramMax[2] * ratio));
-            mFilter->setVec4(levels.paramMinOutName, XImageUtils::wrapVec3ToVec4(levels.paramMin));
-            mFilter->setVec4(levels.paramMaxOutName, XImageUtils::wrapVec3ToVec4(levels.paramMax[0] * ratio,
-                                                                                 levels.paramMax[1] * ratio,
-                                                                                 levels.paramMax[2] * ratio));
+                             XImageUtils::wrapVec3ToVec4(mValues[levels.paramMiddleLevelName + "r"],
+                                                         mValues[levels.paramMiddleLevelName + "g"],
+                                                         mValues[levels.paramMiddleLevelName + "b"]));
+            mFilter->setVec4(levels.paramMaxLevelName,
+                             XImageUtils::wrapVec3ToVec4(mValues[levels.paramMaxLevelName + "r"],
+                                                         mValues[levels.paramMaxLevelName + "g"],
+                                                         mValues[levels.paramMaxLevelName + "b"]));
+            mFilter->setVec4(levels.paramMinOutName,
+                             XImageUtils::wrapVec3ToVec4(mValues[levels.paramMinOutName + "r"],
+                                                         mValues[levels.paramMinOutName + "g"],
+                                                         mValues[levels.paramMinOutName + "b"]));
+            mFilter->setVec4(levels.paramMaxOutName,
+                             XImageUtils::wrapVec3ToVec4(mValues[levels.paramMaxOutName + "r"],
+                                                         mValues[levels.paramMaxOutName + "g"],
+                                                         mValues[levels.paramMaxOutName + "b"]));
         } else if (strcmp("WhiteBalance", type) == 0) {
             WhiteBalance whiteBalance;
-            mFilter->setVec4(whiteBalance.paramTemperatureName, XImageUtils::wrapFloatToVec4(10 * ratio));
-            mFilter->setVec4(whiteBalance.paramTintName, XImageUtils::wrapFloatToVec4(5 * ratio));
+            if (!updateOnly) {
+                mValues[whiteBalance.paramTemperatureName] = whiteBalance.paramTemperatureDefault;
+                mValues[whiteBalance.paramTintName] = whiteBalance.paramTintDefault;
+            }
+            ImGui::SliderFloat(whiteBalance.paramTemperatureName.data()
+                    , &mValues[whiteBalance.paramTemperatureName]
+                    , -50
+                    , 50
+            );
+            ImGui::SliderFloat(whiteBalance.paramTintName.data()
+                    , &mValues[whiteBalance.paramTintName]
+                    , -10
+                    , 10
+            );
+            mFilter->setVec4(whiteBalance.paramTemperatureName,
+                             XImageUtils::wrapFloatToVec4(mValues[whiteBalance.paramTemperatureName]));
+            mFilter->setVec4(whiteBalance.paramTintName,
+                             XImageUtils::wrapFloatToVec4(mValues[whiteBalance.paramTintName]));
         } else if (strcmp("Monochrome", type) == 0) {
             Monochrome monochrome;
+            if (!updateOnly) {
+                mValues[monochrome.paramIntensityName] = monochrome.paramIntensityNormal;
+                mValues[monochrome.paramFilterColorName + "r"] = 0.5;
+                mValues[monochrome.paramFilterColorName + "g"] = 0.5;
+                mValues[monochrome.paramFilterColorName + "b"] = 0.5;
+            }
+            ImGui::SliderFloat(monochrome.paramIntensityName.data()
+                    , &mValues[monochrome.paramIntensityName]
+                    , monochrome.paramIntensityMin
+                    , monochrome.paramIntensityMax
+            );
+            ImGui::Separator();
+            ImGui::SliderFloat((monochrome.paramFilterColorName + "r").data()
+                    , &mValues[monochrome.paramFilterColorName + "r"]
+                    , monochrome.paramFilterColorMin[0]
+                    , monochrome.paramFilterColorMax[0]
+            );
+            ImGui::SliderFloat((monochrome.paramFilterColorName + "g").data()
+                    , &mValues[monochrome.paramFilterColorName + "g"]
+                    , monochrome.paramFilterColorMin[1]
+                    , monochrome.paramFilterColorMax[1]
+            );
+            ImGui::SliderFloat((monochrome.paramFilterColorName + "b").data()
+                    , &mValues[monochrome.paramFilterColorName + "b"]
+                    , monochrome.paramFilterColorMin[2]
+                    , monochrome.paramFilterColorMax[2]
+            );
             mFilter->setVec4(monochrome.paramIntensityName,
-                             XImageUtils::wrapFloatToVec4(monochrome.paramIntensityMax * ratio));
+                             XImageUtils::wrapFloatToVec4(mValues[monochrome.paramIntensityName]));
             mFilter->setVec4(monochrome.paramFilterColorName,
-                             XImageUtils::wrapVec3ToVec4(monochrome.paramFilterColorMax[0] * ratio,
-                                                         monochrome.paramFilterColorMax[1] * ratio,
-                                                         monochrome.paramFilterColorMax[2] * ratio));
+                             XImageUtils::wrapVec3ToVec4(mValues[monochrome.paramFilterColorName + "r"],
+                                                         mValues[monochrome.paramFilterColorName + "g"],
+                                                         mValues[monochrome.paramFilterColorName + "b"]));
         }
     }
 
@@ -239,6 +460,8 @@ private:
     uint32_t m_reset;
     float mRatio;
     float mOffset;
+    std::unordered_map<std::string, Shader> mShaders;
+    std::unordered_map<std::string, float > mValues;
 };
 
 
