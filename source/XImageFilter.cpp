@@ -106,6 +106,11 @@ void XImageFilter::newFrameReadyAtProgress(float progress, int index) {
                 bgfx::makeRef(s_triList, sizeof(s_triList) )
         );
     }
+    
+    if (!bgfx::isValid(mProgram)) {
+        LOGE("XImageFilter::newFrameReadyAtProgress load program failed. vsPath=%s, fsPath=%s", mVertexShaderPath.data(), mFragmentShaderPath.data());
+        return;
+    }
 
     uint64_t state = 0
                      | BGFX_STATE_WRITE_R

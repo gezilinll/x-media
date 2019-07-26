@@ -3,7 +3,6 @@
 //
 
 #include "XImagePictureOutput.hpp"
-#include "bigg.hpp"
 
 NS_X_IMAGE_BEGIN
 void XImagePictureOutput::initWithPath(std::string path) {

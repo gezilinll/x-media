@@ -7,17 +7,15 @@
  * License: https://github.com/bkaradzic/bgfx#license-bsd-2-clause
  */
 
-#include <bigg.hpp>
 #include <bx/string.h>
-
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/euler_angles.hpp>
-
 #include "XImagePictureOutput.hpp"
 #include "XImageFilter.hpp"
 #include "XLog.hpp"
 #include "XImageUtils.hpp"
 #include "XImageShaderInfo.hpp"
+#include "entry/entry.h"
+#include "imgui/imgui.h"
+#include "bgfx_utils.h"
 
 #include <iostream>
 
@@ -27,41 +25,87 @@ const char *FILTER_ITEMS[] = {"None", "Saturation", "Contrast", "Brightness", "E
 const char *FILTER_FRAGMENT_SHADERS[] = {"fs_filter_normal", "fs_filter_saturation", "fs_filter_contrast",
                                          "fs_filter_brightness", "fs_filter_exposure", "fs_filter_rgb", "fs_filter_hue",
                                          "fs_filter_levels", "fs_filter_white_balance", "fs_filter_monochrome"};
-class ExampleFilters : public bigg::Application {
-    void initialize(int _argc, char **_argv) {
+class ExampleFilters : public entry::AppI {
+public:
+    ExampleFilters(const char* _name, const char* _description)
+            : entry::AppI(_name, _description)
+    {
+    }
+
+    void init(int32_t _argc, const char* const* _argv, uint32_t _width, uint32_t _height) override
+    {
+        Args args(_argc, _argv);
+
+        mWidth  = _width;
+        mHeight = _height;
+
+        bgfx::Init init;
+        init.type     = args.m_type;
+        init.vendorId = args.m_pciId;
+        init.resolution.width  = mWidth;
+        init.resolution.height = mHeight;
+        init.resolution.reset  = BGFX_RESET_VSYNC;
+        bgfx::init(init);
+
+        m_debug = BGFX_DEBUG_TEXT;
+        m_reset = BGFX_RESET_VSYNC;
+        
+        // Set view 0 clear state.
+        bgfx::setViewClear(0
+                , BGFX_CLEAR_COLOR|BGFX_CLEAR_DEPTH
+                , 0x303030ff
+                , 1.0f
+                , 0
+        );
+
+        imguiCreate();
 
         mOutput = new XImagePictureOutput();
-        mOutput->initWithPath("images/fengjing.jpg");
+        mOutput->initWithPath("/Users/linbinghe/Projects/GPUImage-X/examples/runtime/images/fengjing.jpg");
         mFilter = nullptr;
         mRatio = 0.0f;
         mOffset = 0.001f;
     }
 
-    void onReset() {
-        bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x303030ff, 1.0f, 0);
-        bgfx::setViewRect(0, 0, 0, uint16_t(getWidth()), uint16_t(getHeight()));
-    }
-
-    int shutdown() {
+    virtual int shutdown() override
+    {
         SAFE_DELETE(mOutput);
         SAFE_DELETE(mFilter);
+
+        imguiDestroy();
+
+        // Shutdown bgfx.
+        bgfx::shutdown();
+
+        return 0;
     }
 
-    void update(float dt) {
-        mRatio = mRatio + mOffset;
-        if (mRatio > 1.0f) {
-            mOffset = -0.001;
-            mRatio = 1.0f;
-        } else if (mRatio < 0.0f) {
-            mOffset = 0.001;
-            mRatio = 0.0f;
-        }
-
-        mOutput->processPicture();
-
-        ImGui::Begin("GPUImage-X");
+    bool update() override {
+        if (!entry::processEvents(mWidth, mHeight, m_debug, m_reset, &m_mouseState) )
         {
-            ImGui::SetWindowSize(ImVec2(0, 0));
+            imguiBeginFrame(m_mouseState.m_mx
+                            ,  m_mouseState.m_my
+                            , (m_mouseState.m_buttons[entry::MouseButton::Left  ] ? IMGUI_MBUT_LEFT   : 0)
+                            | (m_mouseState.m_buttons[entry::MouseButton::Right ] ? IMGUI_MBUT_RIGHT  : 0)
+                            | (m_mouseState.m_buttons[entry::MouseButton::Middle] ? IMGUI_MBUT_MIDDLE : 0)
+                            ,  m_mouseState.m_mz
+                            , uint16_t(mWidth)
+                            , uint16_t(mHeight)
+                            );
+            
+            showExampleDialog(this);
+        
+            bgfx::touch(0);
+            
+            mRatio = mRatio + mOffset;
+            if (mRatio > 1.0f) {
+                mOffset = -0.001;
+                mRatio = 1.0f;
+            } else if (mRatio < 0.0f) {
+                mOffset = 0.001;
+                mRatio = 0.0f;
+            }
+            
             static int filterItemCurrent = 0;
             ImGui::Combo("Filter Selector", &filterItemCurrent, FILTER_ITEMS, IM_ARRAYSIZE(FILTER_ITEMS), 5);
             {
@@ -69,16 +113,27 @@ class ExampleFilters : public bigg::Application {
                     mOutput->clearTarget();
                     SAFE_DELETE(mFilter);
                     mFilter = new XImageFilter(getShaderPath("vs_filter_normal"),
-                            getShaderPath(FILTER_FRAGMENT_SHADERS[filterItemCurrent]));
-                    mFilter->setViewRect(0, 0, 960, 720);
+                                               getShaderPath(FILTER_FRAGMENT_SHADERS[filterItemCurrent]));
+                    mFilter->setViewRect(0, 0, mWidth, mHeight);
                     mOutput->addTarget(mFilter);
                     mCurrentIndex = filterItemCurrent;
                 }
                 updateFilter(filterItemCurrent, mRatio);
                 mOutput->notifyTargetsAboutNewOutputTexture();
             }
+
+            imguiEndFrame();
+            
+            mOutput->processPicture();
+           
+            // Advance to next frame. Rendering thread will be kicked to
+            // process submitted rendering primitives.
+            bgfx::frame();
+            
+            return true;
         }
-        ImGui::End();
+        
+        return false;
     }
 
     void updateFilter(int index, float ratio) {
@@ -133,10 +188,9 @@ class ExampleFilters : public bigg::Application {
         }
     }
 
-    char* getShaderPath(const char* shaderName) {
-        char filePath[512];
-
-        const char *shaderPath = "???";
+    std::string getShaderPath(const char* shaderName) {
+        
+        std::string shaderPath = "";
 
         switch (bgfx::getRendererType()) {
             case bgfx::RendererType::Noop:
@@ -171,26 +225,21 @@ class ExampleFilters : public bigg::Application {
                 break;
         }
 
-        bx::strCopy(filePath, BX_COUNTOF(filePath), shaderPath);
-        bx::strCat(filePath, BX_COUNTOF(filePath), shaderName);
-        bx::strCat(filePath, BX_COUNTOF(filePath), ".bin");
-
-        return filePath;
+        return "/Users/linbinghe/Projects/GPUImage-X/examples/runtime/" + shaderPath + shaderName + ".bin";
     }
 
-public:
-    ExampleFilters()
-            : bigg::Application("Filters", 960, 720) {}
-
 private:
+    entry::MouseState m_mouseState;
     XImagePictureOutput *mOutput;
     XImageFilter *mFilter;
     int mCurrentIndex = -1;
+    uint32_t mWidth;
+    uint32_t mHeight;
+    uint32_t m_debug;
+    uint32_t m_reset;
     float mRatio;
     float mOffset;
 };
 
-int main(int argc, char **argv) {
-    ExampleFilters app;
-    return app.run(argc, argv);
-}
+
+ENTRY_IMPLEMENT_MAIN(ExampleFilters, "filters", "filter xiuxiuxiu.");

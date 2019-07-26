@@ -53,10 +53,8 @@ void *load(bx::FileReaderI *reader, bx::AllocatorI *allocator, const char *fileP
             *size = readSize;
         }
         return data;
-    } else {
-
     }
-
+    
     if (NULL != size) {
         *size = 0;
     }
