@@ -93,11 +93,11 @@ public:
                             , uint16_t(mHeight)
                             );
             ImGui::SetNextWindowPos(
-                    ImVec2(mWidth - mWidth / 4.0f - 10.0f, 10.0f)
+                    ImVec2(mWidth - mWidth / 3.3f - 10.0f, 10.0f)
                     , ImGuiCond_FirstUseEver
             );
             ImGui::SetNextWindowSize(
-                    ImVec2(mWidth / 3.0f, mWidth / 3.0f)
+                    ImVec2(mWidth / 3.3f, mWidth / 2.5f)
                     , ImGuiCond_FirstUseEver
             );
             ImGui::Begin("Settings"
@@ -236,121 +236,121 @@ public:
         } else if (strcmp("Levels", type) == 0) {
             Levels levels;
             if (!updateOnly) {
-                mValues[levels.paramMinLevelName + "r"] = levels.paramMinNormal[0];
-                mValues[levels.paramMinLevelName + "g"] = levels.paramMinNormal[1];
-                mValues[levels.paramMinLevelName + "b"] = levels.paramMinNormal[2];
-                mValues[levels.paramMaxLevelName + "r"] = levels.paramMaxNormal[0];
-                mValues[levels.paramMaxLevelName + "g"] = levels.paramMaxNormal[1];
-                mValues[levels.paramMaxLevelName + "b"] = levels.paramMaxNormal[2];
-                mValues[levels.paramMiddleLevelName + "r"] = levels.paramMiddleNormal[0];
-                mValues[levels.paramMiddleLevelName + "g"] = levels.paramMiddleNormal[1];
-                mValues[levels.paramMiddleLevelName + "b"] = levels.paramMiddleNormal[2];
-                mValues[levels.paramMinOutName + "r"] = levels.paramMinNormal[0];
-                mValues[levels.paramMinOutName + "g"] = levels.paramMinNormal[1];
-                mValues[levels.paramMinOutName + "b"] = levels.paramMinNormal[2];
-                mValues[levels.paramMaxOutName + "r"] = levels.paramMaxNormal[0];
-                mValues[levels.paramMaxOutName + "g"] = levels.paramMaxNormal[1];
-                mValues[levels.paramMaxOutName + "b"] = levels.paramMaxNormal[2];
+                mValues[levels.paramMinLevelName + "R"] = levels.paramMinNormal[0];
+                mValues[levels.paramMinLevelName + "G"] = levels.paramMinNormal[1];
+                mValues[levels.paramMinLevelName + "B"] = levels.paramMinNormal[2];
+                mValues[levels.paramMaxLevelName + "R"] = levels.paramMaxNormal[0];
+                mValues[levels.paramMaxLevelName + "G"] = levels.paramMaxNormal[1];
+                mValues[levels.paramMaxLevelName + "B"] = levels.paramMaxNormal[2];
+                mValues[levels.paramMiddleLevelName + "R"] = levels.paramMiddleNormal[0];
+                mValues[levels.paramMiddleLevelName + "G"] = levels.paramMiddleNormal[1];
+                mValues[levels.paramMiddleLevelName + "B"] = levels.paramMiddleNormal[2];
+                mValues[levels.paramMinOutName + "R"] = levels.paramMinNormal[0];
+                mValues[levels.paramMinOutName + "G"] = levels.paramMinNormal[1];
+                mValues[levels.paramMinOutName + "B"] = levels.paramMinNormal[2];
+                mValues[levels.paramMaxOutName + "R"] = levels.paramMaxNormal[0];
+                mValues[levels.paramMaxOutName + "G"] = levels.paramMaxNormal[1];
+                mValues[levels.paramMaxOutName + "B"] = levels.paramMaxNormal[2];
             }
-            ImGui::SliderFloat((levels.paramMinLevelName + "r").data()
-                    , &mValues[levels.paramMinLevelName + "r"]
+            ImGui::SliderFloat((levels.paramMinLevelName + "R").data()
+                    , &mValues[levels.paramMinLevelName + "R"]
                     , levels.paramMin[0]
                     , levels.paramMax[0]
             );
-            ImGui::SliderFloat((levels.paramMinLevelName + "g").data()
-                    , &mValues[levels.paramMinLevelName + "g"]
+            ImGui::SliderFloat((levels.paramMinLevelName + "G").data()
+                    , &mValues[levels.paramMinLevelName + "G"]
                     , levels.paramMin[1]
                     , levels.paramMax[1]
             );
-            ImGui::SliderFloat((levels.paramMinLevelName + "b").data()
-                    , &mValues[levels.paramMinLevelName + "b"]
+            ImGui::SliderFloat((levels.paramMinLevelName + "B").data()
+                    , &mValues[levels.paramMinLevelName + "B"]
                     , levels.paramMin[2]
                     , levels.paramMax[2]
             );
             ImGui::Separator();
-            ImGui::SliderFloat((levels.paramMaxLevelName + "r").data()
-                    , &mValues[levels.paramMaxLevelName + "r"]
+            ImGui::SliderFloat((levels.paramMaxLevelName + "R").data()
+                    , &mValues[levels.paramMaxLevelName + "R"]
                     , levels.paramMin[0]
                     , levels.paramMax[0]
             );
-            ImGui::SliderFloat((levels.paramMaxLevelName + "g").data()
-                    , &mValues[levels.paramMaxLevelName + "g"]
+            ImGui::SliderFloat((levels.paramMaxLevelName + "G").data()
+                    , &mValues[levels.paramMaxLevelName + "G"]
                     , levels.paramMin[1]
                     , levels.paramMax[1]
             );
-            ImGui::SliderFloat((levels.paramMaxLevelName + "b").data()
-                    , &mValues[levels.paramMaxLevelName + "b"]
+            ImGui::SliderFloat((levels.paramMaxLevelName + "B").data()
+                    , &mValues[levels.paramMaxLevelName + "B"]
                     , levels.paramMin[2]
                     , levels.paramMax[2]
             );
             ImGui::Separator();
-            ImGui::SliderFloat((levels.paramMiddleLevelName + "r").data()
-                    , &mValues[levels.paramMiddleLevelName + "r"]
+            ImGui::SliderFloat((levels.paramMiddleLevelName + "R").data()
+                    , &mValues[levels.paramMiddleLevelName + "R"]
                     , levels.paramMin[0]
                     , 100.0f
             );
-            ImGui::SliderFloat((levels.paramMiddleLevelName + "g").data()
-                    , &mValues[levels.paramMiddleLevelName + "g"]
+            ImGui::SliderFloat((levels.paramMiddleLevelName + "G").data()
+                    , &mValues[levels.paramMiddleLevelName + "G"]
                     , levels.paramMin[1]
                     , 100.0f
             );
-            ImGui::SliderFloat((levels.paramMiddleLevelName + "b").data()
-                    , &mValues[levels.paramMiddleLevelName + "b"]
+            ImGui::SliderFloat((levels.paramMiddleLevelName + "B").data()
+                    , &mValues[levels.paramMiddleLevelName + "B"]
                     , levels.paramMin[2]
                     , 100.0f
             );
             ImGui::Separator();
-            ImGui::SliderFloat((levels.paramMinOutName + "r").data()
-                    , &mValues[levels.paramMinOutName + "r"]
+            ImGui::SliderFloat((levels.paramMinOutName + "R").data()
+                    , &mValues[levels.paramMinOutName + "R"]
                     , levels.paramMin[0]
                     , levels.paramMax[0]
             );
-            ImGui::SliderFloat((levels.paramMinOutName + "g").data()
-                    , &mValues[levels.paramMinOutName + "g"]
+            ImGui::SliderFloat((levels.paramMinOutName + "G").data()
+                    , &mValues[levels.paramMinOutName + "G"]
                     , levels.paramMin[1]
                     , levels.paramMax[1]
             );
-            ImGui::SliderFloat((levels.paramMinOutName + "b").data()
-                    , &mValues[levels.paramMinOutName + "b"]
+            ImGui::SliderFloat((levels.paramMinOutName + "B").data()
+                    , &mValues[levels.paramMinOutName + "B"]
                     , levels.paramMin[2]
                     , levels.paramMax[2]
             );
             ImGui::Separator();
-            ImGui::SliderFloat((levels.paramMaxOutName + "r").data()
-                    , &mValues[levels.paramMaxOutName + "r"]
+            ImGui::SliderFloat((levels.paramMaxOutName + "R").data()
+                    , &mValues[levels.paramMaxOutName + "R"]
                     , levels.paramMin[0]
                     , levels.paramMax[0]
             );
-            ImGui::SliderFloat((levels.paramMaxOutName + "g").data()
-                    , &mValues[levels.paramMaxOutName + "g"]
+            ImGui::SliderFloat((levels.paramMaxOutName + "G").data()
+                    , &mValues[levels.paramMaxOutName + "G"]
                     , levels.paramMin[1]
                     , levels.paramMax[1]
             );
-            ImGui::SliderFloat((levels.paramMaxOutName + "b").data()
-                    , &mValues[levels.paramMaxOutName + "b"]
+            ImGui::SliderFloat((levels.paramMaxOutName + "B").data()
+                    , &mValues[levels.paramMaxOutName + "B"]
                     , levels.paramMin[2]
                     , levels.paramMax[2]
             );
             mFilter->setVec4(levels.paramMinLevelName,
-                             XImageUtils::wrapVec3ToVec4(mValues[levels.paramMinLevelName + "r"],
-                                                         mValues[levels.paramMinLevelName + "g"],
-                                                         mValues[levels.paramMinLevelName + "b"]));
+                             XImageUtils::wrapVec3ToVec4(mValues[levels.paramMinLevelName + "R"],
+                                                         mValues[levels.paramMinLevelName + "G"],
+                                                         mValues[levels.paramMinLevelName + "B"]));
             mFilter->setVec4(levels.paramMiddleLevelName,
-                             XImageUtils::wrapVec3ToVec4(mValues[levels.paramMiddleLevelName + "r"],
-                                                         mValues[levels.paramMiddleLevelName + "g"],
-                                                         mValues[levels.paramMiddleLevelName + "b"]));
+                             XImageUtils::wrapVec3ToVec4(mValues[levels.paramMiddleLevelName + "R"],
+                                                         mValues[levels.paramMiddleLevelName + "G"],
+                                                         mValues[levels.paramMiddleLevelName + "B"]));
             mFilter->setVec4(levels.paramMaxLevelName,
-                             XImageUtils::wrapVec3ToVec4(mValues[levels.paramMaxLevelName + "r"],
-                                                         mValues[levels.paramMaxLevelName + "g"],
-                                                         mValues[levels.paramMaxLevelName + "b"]));
+                             XImageUtils::wrapVec3ToVec4(mValues[levels.paramMaxLevelName + "R"],
+                                                         mValues[levels.paramMaxLevelName + "G"],
+                                                         mValues[levels.paramMaxLevelName + "B"]));
             mFilter->setVec4(levels.paramMinOutName,
-                             XImageUtils::wrapVec3ToVec4(mValues[levels.paramMinOutName + "r"],
-                                                         mValues[levels.paramMinOutName + "g"],
-                                                         mValues[levels.paramMinOutName + "b"]));
+                             XImageUtils::wrapVec3ToVec4(mValues[levels.paramMinOutName + "R"],
+                                                         mValues[levels.paramMinOutName + "G"],
+                                                         mValues[levels.paramMinOutName + "B"]));
             mFilter->setVec4(levels.paramMaxOutName,
-                             XImageUtils::wrapVec3ToVec4(mValues[levels.paramMaxOutName + "r"],
-                                                         mValues[levels.paramMaxOutName + "g"],
-                                                         mValues[levels.paramMaxOutName + "b"]));
+                             XImageUtils::wrapVec3ToVec4(mValues[levels.paramMaxOutName + "R"],
+                                                         mValues[levels.paramMaxOutName + "G"],
+                                                         mValues[levels.paramMaxOutName + "B"]));
         } else if (strcmp("WhiteBalance", type) == 0) {
             WhiteBalance whiteBalance;
             if (!updateOnly) {
@@ -375,9 +375,9 @@ public:
             Monochrome monochrome;
             if (!updateOnly) {
                 mValues[monochrome.paramIntensityName] = monochrome.paramIntensityNormal;
-                mValues[monochrome.paramFilterColorName + "r"] = 0.5;
-                mValues[monochrome.paramFilterColorName + "g"] = 0.5;
-                mValues[monochrome.paramFilterColorName + "b"] = 0.5;
+                mValues[monochrome.paramFilterColorName + "R"] = 0.5;
+                mValues[monochrome.paramFilterColorName + "G"] = 0.5;
+                mValues[monochrome.paramFilterColorName + "B"] = 0.5;
             }
             ImGui::SliderFloat(monochrome.paramIntensityName.data()
                     , &mValues[monochrome.paramIntensityName]
@@ -385,27 +385,27 @@ public:
                     , monochrome.paramIntensityMax
             );
             ImGui::Separator();
-            ImGui::SliderFloat((monochrome.paramFilterColorName + "r").data()
-                    , &mValues[monochrome.paramFilterColorName + "r"]
+            ImGui::SliderFloat((monochrome.paramFilterColorName + "R").data()
+                    , &mValues[monochrome.paramFilterColorName + "R"]
                     , monochrome.paramFilterColorMin[0]
                     , monochrome.paramFilterColorMax[0]
             );
-            ImGui::SliderFloat((monochrome.paramFilterColorName + "g").data()
-                    , &mValues[monochrome.paramFilterColorName + "g"]
+            ImGui::SliderFloat((monochrome.paramFilterColorName + "G").data()
+                    , &mValues[monochrome.paramFilterColorName + "G"]
                     , monochrome.paramFilterColorMin[1]
                     , monochrome.paramFilterColorMax[1]
             );
-            ImGui::SliderFloat((monochrome.paramFilterColorName + "b").data()
-                    , &mValues[monochrome.paramFilterColorName + "b"]
+            ImGui::SliderFloat((monochrome.paramFilterColorName + "B").data()
+                    , &mValues[monochrome.paramFilterColorName + "B"]
                     , monochrome.paramFilterColorMin[2]
                     , monochrome.paramFilterColorMax[2]
             );
             mFilter->setVec4(monochrome.paramIntensityName,
                              XImageUtils::wrapFloatToVec4(mValues[monochrome.paramIntensityName]));
             mFilter->setVec4(monochrome.paramFilterColorName,
-                             XImageUtils::wrapVec3ToVec4(mValues[monochrome.paramFilterColorName + "r"],
-                                                         mValues[monochrome.paramFilterColorName + "g"],
-                                                         mValues[monochrome.paramFilterColorName + "b"]));
+                             XImageUtils::wrapVec3ToVec4(mValues[monochrome.paramFilterColorName + "R"],
+                                                         mValues[monochrome.paramFilterColorName + "G"],
+                                                         mValues[monochrome.paramFilterColorName + "B"]));
         }
     }
 
