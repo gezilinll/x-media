@@ -6,10 +6,6 @@
 #include "XLog.hpp"
 
 NS_X_IMAGE_BEGIN
-#ifndef ENTRY_CONFIG_IMPLEMENT_DEFAULT_ALLOCATOR
-#    define ENTRY_CONFIG_IMPLEMENT_DEFAULT_ALLOCATOR 1
-#endif // ENTRY_CONFIG_IMPLEMENT_DEFAULT_ALLOCATOR
-// bgfx utils
 
 static bx::FileReaderI *sFileReader = nullptr;
 
@@ -24,7 +20,7 @@ class FileReader : public bx::FileReader {
 
 public:
     virtual bool open(const bx::FilePath &filePath, bx::Error *err) override {
-        String resultFilePath("");
+        String resultFilePath(ENTRY_CONFIG_WORKING_DIRECTORY);
         resultFilePath.append(filePath);
         return super::open(resultFilePath.getPtr(), err);
     }
@@ -177,6 +173,7 @@ const bgfx::Memory *XImageUtils::loadMem(bx::FileReaderI *reader, const char *fi
 bx::FileReaderI *XImageUtils::getFileReader() {
     /// @todo concurrent
     if (sFileReader == nullptr) {
+        LOGD("XImageUtils::getFileReader ENTRY_CONFIG_WORKING_DIRECTORY=%s", ENTRY_CONFIG_WORKING_DIRECTORY);
         sFileReader = BX_NEW(allocator, FileReader);
     }
     return sFileReader;

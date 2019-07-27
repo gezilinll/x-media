@@ -12,7 +12,16 @@
 #include "bx/file.h"
 #include "XMacros.hpp"
 
+#ifndef ENTRY_CONFIG_IMPLEMENT_DEFAULT_ALLOCATOR
+#    define ENTRY_CONFIG_IMPLEMENT_DEFAULT_ALLOCATOR 1
+#endif // ENTRY_CONFIG_IMPLEMENT_DEFAULT_ALLOCATOR
+
+#ifndef ENTRY_CONFIG_WORKING_DIRECTORY
+#    define ENTRY_CONFIG_WORKING_DIRECTORY ""
+#endif // ENTRY_CONFIG_WORKING_DIRECTORY
+
 NS_X_IMAGE_BEGIN
+
 /**
  * @brief XImage's utils to make develop easier.
  */

@@ -34,6 +34,9 @@ public:
 
     void init(int32_t _argc, const char* const* _argv, uint32_t _width, uint32_t _height) override
     {
+
+        LOGE("lbh ENTRY_CONFIG_IMPLEMENT_MAIN=%d", ENTRY_CONFIG_IMPLEMENT_MAIN);
+
         Args args(_argc, _argv);
 
         mWidth  = _width;
@@ -61,7 +64,7 @@ public:
         imguiCreate();
 
         mOutput = new XImagePictureOutput();
-        mOutput->initWithPath("/Users/linbinghe/Projects/GPUImage-X/examples/runtime/images/fengjing.jpg");
+        mOutput->initWithPath("images/scene.jpg");
         mFilter = nullptr;
         mRatio = 0.0f;
         mOffset = 0.001f;
@@ -446,7 +449,7 @@ public:
                 break;
         }
 
-        return "/Users/linbinghe/Projects/GPUImage-X/examples/runtime/" + shaderPath + shaderName + ".bin";
+        return shaderPath + shaderName + ".bin";
     }
 
 private:
@@ -460,7 +463,6 @@ private:
     uint32_t m_reset;
     float mRatio;
     float mOffset;
-    std::unordered_map<std::string, Shader> mShaders;
     std::unordered_map<std::string, float > mValues;
 };
 
