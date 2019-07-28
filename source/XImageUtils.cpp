@@ -4,6 +4,7 @@
 
 #include "XImageUtils.hpp"
 #include "XLog.hpp"
+#include "bx/commandline.h"
 
 NS_X_IMAGE_BEGIN
 
@@ -34,7 +35,6 @@ bx::AllocatorI *getDefaultAllocator() {
     BX_PRAGMA_DIAGNOSTIC_IGNORED_CLANG_GCC("-Wshadow");
     static bx::DefaultAllocator sAllocator;
     return &sAllocator;
-    BX_PRAGMA_DIAGNOSTIC_POP();
 }
 
 #endif // ENTRY_CONFIG_IMPLEMENT_DEFAULT_ALLOCATOR
@@ -50,7 +50,7 @@ void *load(bx::FileReaderI *reader, bx::AllocatorI *allocator, const char *fileP
         }
         return data;
     }
-    
+
     if (NULL != size) {
         *size = 0;
     }
@@ -156,6 +156,13 @@ bgfx::ShaderHandle XImageUtils::loadShader(bx::FileReaderI *reader, const char *
     return handle;
 }
 
+bimg::ImageContainer* XImageUtils::loadImage(const char *filePath, bgfx::TextureFormat::Enum dstFormat) {
+    uint32_t size = 0;
+    void* data = loadMem(getFileReader(), getAllocator(), filePath, &size);
+
+    return bimg::imageParse(getAllocator(), data, size, bimg::TextureFormat::Enum(dstFormat) );
+}
+
 const bgfx::Memory *XImageUtils::loadMem(bx::FileReaderI *reader, const char *filePath) {
     if (bx::open(reader, filePath)) {
         uint32_t size = (uint32_t) bx::getSize(reader);
@@ -166,8 +173,27 @@ const bgfx::Memory *XImageUtils::loadMem(bx::FileReaderI *reader, const char *fi
         return mem;
     }
 
-    LOGE("XImageUtils::loadMem open failed.");
+    LOGE("XImageUtils::loadMem load failed. %s", filePath);
     return nullptr;
+}
+
+void* XImageUtils::loadMem(bx::FileReaderI *reader, bx::AllocatorI *allocator, const char *filePath, uint32_t *size) {
+    if (bx::open(reader, filePath) )
+    {
+        uint32_t fileSize = (uint32_t)bx::getSize(reader);
+        void* data = BX_ALLOC(getAllocator(), fileSize);
+        bx::read(reader, data, fileSize);
+        bx::close(reader);
+
+        if (NULL != size)
+        {
+            *size = fileSize;
+        }
+        return data;
+    }
+
+    LOGE("XImageUtils::loadMem(with size) load failed. %s", filePath);
+    return NULL;
 }
 
 bx::FileReaderI *XImageUtils::getFileReader() {
@@ -177,6 +203,15 @@ bx::FileReaderI *XImageUtils::getFileReader() {
         sFileReader = BX_NEW(allocator, FileReader);
     }
     return sFileReader;
+}
+
+bx::AllocatorI* XImageUtils::getAllocator() {
+    if (nullptr == allocator)
+    {
+        allocator = getDefaultAllocator();
+    }
+
+    return allocator;
 }
 
 float* XImageUtils::wrapFloatToVec4(float value) {
@@ -232,4 +267,62 @@ void XImageUtils::destroy(bgfx::UniformHandle &handle) {
         handle = BGFX_INVALID_HANDLE;
     }
 }
+
+XImageUtils::Args::Args(int argc, const char *const *argv)
+        : rendererType(bgfx::RendererType::Count), pciId(BGFX_PCI_ID_NONE) {
+    bx::CommandLine cmdLine(argc, (const char**)argv);
+
+    if (cmdLine.hasArg("gl") )
+    {
+        rendererType = bgfx::RendererType::OpenGL;
+    }
+    else if (cmdLine.hasArg("vk") )
+    {
+        rendererType = bgfx::RendererType::Vulkan;
+    }
+    else if (cmdLine.hasArg("noop") )
+    {
+        rendererType = bgfx::RendererType::Noop;
+    }
+    else if (BX_ENABLED(BX_PLATFORM_WINDOWS|BX_PLATFORM_WINRT|BX_PLATFORM_XBOXONE) )
+    {
+        if (cmdLine.hasArg("d3d9") )
+        {
+            rendererType = bgfx::RendererType::Direct3D9;
+        }
+        else if (cmdLine.hasArg("d3d11") )
+        {
+            rendererType = bgfx::RendererType::Direct3D11;
+        }
+        else if (cmdLine.hasArg("d3d12") )
+        {
+            rendererType = bgfx::RendererType::Direct3D12;
+        }
+    }
+    else if (BX_ENABLED(BX_PLATFORM_OSX) )
+    {
+        if (cmdLine.hasArg("mtl") )
+        {
+            rendererType = bgfx::RendererType::Metal;
+        }
+    }
+
+    if (cmdLine.hasArg("amd") )
+    {
+        pciId = BGFX_PCI_ID_AMD;
+    }
+    else if (cmdLine.hasArg("nvidia") )
+    {
+        pciId = BGFX_PCI_ID_NVIDIA;
+    }
+    else if (cmdLine.hasArg("intel") )
+    {
+        pciId = BGFX_PCI_ID_INTEL;
+    }
+    else if (cmdLine.hasArg("sw") )
+    {
+        pciId = BGFX_PCI_ID_SOFTWARE_RASTERIZER;
+    }
+}
+
 NS_X_IMAGE_END

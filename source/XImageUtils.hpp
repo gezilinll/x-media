@@ -52,6 +52,14 @@ public:
     static bgfx::ProgramHandle loadProgram( const char* vsPath, const char* fsPath );
 
     /**
+     * @brief load image from file path
+     * @param[in] filePath image's path
+     * @param[in] dstFormat image's target format to load
+     * @return loaded image data
+     */
+    static bimg::ImageContainer* loadImage(const char* filePath, bgfx::TextureFormat::Enum dstFormat);
+
+    /**
      * @brief wrap float value to vec4 needed form
      * @param[in] value float value
      * @return float array, length:4
@@ -155,10 +163,38 @@ private:
     static const bgfx::Memory* loadMem(bx::FileReaderI* reader, const char* filePath);
 
     /**
+     * @brief load data of file to memory
+     * @param reader file reader
+     * @param allocator allocator of memory
+     * @param filePath file path
+     * @param size size of file
+     * @return file data
+     */
+    static void* loadMem(bx::FileReaderI* reader, bx::AllocatorI* allocator, const char* filePath, uint32_t* size);
+
+    /**
      * @brief get reader to read file
      * @return reader to read file
      */
     static bx::FileReaderI* getFileReader();
+
+    /**
+     * @brief get allocator
+     * @return allocator
+     */
+    static bx::AllocatorI* getAllocator();
+
+public:
+    /**
+     * @brief args of render runtime config from command line
+     */
+    struct Args
+    {
+        Args(int argc, const char* const* argv);
+
+        bgfx::RendererType::Enum rendererType;
+        uint16_t pciId;
+    };
 };
 NS_X_IMAGE_END
 
