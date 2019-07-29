@@ -15,7 +15,7 @@
 #include <bx/rng.h>
 #include <bx/easing.h>
 
-#include <ps/particle_system.h>
+#include <ParticleSystem.hpp>
 
 USING_NS_X_IMAGE
 
@@ -82,7 +82,9 @@ static const char* s_easeFuncName[] =
 };
 BX_STATIC_ASSERT(BX_COUNTOF(s_easeFuncName) == bx::Easing::Count);
 
-struct Emitter
+ParticleSystem *particleSystem = new ParticleSystem();
+
+struct EmitterProxy
 {
 	EmitterUniforms m_uniforms;
 	EmitterHandle   m_handle;
@@ -95,18 +97,18 @@ struct Emitter
 		m_shape      = EmitterShape::Sphere;
 		m_direction  = EmitterDirection::Outward;
 
-		m_handle = psCreateEmitter(m_shape, m_direction, 1024);
+		m_handle = particleSystem->createEmitter(m_shape, m_direction, 1024);
 		m_uniforms.reset();
 	}
 
 	void destroy()
 	{
-		psDestroyEmitter(m_handle);
+        particleSystem->destroyEmitter(m_handle);
 	}
 
 	void update()
 	{
-		psUpdateEmitter(m_handle, &m_uniforms);
+        particleSystem->updateEmitter(m_handle, &m_uniforms);
 	}
 
 	void imgui()
@@ -116,8 +118,8 @@ struct Emitter
 			if (ImGui::Combo("Shape", (int*)&m_shape, s_shapeNames, BX_COUNTOF(s_shapeNames) )
 			||  ImGui::Combo("Direction", (int*)&m_direction, s_directionName, BX_COUNTOF(s_directionName) ) )
 			{
-				psDestroyEmitter(m_handle);
-				m_handle = psCreateEmitter(m_shape, m_direction, 1024);
+                particleSystem->destroyEmitter(m_handle);
+				m_handle = particleSystem->createEmitter(m_shape, m_direction, 1024);
 			}
 
 			ImGui::SliderInt("particles / s", (int*)&m_uniforms.m_particlesPerSecond, 0, 1024);
@@ -137,7 +139,7 @@ struct Emitter
 
 			if (ImGui::Button("Reset") )
 			{
-				psUpdateEmitter(m_handle);
+                particleSystem->updateEmitter(m_handle);
 			}
 		}
 
@@ -263,14 +265,14 @@ public:
 
 		ddInit();
 
-		psInit();
+        particleSystem->init();
 
 		bimg::ImageContainer* image = XImage::XImageUtils::loadImage(
 			  "textures/particle.ktx"
 			, bgfx::TextureFormat::BGRA8
 			);
 
-		EmitterSpriteHandle sprite = psCreateSprite(
+		EmitterSpriteHandle sprite = particleSystem->createSprite(
 				  uint16_t(image->m_width)
 				, uint16_t(image->m_height)
 				, image->m_data
@@ -302,7 +304,7 @@ public:
 			m_emitter[ii].destroy();
 		}
 
-		psShutdown();
+        particleSystem->shutdown();
 
 		ddShutdown();
 
@@ -409,13 +411,13 @@ public:
 
 			m_emitter[currentEmitter].update();
 
-			psUpdate(deltaTime * timeScale);
-			psRender(0, view, eye);
+            particleSystem->update(deltaTime * timeScale);
+            particleSystem->render(0, view, eye);
 
 			if (showBounds)
 			{
 				Aabb aabb;
-				psGetAabb(m_emitter[currentEmitter].m_handle, aabb);
+                particleSystem->getAabb(m_emitter[currentEmitter].m_handle, aabb);
 				dde.push();
 					dde.setWireframe(true);
 					dde.setColor(0xff0000ff);
@@ -444,7 +446,7 @@ public:
 	uint32_t m_debug;
 	uint32_t m_reset;
 
-	Emitter m_emitter[4];
+	EmitterProxy m_emitter[4];
 };
 
 ENTRY_IMPLEMENT_MAIN(ExampleParticles, "particles", "Particles.");
