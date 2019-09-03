@@ -87,7 +87,7 @@ void XImageFilter::newFrameReadyAtProgress(float progress, int index) {
         return;
     }
     if (!bgfx::isValid(mProgram)) {
-        mProgram = XImageUtils::loadProgram(mVertexShaderPath.data(), mFragmentShaderPath.data());
+        mProgram = loadProgram(mVertexShaderPath.data(), mFragmentShaderPath.data());
         bgfx::UniformHandle texture = bgfx::createUniform("s_texColor", bgfx::UniformType::Sampler);
         mUniformHandles.insert(std::make_pair("s_texColor", texture));
         // Create vertex stream declaration.

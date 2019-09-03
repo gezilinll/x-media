@@ -25,6 +25,7 @@ const char *FILTER_ITEMS[] = {"None", "Saturation", "Contrast", "Brightness", "E
 const char *FILTER_FRAGMENT_SHADERS[] = {"fs_filter_normal", "fs_filter_saturation", "fs_filter_contrast",
                                          "fs_filter_brightness", "fs_filter_exposure", "fs_filter_rgb", "fs_filter_hue",
                                          "fs_filter_levels", "fs_filter_white_balance", "fs_filter_monochrome"};
+
 class ExampleFilters : public entry::AppI {
 public:
     ExampleFilters(const char* _name, const char* _description)
@@ -34,8 +35,6 @@ public:
 
     void init(int32_t _argc, const char* const* _argv, uint32_t _width, uint32_t _height) override
     {
-
-        LOGE("lbh ENTRY_CONFIG_IMPLEMENT_MAIN=%d", ENTRY_CONFIG_IMPLEMENT_MAIN);
 
         Args args(_argc, _argv);
 
@@ -122,8 +121,8 @@ public:
                 if (mCurrentIndex != filterItemCurrent) {
                     mOutput->clearTarget();
                     SAFE_DELETE(mFilter);
-                    mFilter = new XImageFilter(getShaderPath("vs_filter_normal"),
-                                               getShaderPath(FILTER_FRAGMENT_SHADERS[filterItemCurrent]));
+                    mFilter = new XImageFilter("vs_filter_normal",
+                                               FILTER_FRAGMENT_SHADERS[filterItemCurrent]);
                     mFilter->setViewRect(0, 0, mWidth, mHeight);
                     mOutput->addTarget(mFilter);
                     mCurrentIndex = filterItemCurrent;
@@ -410,46 +409,6 @@ public:
                                                          mValues[monochrome.paramFilterColorName + "G"],
                                                          mValues[monochrome.paramFilterColorName + "B"]));
         }
-    }
-
-    std::string getShaderPath(const char* shaderName) {
-        
-        std::string shaderPath = "";
-
-        switch (bgfx::getRendererType()) {
-            case bgfx::RendererType::Noop:
-            case bgfx::RendererType::Direct3D9:
-                shaderPath = "shaders/dx9/";
-                break;
-            case bgfx::RendererType::Direct3D11:
-            case bgfx::RendererType::Direct3D12:
-                shaderPath = "shaders/dx11/";
-                break;
-            case bgfx::RendererType::Gnm:
-                shaderPath = "shaders/pssl/";
-                break;
-            case bgfx::RendererType::Metal:
-                shaderPath = "shaders/metal/";
-                break;
-            case bgfx::RendererType::Nvn:
-                shaderPath = "shaders/nvn/";
-                break;
-            case bgfx::RendererType::OpenGL:
-                shaderPath = "shaders/glsl/";
-                break;
-            case bgfx::RendererType::OpenGLES:
-                shaderPath = "shaders/essl/";
-                break;
-            case bgfx::RendererType::Vulkan:
-                shaderPath = "shaders/spirv/";
-                break;
-
-            case bgfx::RendererType::Count:
-                BX_CHECK(false, "You should not be here!");
-                break;
-        }
-
-        return shaderPath + shaderName + ".bin";
     }
 
 private:

@@ -197,7 +197,7 @@ namespace {
         }
 
         void init(int32_t _argc, const char *const *_argv, uint32_t _width, uint32_t _height) override {
-            XImageUtils::Args args(_argc, _argv);
+            Args args(_argc, _argv);
 
             m_width = _width;
             m_height = _height;
@@ -205,8 +205,8 @@ namespace {
             m_reset = BGFX_RESET_VSYNC;
 
             bgfx::Init init;
-            init.type = args.rendererType;
-            init.vendorId = args.pciId;
+            init.type = args.m_type;
+            init.vendorId = args.m_pciId;
             init.resolution.width = m_width;
             init.resolution.height = m_height;
             init.resolution.reset = m_reset;
@@ -223,7 +223,7 @@ namespace {
 
             particleSystem->init();
 
-            bimg::ImageContainer *image = XImageUtils::loadImage(
+            bimg::ImageContainer *image = imageLoad(
                     "textures/particle.ktx", bgfx::TextureFormat::BGRA8
             );
 

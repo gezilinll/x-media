@@ -20,7 +20,7 @@ void XImageFrameBuffer::loadFromPicture(std::string path) {
         LOGW("XImageFrameBuffer::loadFromPicture recycle existed FrameBufferHandle, path=%s", path.data());
         XImageUtils::destroy(mHandle);
     }
-    bgfx::TextureHandle textureHandle = XImageUtils::loadTexture(path.data());
+    bgfx::TextureHandle textureHandle = loadTexture(path.data());
     if (!bgfx::isValid(textureHandle)) {
         LOGE("XImageFrameBuffer::loadFromPicture failed, path=%s", path.data());
         return;

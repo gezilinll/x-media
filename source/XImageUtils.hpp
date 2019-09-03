@@ -6,19 +6,9 @@
 #define GPUIMAGE_X_XIMAGEUTILS_HPP
 
 #include "bgfx/bgfx.h"
-#include "bimg/bimg.h"
-#include "bimg/decode.h"
-#include <bx/allocator.h>
-#include "bx/file.h"
+#include "bgfx_utils.h"
 #include "XMacros.hpp"
-
-#ifndef ENTRY_CONFIG_IMPLEMENT_DEFAULT_ALLOCATOR
-#    define ENTRY_CONFIG_IMPLEMENT_DEFAULT_ALLOCATOR 1
-#endif // ENTRY_CONFIG_IMPLEMENT_DEFAULT_ALLOCATOR
-
-#ifndef ENTRY_CONFIG_WORKING_DIRECTORY
-#    define ENTRY_CONFIG_WORKING_DIRECTORY ""
-#endif // ENTRY_CONFIG_WORKING_DIRECTORY
+#include <string>
 
 NS_X_IMAGE_BEGIN
 
@@ -27,38 +17,6 @@ NS_X_IMAGE_BEGIN
  */
 class XImageUtils {
 public:
-    /**
-     * @brief load texture from image path
-     * @param[in] path frame path
-     * @param[in] flags Texture creation (see `BGFX_TEXTURE_*`.), and sampler (see `BGFX_SAMPLER_*`)
-     *              Default texture sampling mode is linear, and wrap mode is repeat.
-     *              - `BGFX_SAMPLER_[U/V/W]_[MIRROR/CLAMP]` - Mirror or clamp to edge wrap mode.
-     *              - `BGFX_SAMPLER_[MIN/MAG/MIP]_[POINT/ANISOTROPIC]` - Point or anisotropic sampling.
-     * @param[in] skip don't know what it means yet
-     * @param[in] info resulting texture info structure. See: `bgfx::TextureInfo`.
-     * @param[in] orientation texture's orientation. See: `bimg::Orientation`.
-     * @return handle of texture
-     */
-    static bgfx::TextureHandle
-    loadTexture(const char *path, uint64_t flags = BGFX_TEXTURE_NONE | BGFX_SAMPLER_NONE, uint8_t skip = 0,
-                bgfx::TextureInfo *info = NULL, bimg::Orientation::Enum *orientation = NULL);
-
-    /**
-     * @brief load program from vertex and fragment shader path
-     * @param[in] vsPath absolute path of vertex shader
-     * @param[in] fsPath absolute path of fragment shader
-     * @return handle of program
-     */
-    static bgfx::ProgramHandle loadProgram( const char* vsPath, const char* fsPath );
-
-    /**
-     * @brief load image from file path
-     * @param[in] filePath image's path
-     * @param[in] dstFormat image's target format to load
-     * @return loaded image data
-     */
-    static bimg::ImageContainer* loadImage(const char* filePath, bgfx::TextureFormat::Enum dstFormat);
-
     /**
      * @brief wrap float value to vec4 needed form
      * @param[in] value float value
@@ -119,82 +77,7 @@ public:
      * @param[in] handle created uniform handle
      */
     static void destroy(bgfx::UniformHandle &handle);
-private:
-    /**
-     * @brief load texture from file path
-     * @param reader file reader
-     * @param filePath frame path
-     * @param[in] flags Texture creation (see `BGFX_TEXTURE_*`.), and sampler (see `BGFX_SAMPLER_*`)
-     *              Default texture sampling mode is linear, and wrap mode is repeat.
-     *              - `BGFX_SAMPLER_[U/V/W]_[MIRROR/CLAMP]` - Mirror or clamp to edge wrap mode.
-     *              - `BGFX_SAMPLER_[MIN/MAG/MIP]_[POINT/ANISOTROPIC]` - Point or anisotropic sampling.
-     * @param[in] skip don't know what it means yet
-     * @param[in] info resulting texture info structure. See: `bgfx::TextureInfo`.
-     * @param[in] orientation texture's orientation. See: `bimg::Orientation`.
-     * @return handle of texture
-     */
-    static bgfx::TextureHandle
-    loadTexture(bx::FileReaderI *reader, const char *filePath, uint64_t flags, uint8_t skip,
-                bgfx::TextureInfo *_info, bimg::Orientation::Enum *orientation);
 
-    /**
-     * @brief load program from vertex and fragment shader path
-     * @param reader file reader
-     * @param[in] vsPath absolute path of vertex shader
-     * @param[in] fsPath absolute path of fragment shader
-     * @return handle of program
-     */
-    static bgfx::ProgramHandle loadProgram(bx::FileReaderI* reader, const char* vsPath, const char* fsPath);
-
-    /**
-     * @brief load shader from file path
-     * @param[in] reader file reader
-     * @param[in] path file path
-     * @return handle of shader
-     */
-    static bgfx::ShaderHandle loadShader(bx::FileReaderI* reader, const char* path);
-
-    /**
-     * @brief load data of file to memory
-     * @param[in] reader file reader
-     * @param[in] filePath file path
-     * @return data stored in `bgfx::Memory`
-     */
-    static const bgfx::Memory* loadMem(bx::FileReaderI* reader, const char* filePath);
-
-    /**
-     * @brief load data of file to memory
-     * @param reader file reader
-     * @param allocator allocator of memory
-     * @param filePath file path
-     * @param size size of file
-     * @return file data
-     */
-    static void* loadMem(bx::FileReaderI* reader, bx::AllocatorI* allocator, const char* filePath, uint32_t* size);
-
-    /**
-     * @brief get reader to read file
-     * @return reader to read file
-     */
-    static bx::FileReaderI* getFileReader();
-
-    /**
-     * @brief get allocator
-     * @return allocator
-     */
-    static bx::AllocatorI* getAllocator();
-
-public:
-    /**
-     * @brief args of render runtime config from command line
-     */
-    struct Args
-    {
-        Args(int argc, const char* const* argv);
-
-        bgfx::RendererType::Enum rendererType;
-        uint16_t pciId;
-    };
 };
 NS_X_IMAGE_END
 
