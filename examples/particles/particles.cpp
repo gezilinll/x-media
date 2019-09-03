@@ -16,7 +16,6 @@
 
 #include "ParticleSystem.hpp"
 #include "Emitter.h"
-#include "XBounds.hpp"
 #include "XImageUtils.hpp"
 
 using namespace XImage;
@@ -355,15 +354,15 @@ namespace {
                 particleSystem->update(deltaTime * timeScale);
                 particleSystem->render(0, view, eye);
 
-//                if (showBounds) {
-//                    Aabb aabb;
-//                    particleSystem->getAabb(m_emitter[currentEmitter].m_handle, aabb);
-//                    dde.push();
-//                    dde.setWireframe(true);
-//                    dde.setColor(0xff0000ff);
-//                    dde.draw(aabb);
-//                    dde.pop();
-//                }
+                if (showBounds) {
+                    Aabb aabb;
+                    particleSystem->getAabb(m_emitter[currentEmitter].m_handle, aabb);
+                    dde.push();
+                    dde.setWireframe(true);
+                    dde.setColor(0xff0000ff);
+                    dde.draw(aabb);
+                    dde.pop();
+                }
 
                 dde.end();
 

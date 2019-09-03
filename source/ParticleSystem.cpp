@@ -7,8 +7,8 @@
 #include <bgfx/embedded_shader.h>
 #include "ParticleSystem.hpp"
 #include "XImageUtils.hpp"
-#include "vs_particle.bin.h"
-#include "fs_particle.bin.h"
+#include "ps/vs_particle.bin.h"
+#include "ps/fs_particle.bin.h"
 
 NS_X_IMAGE_BEGIN
 bgfx::VertexDecl PosColorTexCoord0Vertex::ms_decl;
@@ -123,7 +123,7 @@ void ParticleSystem::updateEmitter(XImage::EmitterHandle _handle, const XImage::
     }
 }
 
-void ParticleSystem::getAabb(XImage::EmitterHandle _handle, XImage::Aabb &_outAabb) {
+void ParticleSystem::getAabb(XImage::EmitterHandle _handle, Aabb &_outAabb) {
     BX_CHECK(m_emitterAlloc.isValid(_handle.idx)
     , "getAabb handle %d is not valid."
     , _handle.idx

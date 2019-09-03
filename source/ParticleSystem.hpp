@@ -10,7 +10,7 @@
 #include <bx/easing.h>
 #include <bx/rng.h>
 #include <bx/handlealloc.h>
-#include "XBounds.hpp"
+#include "bounds.h"
 #include "Emitter.h"
 #include "PackRect.hpp"
 

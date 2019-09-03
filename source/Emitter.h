@@ -6,7 +6,7 @@
 #define GPUIMAGE_X_EMITTER_H
 
 #include "XMacros.hpp"
-#include "XBounds.hpp"
+#include "bounds.h"
 #include <bx/easing.h>
 #include <bx/rng.h>
 #include <bgfx/bgfx.h>
