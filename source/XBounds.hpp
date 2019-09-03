@@ -3,8 +3,8 @@
  * License: https://github.com/bkaradzic/bgfx#license-bsd-2-clause
  */
 
-#ifndef BOUNDS_H_HEADER_GUARD
-#define BOUNDS_H_HEADER_GUARD
+#ifndef X_BOUNDS_H_HEADER_GUARD
+#define X_BOUNDS_H_HEADER_GUARD
 
 #include "XMacros.hpp"
 #include <bx/math.h>
@@ -449,4 +449,4 @@ bool overlap(const Triangle& _triangle, const Obb& _obb);
 
 NS_X_IMAGE_END
 
-#endif // BOUNDS_H_HEADER_GUARD
+#endif // X_BOUNDS_H_HEADER_GUARD

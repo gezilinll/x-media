@@ -95,6 +95,104 @@ void Emitter::update(float _dt) {
     }
 }
 
+void Emitter::spawn(float _dt) {
+    float mtx[16];
+    bx::mtxSRT(mtx
+            , 1.0f, 1.0f, 1.0f
+            , m_uniforms.m_angle[0],    m_uniforms.m_angle[1],    m_uniforms.m_angle[2]
+            , m_uniforms.m_position[0], m_uniforms.m_position[1], m_uniforms.m_position[2]
+    );
+
+    const float timePerParticle = 1.0f/m_uniforms.m_particlesPerSecond;
+    m_dt += _dt;
+    const uint32_t numParticles = uint32_t(m_dt / timePerParticle);
+    m_dt -= numParticles * timePerParticle;
+
+    constexpr bx::Vec3 up = { 0.0f, 1.0f, 0.0f };
+
+    float time = 0.0f;
+    for (uint32_t ii = 0
+            ; ii < numParticles && m_num < m_max
+            ; ++ii
+            )
+    {
+        Particle& particle = m_particles[m_num];
+        m_num++;
+
+        bx::Vec3 pos;
+        switch (m_shape)
+        {
+            default:
+            case EmitterShape::Sphere:
+                pos = bx::randUnitSphere(&m_rng);
+                break;
+
+            case EmitterShape::Hemisphere:
+                pos = bx::randUnitHemisphere(&m_rng, up);
+                break;
+
+            case EmitterShape::Circle:
+                pos = bx::randUnitCircle(&m_rng);
+                break;
+
+            case EmitterShape::Disc:
+            {
+                const bx::Vec3 tmp = bx::randUnitCircle(&m_rng);
+                pos = bx::mul(tmp, bx::frnd(&m_rng) );
+            }
+                break;
+
+            case EmitterShape::Rect:
+                pos =
+                        {
+                                bx::frndh(&m_rng),
+                                0.0f,
+                                bx::frndh(&m_rng),
+                        };
+                break;
+        }
+
+        bx::Vec3 dir;
+        switch (m_direction)
+        {
+            default:
+            case EmitterDirection::Up:
+                dir = up;
+                break;
+
+            case EmitterDirection::Outward:
+                dir = bx::normalize(pos);
+                break;
+        }
+
+        const float startOffset = bx::lerp(m_uniforms.m_offsetStart[0], m_uniforms.m_offsetStart[1], bx::frnd(&m_rng) );
+        const bx::Vec3 start = bx::mul(pos, startOffset);
+
+        const float endOffset = bx::lerp(m_uniforms.m_offsetEnd[0], m_uniforms.m_offsetEnd[1], bx::frnd(&m_rng) );
+        const bx::Vec3 tmp1 = bx::mul(dir, endOffset);
+        const bx::Vec3 end  = bx::add(tmp1, start);
+
+        particle.life = time;
+        particle.lifeSpan = bx::lerp(m_uniforms.m_lifeSpan[0], m_uniforms.m_lifeSpan[1], bx::frnd(&m_rng) );
+
+        const bx::Vec3 gravity = { 0.0f, -9.81f * m_uniforms.m_gravityScale * bx::square(particle.lifeSpan), 0.0f };
+
+        particle.start  = bx::mul(start, mtx);
+        particle.end[0] = bx::mul(end,   mtx);
+        particle.end[1] = bx::add(particle.end[0], gravity);
+
+        bx::memCopy(particle.rgba, m_uniforms.m_rgba, BX_COUNTOF(m_uniforms.m_rgba)*sizeof(uint32_t) );
+
+        particle.blendStart = bx::lerp(m_uniforms.m_blendStart[0], m_uniforms.m_blendStart[1], bx::frnd(&m_rng) );
+        particle.blendEnd   = bx::lerp(m_uniforms.m_blendEnd[0],   m_uniforms.m_blendEnd[1],   bx::frnd(&m_rng) );
+
+        particle.scaleStart = bx::lerp(m_uniforms.m_scaleStart[0], m_uniforms.m_scaleStart[1], bx::frnd(&m_rng) );
+        particle.scaleEnd   = bx::lerp(m_uniforms.m_scaleEnd[0],   m_uniforms.m_scaleEnd[1],   bx::frnd(&m_rng) );
+
+        time += timePerParticle;
+    }
+}
+
 void Emitter::create(XImage::EmitterShape::Enum _shape, XImage::EmitterDirection::Enum _direction,
                      uint32_t _maxParticles, bx::AllocatorI *allocatorI) {
     reset();
