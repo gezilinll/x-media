@@ -137,7 +137,7 @@ public:
             ImGui::End();
             imguiEndFrame();
             
-            mOutput->processPicture();
+            mOutput->render(0);
            
             // Advance to next frame. Rendering thread will be kicked to
             // process submitted rendering primitives.
