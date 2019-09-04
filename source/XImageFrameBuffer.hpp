@@ -6,6 +6,7 @@
 #define GPUIMAGE_X_XIMAGEFRAMEBUFFER_HPP
 
 #include "bgfx/bgfx.h"
+#include "bimg/bimg.h"
 #include "XMacros.hpp"
 #include <string>
 
@@ -23,7 +24,15 @@ public:
      * @brief load picture to FBO
      * @param[in] path picture's absolute path
      */
-    void loadFromPicture(std::string path);
+    void loadFromImage(std::string path);
+
+    /**
+     * @brief get image container from image path
+     * @param dstFormat target format
+     * @return image container
+     * @attention call this method after #loadFromImage has called
+     */
+    bimg::ImageContainer *getImageContainer(bgfx::TextureFormat::Enum dstFromat);
 
     /**
      * @brief get texture of this frame
@@ -32,6 +41,7 @@ public:
     bgfx::TextureHandle getTexture();
 private:
     bgfx::FrameBufferHandle mHandle; /// handle of FBO
+    std::string mImagePath;
 };
 NS_X_IMAGE_END
 

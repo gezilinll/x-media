@@ -14,14 +14,15 @@
 #include <bx/rng.h>
 #include <bx/easing.h>
 
-#include "ParticleSystem.hpp"
-#include "Emitter.h"
+#include "XParticles.hpp"
+#include "XImageFileOutput.hpp"
 #include "XImageUtils.hpp"
 
 using namespace XImage;
 
 namespace {
-    ParticleSystem *particleSystem = new ParticleSystem();
+    XParticles *particles = new XParticles();
+    XImageFileOutput *fileOutput = new XImageFileOutput();
 
     static const char *s_shapeNames[] =
             {
@@ -97,78 +98,60 @@ namespace {
             m_shape = EmitterShape::Sphere;
             m_direction = EmitterDirection::Outward;
 
-            m_handle = particleSystem->createEmitter(m_shape, m_direction, 1024);
+            m_handle = particles->createEmitter(m_shape, m_direction, 1024);
             m_uniforms.reset();
         }
 
         void destroy() {
-            particleSystem->destroyEmitter(m_handle);
+            particles->destroyEmitter(m_handle);
         }
 
         void update() {
-            particleSystem->updateEmitter(m_handle, &m_uniforms);
+            particles->updateEmitter(m_handle, &m_uniforms);
         }
 
         void imgui() {
-//		if (ImGui::CollapsingHeader("General") )
-            {
-                if (ImGui::Combo("Shape", (int *) &m_shape, s_shapeNames, BX_COUNTOF(s_shapeNames))
-                    || ImGui::Combo("Direction", (int *) &m_direction, s_directionName, BX_COUNTOF(s_directionName))) {
-                    particleSystem->destroyEmitter(m_handle);
-                    m_handle = particleSystem->createEmitter(m_shape, m_direction, 1024);
-                }
+            if (ImGui::Combo("Shape", (int *) &m_shape, s_shapeNames, BX_COUNTOF(s_shapeNames))
+                || ImGui::Combo("Direction", (int *) &m_direction, s_directionName, BX_COUNTOF(s_directionName))) {
+                particles->destroyEmitter(m_handle);
+                m_handle = particles->createEmitter(m_shape, m_direction, 1024);
+            }
 
-                ImGui::SliderInt("particles / s", (int *) &m_uniforms.m_particlesPerSecond, 0, 1024);
+            ImGui::SliderInt("particles / s", (int *) &m_uniforms.particlesPerSecond, 0, 1024);
+            ImGui::SliderFloat("Gravity scale", &m_uniforms.gravityScale, -2.0f, 2.0f);
+            ImGui::RangeSliderFloat("Life span", &m_uniforms.lifeSpan[0], &m_uniforms.lifeSpan[1], 0.1f, 5.0f);
 
-                ImGui::SliderFloat("Gravity scale", &m_uniforms.m_gravityScale, -2.0f, 2.0f
-                );
-
-                ImGui::RangeSliderFloat("Life span", &m_uniforms.m_lifeSpan[0], &m_uniforms.m_lifeSpan[1], 0.1f, 5.0f
-                );
-
-                if (ImGui::Button("Reset")) {
-                    particleSystem->updateEmitter(m_handle);
-                }
+            if (ImGui::Button("Reset")) {
+                m_uniforms.reset();
+                particles->updateEmitter(m_handle, &m_uniforms);
             }
 
             if (ImGui::CollapsingHeader("Position and scale")) {
-                ImGui::Combo("Position Ease", (int *) &m_uniforms.m_easePos, s_easeFuncName,
+                ImGui::Combo("Position Ease", (int *) &m_uniforms.easePos, s_easeFuncName,
                              BX_COUNTOF(s_easeFuncName));
-
-                ImGui::RangeSliderFloat("Start offset", &m_uniforms.m_offsetStart[0], &m_uniforms.m_offsetStart[1],
-                                        0.0f, 10.0f
-                );
-                ImGui::RangeSliderFloat("End offset", &m_uniforms.m_offsetEnd[0], &m_uniforms.m_offsetEnd[1], 0.0f,
-                                        10.0f
-                );
-
+                ImGui::RangeSliderFloat("Start offset", &m_uniforms.offsetStart[0], &m_uniforms.offsetStart[1],
+                                        0.0f, 10.0f);
+                ImGui::RangeSliderFloat("End offset", &m_uniforms.offsetEnd[0], &m_uniforms.offsetEnd[1], 0.0f,
+                                        10.0f);
                 ImGui::Text("Scale:");
-
-                ImGui::Combo("Scale Ease", (int *) &m_uniforms.m_easeScale, s_easeFuncName, BX_COUNTOF(s_easeFuncName));
-
-                ImGui::RangeSliderFloat("Scale Start", &m_uniforms.m_scaleStart[0], &m_uniforms.m_scaleStart[1], 0.0f,
-                                        3.0f
-                );
-                ImGui::RangeSliderFloat("Scale End", &m_uniforms.m_scaleEnd[0], &m_uniforms.m_scaleEnd[1], 0.0f, 3.0f
-                );
+                ImGui::Combo("Scale Ease", (int *) &m_uniforms.easeScale, s_easeFuncName, BX_COUNTOF(s_easeFuncName));
+                ImGui::RangeSliderFloat("Scale Start", &m_uniforms.scaleStart[0], &m_uniforms.scaleStart[1], 0.0f,
+                                        3.0f);
+                ImGui::RangeSliderFloat("Scale End", &m_uniforms.scaleEnd[0], &m_uniforms.scaleEnd[1], 0.0f, 3.0f);
             }
 
             if (ImGui::CollapsingHeader("Blending and color")) {
-                ImGui::Combo("Blend Ease", (int *) &m_uniforms.m_easeBlend, s_easeFuncName, BX_COUNTOF(s_easeFuncName));
-                ImGui::RangeSliderFloat("Blend Start", &m_uniforms.m_blendStart[0], &m_uniforms.m_blendStart[1], 0.0f,
-                                        1.0f
-                );
-                ImGui::RangeSliderFloat("Blend End", &m_uniforms.m_blendEnd[0], &m_uniforms.m_blendEnd[1], 0.0f, 1.0f
-                );
-
+                ImGui::Combo("Blend Ease", (int *) &m_uniforms.easeBlend, s_easeFuncName, BX_COUNTOF(s_easeFuncName));
+                ImGui::RangeSliderFloat("Blend Start", &m_uniforms.blendStart[0], &m_uniforms.blendStart[1], 0.0f,
+                                        1.0f);
+                ImGui::RangeSliderFloat("Blend End", &m_uniforms.blendEnd[0], &m_uniforms.blendEnd[1], 0.0f, 1.0f);
                 ImGui::Text("Color:");
-
-                ImGui::Combo("RGBA Ease", (int *) &m_uniforms.m_easeRgba, s_easeFuncName, BX_COUNTOF(s_easeFuncName));
-                ImGui::ColorWheel("RGBA0", &m_uniforms.m_rgba[0], 0.3f);
-                ImGui::ColorWheel("RGBA1", &m_uniforms.m_rgba[1], 0.3f);
-                ImGui::ColorWheel("RGBA2", &m_uniforms.m_rgba[2], 0.3f);
-                ImGui::ColorWheel("RGBA3", &m_uniforms.m_rgba[3], 0.3f);
-                ImGui::ColorWheel("RGBA4", &m_uniforms.m_rgba[4], 0.3f);
+                ImGui::Combo("RGBA Ease", (int *) &m_uniforms.easeRgba, s_easeFuncName, BX_COUNTOF(s_easeFuncName));
+                ImGui::ColorWheel("RGBA0", &m_uniforms.rgba[0], 0.3f);
+                ImGui::ColorWheel("RGBA1", &m_uniforms.rgba[1], 0.3f);
+                ImGui::ColorWheel("RGBA2", &m_uniforms.rgba[2], 0.3f);
+                ImGui::ColorWheel("RGBA3", &m_uniforms.rgba[3], 0.3f);
+                ImGui::ColorWheel("RGBA4", &m_uniforms.rgba[4], 0.3f);
             }
         }
 
@@ -176,16 +159,14 @@ namespace {
             float mtx[16];
             float scale[3] = {1.0f, 1.0f, 1.0f};
 
-            ImGuizmo::RecomposeMatrixFromComponents(m_uniforms.m_position, m_uniforms.m_angle, scale, mtx);
+            ImGuizmo::RecomposeMatrixFromComponents(m_uniforms.position, m_uniforms.angle, scale, mtx);
 
             ImGuiIO &io = ImGui::GetIO();
             ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
 
-            ImGuizmo::Manipulate(
-                    _view, _proj, ImGuizmo::TRANSLATE, ImGuizmo::LOCAL, mtx
-            );
+            ImGuizmo::Manipulate(_view, _proj, ImGuizmo::TRANSLATE, ImGuizmo::LOCAL, mtx);
 
-            ImGuizmo::DecomposeMatrixToComponents(mtx, m_uniforms.m_position, m_uniforms.m_angle, scale);
+            ImGuizmo::DecomposeMatrixToComponents(mtx, m_uniforms.position, m_uniforms.angle, scale);
         }
     };
 
@@ -215,26 +196,16 @@ namespace {
             bgfx::setDebug(m_debug);
 
             // Set view 0 clear state.
-            bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x202020ff, 1.0f, 0
-            );
+            bgfx::setViewClear(0, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x202020ff, 1.0f, 0);
 
             ddInit();
 
-            particleSystem->init();
-
-            bimg::ImageContainer *image = imageLoad(
-                    "textures/particle.ktx", bgfx::TextureFormat::BGRA8
-            );
-
-            EmitterSpriteHandle sprite = particleSystem->createSprite(
-                    uint16_t(image->m_width), uint16_t(image->m_height), image->m_data
-            );
-
-            bimg::imageFree(image);
-
+            particles->init();
+            fileOutput->addTarget(particles);
+            EmitterSpriteHandle sprite = particles->createSprite("textures/particle.ktx", bgfx::TextureFormat::BGRA8);
             for (uint32_t ii = 0; ii < BX_COUNTOF(m_emitter); ++ii) {
                 m_emitter[ii].create();
-                m_emitter[ii].m_uniforms.m_handle = sprite;
+                m_emitter[ii].m_uniforms.sprite = sprite;
                 m_emitter[ii].update();
             }
 
@@ -253,7 +224,8 @@ namespace {
                 m_emitter[ii].destroy();
             }
 
-            particleSystem->shutdown();
+            SAFE_DELETE(fileOutput);
+            SAFE_DELETE(particles);
 
             ddShutdown();
 
@@ -308,17 +280,13 @@ namespace {
                 showExampleDialog(this);
 
                 ImGui::SetNextWindowPos(
-                        ImVec2(m_width - m_width / 4.0f - 10.0f, 10.0f), ImGuiCond_FirstUseEver
-                );
+                        ImVec2(m_width - m_width / 4.0f - 10.0f, 10.0f), ImGuiCond_FirstUseEver);
                 ImGui::SetNextWindowSize(
-                        ImVec2(m_width / 4.0f, m_height - 20.0f), ImGuiCond_FirstUseEver
-                );
-                ImGui::Begin("Settings", NULL
-                );
+                        ImVec2(m_width / 4.0f, m_height - 20.0f), ImGuiCond_FirstUseEver);
+                ImGui::Begin("Settings", NULL);
 
                 static float timeScale = 1.0f;
-                ImGui::SliderFloat("Time scale", &timeScale, 0.0f, 1.0f
-                );
+                ImGui::SliderFloat("Time scale", &timeScale, 0.0f, 1.0f);
 
                 static bool showBounds;
                 ImGui::Checkbox("Show bounds", &showBounds);
@@ -350,13 +318,12 @@ namespace {
                 const bx::Vec3 eye = cameraGetPosition();
 
                 m_emitter[currentEmitter].update();
-
-                particleSystem->update(deltaTime * timeScale);
-                particleSystem->render(0, view, eye);
+                particles->updateViewAndEye(view, eye);
+                fileOutput->render(deltaTime * timeScale);
 
                 if (showBounds) {
                     Aabb aabb;
-                    particleSystem->getAabb(m_emitter[currentEmitter].m_handle, aabb);
+                    particles->getAabb(m_emitter[currentEmitter].m_handle, aabb);
                     dde.push();
                     dde.setWireframe(true);
                     dde.setColor(0xff0000ff);
@@ -366,8 +333,6 @@ namespace {
 
                 dde.end();
 
-                // Advance to next frame. Rendering thread will be kicked to
-                // process submitted rendering primitives.
                 bgfx::frame();
 
                 return true;
@@ -387,7 +352,6 @@ namespace {
 
         Emitter m_emitter[4];
     };
-
 } // namespace
 
-ENTRY_IMPLEMENT_MAIN(ExampleParticles, "32-particles", "Particles.");
+ENTRY_IMPLEMENT_MAIN(ExampleParticles, "Particles", "Particles.");

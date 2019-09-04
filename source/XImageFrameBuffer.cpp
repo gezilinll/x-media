@@ -15,19 +15,23 @@ XImageFrameBuffer::~XImageFrameBuffer() {
     XImageUtils::destroy(mHandle);
 }
 
-void XImageFrameBuffer::loadFromPicture(std::string path) {
+void XImageFrameBuffer::loadFromImage(std::string path) {
     if (bgfx::isValid(mHandle)) {
-        LOGW("XImageFrameBuffer::loadFromPicture recycle existed FrameBufferHandle, path=%s", path.data());
+        LOGW("XImageFrameBuffer::loadFromImage recycle existed FrameBufferHandle, path=%s", path.data());
         XImageUtils::destroy(mHandle);
     }
+    mImagePath = path;
     bgfx::TextureHandle textureHandle = loadTexture(path.data());
     if (!bgfx::isValid(textureHandle)) {
-        LOGE("XImageFrameBuffer::loadFromPicture failed, path=%s", path.data());
+        LOGE("XImageFrameBuffer::loadFromImage failed, path=%s", path.data());
         return;
     }
     mHandle = bgfx::createFrameBuffer(1, &textureHandle, true);
 }
 
+bimg::ImageContainer *XImageFrameBuffer::getImageContainer(bgfx::TextureFormat::Enum dstFormat) {
+    return imageLoad(mImagePath.data(), dstFormat);
+}
 
 bgfx::TextureHandle XImageFrameBuffer::getTexture() {
     return bgfx::getTexture(mHandle);

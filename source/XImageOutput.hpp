@@ -42,6 +42,12 @@ public:
      */
     void notifyTargetsAboutNewOutputTexture();
 
+    /**
+     * @brief render current frame with current args
+     * @param progress current progress
+     */
+    void render(float progress);
+
 protected:
     XImageFrameBuffer* mOutputFrameBuffer; /// frame buffer which are uploaded from source
     std::vector<XImageInput *> mTargets; /// targets to receive frame buffer

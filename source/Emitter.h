@@ -45,27 +45,27 @@ struct EmitterUniforms
 {
     void reset();
 
-    float m_position[3];
-    float m_angle[3];
+    float position[3];
+    float angle[3];
 
-    float m_blendStart[2];
-    float m_blendEnd[2];
-    float m_offsetStart[2];
-    float m_offsetEnd[2];
-    float m_scaleStart[2];
-    float m_scaleEnd[2];
-    float m_lifeSpan[2];
-    float m_gravityScale;
+    float blendStart[2];
+    float blendEnd[2];
+    float offsetStart[2];
+    float offsetEnd[2];
+    float scaleStart[2];
+    float scaleEnd[2];
+    float lifeSpan[2];
+    float gravityScale;
 
-    uint32_t m_rgba[5];
-    uint32_t m_particlesPerSecond;
+    uint32_t rgba[5];
+    uint32_t particlesPerSecond;
 
-    bx::Easing::Enum m_easePos;
-    bx::Easing::Enum m_easeRgba;
-    bx::Easing::Enum m_easeBlend;
-    bx::Easing::Enum m_easeScale;
+    bx::Easing::Enum easePos;
+    bx::Easing::Enum easeRgba;
+    bx::Easing::Enum easeBlend;
+    bx::Easing::Enum easeScale;
 
-    EmitterSpriteHandle m_handle;
+    EmitterSpriteHandle sprite;
 };
 
 struct Particle

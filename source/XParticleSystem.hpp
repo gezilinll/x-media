@@ -59,15 +59,15 @@ inline bool isValid(Ty _handle)
 	return _handle.idx != UINT16_MAX;
 }
 
-class ParticleSystem {
+class XParticleSystem {
 public:
+    XParticleSystem();
+
     void init(uint16_t _maxEmitters = 64, bx::AllocatorI* _allocator = NULL);
 
     void shutdown();
 
     EmitterSpriteHandle createSprite(uint16_t _width, uint16_t _height, const void* _data);
-
-    void destroy(EmitterSpriteHandle _handle);
 
     EmitterHandle createEmitter(EmitterShape::Enum _shape, EmitterDirection::Enum _direction, uint32_t _maxParticles);
 

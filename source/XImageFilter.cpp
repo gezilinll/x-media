@@ -81,9 +81,9 @@ void XImageFilter::setViewRect(int x, int y, int width, int height) {
     mViewRectHeight = height;
 }
 
-void XImageFilter::newFrameReadyAtProgress(float progress, int index) {
+void XImageFilter::renderAtProgress(float progress, int index) {
     if (!isViewRectValid()) {
-        LOGE("XImageFilter::newFrameReadyAtProgress view rect args is invalid.");
+        LOGE("XImageFilter::renderAtProgress view rect args is invalid.");
         return;
     }
     if (!bgfx::isValid(mProgram)) {
@@ -108,7 +108,7 @@ void XImageFilter::newFrameReadyAtProgress(float progress, int index) {
     }
     
     if (!bgfx::isValid(mProgram)) {
-        LOGE("XImageFilter::newFrameReadyAtProgress load program failed. vsPath=%s, fsPath=%s", mVertexShaderPath.data(), mFragmentShaderPath.data());
+        LOGE("XImageFilter::renderAtProgress load program failed. vsPath=%s, fsPath=%s", mVertexShaderPath.data(), mFragmentShaderPath.data());
         return;
     }
 

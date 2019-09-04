@@ -17,46 +17,46 @@ inline uint32_t toAbgr(float _rr, float _gg, float _bb, float _aa)
 }
 
 void EmitterUniforms::reset() {
-    m_position[0] = 0.0f;
-    m_position[1] = 0.0f;
-    m_position[2] = 0.0f;
+    position[0] = 0.0f;
+    position[1] = 0.0f;
+    position[2] = 0.0f;
 
-    m_angle[0] = 0.0f;
-    m_angle[1] = 0.0f;
-    m_angle[2] = 0.0f;
+    angle[0] = 0.0f;
+    angle[1] = 0.0f;
+    angle[2] = 0.0f;
 
-    m_particlesPerSecond = 0;
+    particlesPerSecond = 0;
 
-    m_offsetStart[0] = 0.0f;
-    m_offsetStart[1] = 1.0f;
-    m_offsetEnd[0]   = 2.0f;
-    m_offsetEnd[1]   = 3.0f;
+    offsetStart[0] = 0.0f;
+    offsetStart[1] = 1.0f;
+    offsetEnd[0]   = 2.0f;
+    offsetEnd[1]   = 3.0f;
 
-    m_rgba[0] = 0x00ffffff;
-    m_rgba[1] = UINT32_MAX;
-    m_rgba[2] = UINT32_MAX;
-    m_rgba[3] = UINT32_MAX;
-    m_rgba[4] = 0x00ffffff;
+    rgba[0] = 0x00ffffff;
+    rgba[1] = UINT32_MAX;
+    rgba[2] = UINT32_MAX;
+    rgba[3] = UINT32_MAX;
+    rgba[4] = 0x00ffffff;
 
-    m_blendStart[0] = 0.8f;
-    m_blendStart[1] = 1.0f;
-    m_blendEnd[0]   = 0.0f;
-    m_blendEnd[1]   = 0.2f;
+    blendStart[0] = 0.8f;
+    blendStart[1] = 1.0f;
+    blendEnd[0]   = 0.0f;
+    blendEnd[1]   = 0.2f;
 
-    m_scaleStart[0] = 0.1f;
-    m_scaleStart[1] = 0.2f;
-    m_scaleEnd[0]   = 0.3f;
-    m_scaleEnd[1]   = 0.4f;
+    scaleStart[0] = 0.1f;
+    scaleStart[1] = 0.2f;
+    scaleEnd[0]   = 0.3f;
+    scaleEnd[1]   = 0.4f;
 
-    m_lifeSpan[0]   = 1.0f;
-    m_lifeSpan[1]   = 2.0f;
+    lifeSpan[0]   = 1.0f;
+    lifeSpan[1]   = 2.0f;
 
-    m_gravityScale  = 0.0f;
+    gravityScale  = 0.0f;
 
-    m_easePos   = bx::Easing::Linear;
-    m_easeRgba  = bx::Easing::Linear;
-    m_easeBlend = bx::Easing::Linear;
-    m_easeScale = bx::Easing::Linear;
+    easePos   = bx::Easing::Linear;
+    easeRgba  = bx::Easing::Linear;
+    easeBlend = bx::Easing::Linear;
+    easeScale = bx::Easing::Linear;
 }
 
 void Emitter::reset() {
@@ -89,7 +89,7 @@ void Emitter::update(float _dt) {
 
     m_num = num;
 
-    if (0 < m_uniforms.m_particlesPerSecond)
+    if (0 < m_uniforms.particlesPerSecond)
     {
         spawn(_dt);
     }
@@ -99,11 +99,11 @@ void Emitter::spawn(float _dt) {
     float mtx[16];
     bx::mtxSRT(mtx
             , 1.0f, 1.0f, 1.0f
-            , m_uniforms.m_angle[0],    m_uniforms.m_angle[1],    m_uniforms.m_angle[2]
-            , m_uniforms.m_position[0], m_uniforms.m_position[1], m_uniforms.m_position[2]
+            , m_uniforms.angle[0],    m_uniforms.angle[1],    m_uniforms.angle[2]
+            , m_uniforms.position[0], m_uniforms.position[1], m_uniforms.position[2]
     );
 
-    const float timePerParticle = 1.0f/m_uniforms.m_particlesPerSecond;
+    const float timePerParticle = 1.0f/m_uniforms.particlesPerSecond;
     m_dt += _dt;
     const uint32_t numParticles = uint32_t(m_dt / timePerParticle);
     m_dt -= numParticles * timePerParticle;
@@ -165,29 +165,29 @@ void Emitter::spawn(float _dt) {
                 break;
         }
 
-        const float startOffset = bx::lerp(m_uniforms.m_offsetStart[0], m_uniforms.m_offsetStart[1], bx::frnd(&m_rng) );
+        const float startOffset = bx::lerp(m_uniforms.offsetStart[0], m_uniforms.offsetStart[1], bx::frnd(&m_rng) );
         const bx::Vec3 start = bx::mul(pos, startOffset);
 
-        const float endOffset = bx::lerp(m_uniforms.m_offsetEnd[0], m_uniforms.m_offsetEnd[1], bx::frnd(&m_rng) );
+        const float endOffset = bx::lerp(m_uniforms.offsetEnd[0], m_uniforms.offsetEnd[1], bx::frnd(&m_rng) );
         const bx::Vec3 tmp1 = bx::mul(dir, endOffset);
         const bx::Vec3 end  = bx::add(tmp1, start);
 
         particle.life = time;
-        particle.lifeSpan = bx::lerp(m_uniforms.m_lifeSpan[0], m_uniforms.m_lifeSpan[1], bx::frnd(&m_rng) );
+        particle.lifeSpan = bx::lerp(m_uniforms.lifeSpan[0], m_uniforms.lifeSpan[1], bx::frnd(&m_rng) );
 
-        const bx::Vec3 gravity = { 0.0f, -9.81f * m_uniforms.m_gravityScale * bx::square(particle.lifeSpan), 0.0f };
+        const bx::Vec3 gravity = { 0.0f, -9.81f * m_uniforms.gravityScale * bx::square(particle.lifeSpan), 0.0f };
 
         particle.start  = bx::mul(start, mtx);
         particle.end[0] = bx::mul(end,   mtx);
         particle.end[1] = bx::add(particle.end[0], gravity);
 
-        bx::memCopy(particle.rgba, m_uniforms.m_rgba, BX_COUNTOF(m_uniforms.m_rgba)*sizeof(uint32_t) );
+        bx::memCopy(particle.rgba, m_uniforms.rgba, BX_COUNTOF(m_uniforms.rgba)*sizeof(uint32_t) );
 
-        particle.blendStart = bx::lerp(m_uniforms.m_blendStart[0], m_uniforms.m_blendStart[1], bx::frnd(&m_rng) );
-        particle.blendEnd   = bx::lerp(m_uniforms.m_blendEnd[0],   m_uniforms.m_blendEnd[1],   bx::frnd(&m_rng) );
+        particle.blendStart = bx::lerp(m_uniforms.blendStart[0], m_uniforms.blendStart[1], bx::frnd(&m_rng) );
+        particle.blendEnd   = bx::lerp(m_uniforms.blendEnd[0],   m_uniforms.blendEnd[1],   bx::frnd(&m_rng) );
 
-        particle.scaleStart = bx::lerp(m_uniforms.m_scaleStart[0], m_uniforms.m_scaleStart[1], bx::frnd(&m_rng) );
-        particle.scaleEnd   = bx::lerp(m_uniforms.m_scaleEnd[0],   m_uniforms.m_scaleEnd[1],   bx::frnd(&m_rng) );
+        particle.scaleStart = bx::lerp(m_uniforms.scaleStart[0], m_uniforms.scaleStart[1], bx::frnd(&m_rng) );
+        particle.scaleEnd   = bx::lerp(m_uniforms.scaleEnd[0],   m_uniforms.scaleEnd[1],   bx::frnd(&m_rng) );
 
         time += timePerParticle;
     }
@@ -210,10 +210,10 @@ void Emitter::destroy(bx::AllocatorI *allocatorI) {
 
 uint32_t Emitter::render(const float *_uv, const float *_mtxView, const bx::Vec3 &_eye, uint32_t _first, uint32_t _max,
                          XImage::ParticleSort *_outSort, XImage::PosColorTexCoord0Vertex *_outVertices) {
-    bx::EaseFn easeRgba  = bx::getEaseFunc(m_uniforms.m_easeRgba);
-    bx::EaseFn easePos   = bx::getEaseFunc(m_uniforms.m_easePos);
-    bx::EaseFn easeBlend = bx::getEaseFunc(m_uniforms.m_easeBlend);
-    bx::EaseFn easeScale = bx::getEaseFunc(m_uniforms.m_easeScale);
+    bx::EaseFn easeRgba  = bx::getEaseFunc(m_uniforms.easeRgba);
+    bx::EaseFn easePos   = bx::getEaseFunc(m_uniforms.easePos);
+    bx::EaseFn easeBlend = bx::getEaseFunc(m_uniforms.easeBlend);
+    bx::EaseFn easeScale = bx::getEaseFunc(m_uniforms.easeScale);
 
     Aabb aabb =
             {

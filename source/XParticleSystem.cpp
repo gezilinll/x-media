@@ -5,7 +5,7 @@
 
 #include <bgfx/bgfx.h>
 #include <bgfx/embedded_shader.h>
-#include "ParticleSystem.hpp"
+#include "XParticleSystem.hpp"
 #include "XImageUtils.hpp"
 #include "ps/vs_particle.bin.h"
 #include "ps/fs_particle.bin.h"
@@ -28,7 +28,10 @@ static int32_t particleSortFn(const void* _lhs, const void* _rhs)
     return lhs.dist > rhs.dist ? -1 : 1;
 }
 
-void ParticleSystem::init(uint16_t _maxEmitters, bx::AllocatorI *_allocator) {
+XParticleSystem::XParticleSystem() {
+}
+
+void XParticleSystem::init(uint16_t _maxEmitters, bx::AllocatorI *_allocator) {
     m_allocator = _allocator;
 
     if (NULL == _allocator)
@@ -61,7 +64,7 @@ void ParticleSystem::init(uint16_t _maxEmitters, bx::AllocatorI *_allocator) {
     );
 }
 
-void ParticleSystem::shutdown() {
+void XParticleSystem::shutdown() {
     bgfx::destroy(m_particleProgram);
     bgfx::destroy(m_texture);
     bgfx::destroy(s_texColor);
@@ -72,7 +75,7 @@ void ParticleSystem::shutdown() {
     m_allocator = NULL;
 }
 
-EmitterSpriteHandle ParticleSystem::createSprite(uint16_t _width, uint16_t _height, const void *_data) {
+EmitterSpriteHandle XParticleSystem::createSprite(uint16_t _width, uint16_t _height, const void *_data) {
     EmitterSpriteHandle handle = m_sprite.create(_width, _height);
 
     if (isValid(handle) )
@@ -93,7 +96,7 @@ EmitterSpriteHandle ParticleSystem::createSprite(uint16_t _width, uint16_t _heig
     return handle;
 }
 
-EmitterHandle ParticleSystem::createEmitter(XImage::EmitterShape::Enum _shape,
+EmitterHandle XParticleSystem::createEmitter(XImage::EmitterShape::Enum _shape,
                                             XImage::EmitterDirection::Enum _direction, uint32_t _maxParticles) {
     EmitterHandle handle = { m_emitterAlloc->alloc() };
 
@@ -105,7 +108,7 @@ EmitterHandle ParticleSystem::createEmitter(XImage::EmitterShape::Enum _shape,
     return handle;
 }
 
-void ParticleSystem::updateEmitter(XImage::EmitterHandle _handle, const XImage::EmitterUniforms *_uniforms) {
+void XParticleSystem::updateEmitter(XImage::EmitterHandle _handle, const XImage::EmitterUniforms *_uniforms) {
     BX_CHECK(m_emitterAlloc.isValid(_handle.idx)
     , "destroyEmitter handle %d is not valid."
     , _handle.idx
@@ -123,7 +126,7 @@ void ParticleSystem::updateEmitter(XImage::EmitterHandle _handle, const XImage::
     }
 }
 
-void ParticleSystem::getAabb(XImage::EmitterHandle _handle, Aabb &_outAabb) {
+void XParticleSystem::getAabb(XImage::EmitterHandle _handle, Aabb &_outAabb) {
     BX_CHECK(m_emitterAlloc.isValid(_handle.idx)
     , "getAabb handle %d is not valid."
     , _handle.idx
@@ -131,7 +134,7 @@ void ParticleSystem::getAabb(XImage::EmitterHandle _handle, Aabb &_outAabb) {
     _outAabb = m_emitter[_handle.idx].m_aabb;
 }
 
-void ParticleSystem::destroyEmitter(XImage::EmitterHandle _handle) {
+void XParticleSystem::destroyEmitter(XImage::EmitterHandle _handle) {
     BX_CHECK(m_emitterAlloc.isValid(_handle.idx)
     , "destroyEmitter handle %d is not valid."
     , _handle.idx
@@ -141,11 +144,7 @@ void ParticleSystem::destroyEmitter(XImage::EmitterHandle _handle) {
     m_emitterAlloc->free(_handle.idx);
 }
 
-void ParticleSystem::destroy(XImage::EmitterSpriteHandle _handle) {
-    m_sprite.destroy(_handle);
-}
-
-void ParticleSystem::update(float _dt) {
+void XParticleSystem::update(float _dt) {
     uint32_t numParticles = 0;
     for (uint16_t ii = 0, num = m_emitterAlloc->getNumHandles(); ii < num; ++ii)
     {
@@ -158,7 +157,7 @@ void ParticleSystem::update(float _dt) {
     m_num = numParticles;
 }
 
-void ParticleSystem::render(uint8_t _view, const float *_mtxView, const bx::Vec3 &_eye) {
+void XParticleSystem::render(uint8_t _view, const float *_mtxView, const bx::Vec3 &_eye) {
     if (0 != m_num)
     {
         bgfx::TransientVertexBuffer tvb;
@@ -191,7 +190,7 @@ void ParticleSystem::render(uint8_t _view, const float *_mtxView, const bx::Vec3
                 const uint16_t idx = m_emitterAlloc->getHandleAt(ii);
                 Emitter& emitter = m_emitter[idx];
 
-                const Pack2D& pack = m_sprite.get(emitter.m_uniforms.m_handle);
+                const Pack2D& pack = m_sprite.get(emitter.m_uniforms.sprite);
                 const float invTextureSize = 1.0f/SPRITE_TEXTURE_SIZE;
                 const float uv[4] =
                         {

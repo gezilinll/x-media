@@ -8,7 +8,7 @@
  */
 
 #include <bx/string.h>
-#include "XImagePictureOutput.hpp"
+#include "XImageFileOutput.hpp"
 #include "XImageFilter.hpp"
 #include "XLog.hpp"
 #include "XImageUtils.hpp"
@@ -62,7 +62,7 @@ public:
 
         imguiCreate();
 
-        mOutput = new XImagePictureOutput();
+        mOutput = new XImageFileOutput();
         mOutput->initWithPath("images/scene.jpg");
         mFilter = nullptr;
         mRatio = 0.0f;
@@ -413,7 +413,7 @@ public:
 
 private:
     entry::MouseState m_mouseState;
-    XImagePictureOutput *mOutput;
+    XImageFileOutput *mOutput;
     XImageFilter *mFilter;
     int mCurrentIndex = -1;
     uint32_t mWidth;

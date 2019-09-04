@@ -30,7 +30,7 @@ public:
 
     ~XImageFilter();
 
-    void newFrameReadyAtProgress(float progress, int index) override;
+    void renderAtProgress(float progress, int index) override;
 
     void setInputFrameBuffer(XImageFrameBuffer* input) override ;
 

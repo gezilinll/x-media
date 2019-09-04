@@ -31,4 +31,14 @@ void XImageOutput::notifyTargetsAboutNewOutputTexture() {
         ++iter;
     }
 }
+
+void XImageOutput::render(float progress) {
+    int index = 0;
+    auto iter = mTargets.begin();
+    while (iter != mTargets.end()) {
+        XImageInput* input = *iter;
+        input->renderAtProgress(progress, index);
+        iter++;
+    }
+}
 NS_X_IMAGE_END
