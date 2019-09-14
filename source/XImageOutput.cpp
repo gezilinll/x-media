@@ -23,22 +23,15 @@ void XImageOutput::clearTarget() {
     mTargets.clear();
 }
 
-void XImageOutput::notifyTargetsAboutNewOutputTexture() {
-    auto iter = mTargets.begin();
-    while (iter != mTargets.end()) {
-        XImageInput* input = *iter;
-        input->setInputFrameBuffer(mOutputFrameBuffer);
-        ++iter;
-    }
-}
-
-void XImageOutput::render(float progress) {
+void XImageOutput::renderTargetsByNewOutputTexture(float progress) {
     int index = 0;
     auto iter = mTargets.begin();
     while (iter != mTargets.end()) {
         XImageInput* input = *iter;
+        input->setInputFrameBuffer(mOutputFrameBuffer);
         input->renderAtProgress(progress, index);
-        iter++;
+        ++iter;
     }
 }
+
 NS_X_IMAGE_END

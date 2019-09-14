@@ -6,8 +6,7 @@
 #define GPUIMAGE_X_XPARTICLES_HPP
 
 #include "XMacros.hpp"
-#include "XImageInput.hpp"
-#include "XImageOutput.hpp"
+#include "XImageInputOutput.hpp"
 #include "packrect.h"
 #include "bounds.h"
 #include "XEmitter.h"
@@ -61,7 +60,7 @@ inline bool isValid(Ty handle)
     return handle.idx != UINT16_MAX;
 }
 
-class XParticles: public XImageInput, public XImageOutput {
+class XParticles: public XImageInputOutput {
 public:
     XParticles();
 

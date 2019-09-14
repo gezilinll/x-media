@@ -5,7 +5,7 @@
 #ifndef GPUIMAGE_X_XIMAGEFILTER_HPP
 #define GPUIMAGE_X_XIMAGEFILTER_HPP
 
-#include "XImageOutput.hpp"
+#include "XImageInputOutput.hpp"
 #include <string>
 #include <unordered_map>
 
@@ -19,7 +19,7 @@ NS_X_IMAGE_BEGIN
  *
  * As to shader you can see \link XImageShaderInfo.hpp XImageShaderInfo \endlink for more information.
  */
-class XImageFilter: public XImageInput, public XImageOutput {
+class XImageFilter: public XImageInputOutput {
 public:
     /**
      * @brief XImage's filter constructor

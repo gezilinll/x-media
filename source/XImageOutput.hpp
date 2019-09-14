@@ -39,14 +39,9 @@ public:
 
     /**
      * @brief notify target there has new frame and call \link XImageInput::setInputFrameBuffer \endlink
-     */
-    void notifyTargetsAboutNewOutputTexture();
-
-    /**
-     * @brief render current frame with current args
      * @param progress current progress
      */
-    void render(float progress);
+    void renderTargetsByNewOutputTexture(float progress);
 
 protected:
     XImageFrameBuffer* mOutputFrameBuffer; /// frame buffer which are uploaded from source

@@ -21,7 +21,7 @@
 
 USING_NS_X_IMAGE
 const char *FILTER_ITEMS[] = {"None", "Saturation", "Contrast", "Brightness", "Exposure", "RGB", "HUE",
-                             "Levels", "WhiteBalance", "Monochrome"};
+                             "Levels", "WhiteBalance", "Monochrome", "Combine"};
 const char *FILTER_FRAGMENT_SHADERS[] = {"fs_filter_normal", "fs_filter_saturation", "fs_filter_contrast",
                                          "fs_filter_brightness", "fs_filter_exposure", "fs_filter_rgb", "fs_filter_hue",
                                          "fs_filter_levels", "fs_filter_white_balance", "fs_filter_monochrome"};
@@ -74,6 +74,14 @@ public:
         SAFE_DELETE(mOutput);
         SAFE_DELETE(mFilter);
 
+        auto iter = mCombinedEffects.begin();
+        while (iter != mCombinedEffects.end()) {
+            XImageInputOutput *input = *iter;
+            SAFE_DELETE(input);
+            iter++;
+        }
+        mCombinedEffects.clear();
+
         imguiDestroy();
 
         // Shutdown bgfx.
@@ -115,10 +123,24 @@ public:
                 mRatio = 0.0f;
             }
             
+            int size = IM_ARRAYSIZE(FILTER_ITEMS);
             static int filterItemCurrent = 0;
-            ImGui::Combo("Filter Selected", &filterItemCurrent, FILTER_ITEMS, IM_ARRAYSIZE(FILTER_ITEMS), 5);
+            ImGui::Combo("Filter Selected", &filterItemCurrent, FILTER_ITEMS, size, 5);
             {
-                if (mCurrentIndex != filterItemCurrent) {
+                if (mFilter) {
+                    mFilter->clearTarget();
+                }
+                if (filterItemCurrent == size - 1) {
+                    if (mCombinedEffects.empty()) {
+                        XImageFilter *brightnessFilter = new XImageFilter("vs_filter_normal", "fs_filter_brightness");
+                        brightnessFilter->setViewRect(0, 0, mWidth, mHeight);
+                        Brightness brightness;
+                        brightnessFilter->setVec4(brightness.paramName,
+                                                  XImageUtils::wrapFloatToVec4(0.3));
+                        mCombinedEffects.push_back(brightnessFilter);
+                    }
+                    mFilter->addTarget(mCombinedEffects.at(0));
+                } else if (mCurrentIndex != filterItemCurrent) {
                     mOutput->clearTarget();
                     SAFE_DELETE(mFilter);
                     mFilter = new XImageFilter("vs_filter_normal",
@@ -131,14 +153,12 @@ public:
                     updateFilterSettings(filterItemCurrent, mRatio, true);
                 }
 
-                mOutput->notifyTargetsAboutNewOutputTexture();
+                mOutput->renderTargetsByNewOutputTexture(0);
             }
 
             ImGui::End();
             imguiEndFrame();
-            
-            mOutput->render(0);
-           
+
             // Advance to next frame. Rendering thread will be kicked to
             // process submitted rendering primitives.
             bgfx::frame();
@@ -415,6 +435,7 @@ private:
     entry::MouseState m_mouseState;
     XImageFileOutput *mOutput;
     XImageFilter *mFilter;
+    std::vector<XImageInputOutput *> mCombinedEffects;
     int mCurrentIndex = -1;
     uint32_t mWidth;
     uint32_t mHeight;

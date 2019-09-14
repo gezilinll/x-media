@@ -86,6 +86,10 @@ void XImageFilter::renderAtProgress(float progress, int index) {
         LOGE("XImageFilter::renderAtProgress view rect args is invalid.");
         return;
     }
+    if (mFirstInputFrameBuffer == nullptr || !bgfx::isValid(mFirstInputFrameBuffer->getTexture())) {
+        LOGE("XImageFilter::renderAtProgress intput frame is invalid.");
+        return;
+    }
     if (!bgfx::isValid(mProgram)) {
         mProgram = loadProgram(mVertexShaderPath.data(), mFragmentShaderPath.data());
         bgfx::UniformHandle texture = bgfx::createUniform("s_texColor", bgfx::UniformType::Sampler);
@@ -112,6 +116,23 @@ void XImageFilter::renderAtProgress(float progress, int index) {
         return;
     }
 
+
+    if (!mTargets.empty()) {
+        if (!bgfx::isValid(mOutputFrameBuffer->get())) {
+            mOutputFrameBuffer->create(mViewRectWidth, mViewRectHeight, bgfx::TextureFormat::BGRA8);
+        }
+        index = 0;
+        bgfx::setViewFrameBuffer(0, mOutputFrameBuffer->get());
+    } else {
+        index = 1;
+        bgfx::setViewFrameBuffer(1, BGFX_INVALID_HANDLE);
+    }
+    bgfx::setViewClear(index
+            , BGFX_CLEAR_COLOR|BGFX_CLEAR_DEPTH
+            , 0x303030ff
+            , 1.0f
+            , 0
+    );
     uint64_t state = 0
                      | BGFX_STATE_WRITE_R
                      | BGFX_STATE_WRITE_G
@@ -119,12 +140,15 @@ void XImageFilter::renderAtProgress(float progress, int index) {
                      | BGFX_STATE_WRITE_A
                      | UINT64_C(0)
     ;
+    bgfx::touch(index);
     bgfx::setViewRect(index, mViewRectX, mViewRectY, mViewRectWidth, mViewRectHeight);
     bgfx::setVertexBuffer(0, mVertexBuffer);
     bgfx::setIndexBuffer(mIndexBuffer);
     bgfx::setState(state);
     bgfx::setTexture(0, mUniformHandles.find("s_texColor")->second, mFirstInputFrameBuffer->getTexture());
     bgfx::submit(index, mProgram);
+
+    renderTargetsByNewOutputTexture(progress);
 }
 
 void XImageFilter::setVec4(std::string paramName, float *paramValue) {
@@ -135,6 +159,9 @@ void XImageFilter::setVec4(std::string paramName, float *paramValue) {
         mUniformHandles.insert(std::make_pair(paramName, handle));
     } else {
         handle = iter->second;
+    }
+    if (!bgfx::isValid(handle)) {
+        LOGE("XImageFilter::setVec4 uniform handle is invalid.");
     }
     bgfx::setUniform(handle, paramValue);
 }

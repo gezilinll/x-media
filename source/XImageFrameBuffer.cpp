@@ -29,11 +29,27 @@ void XImageFrameBuffer::loadFromImage(std::string path) {
     mHandle = bgfx::createFrameBuffer(1, &textureHandle, true);
 }
 
+void XImageFrameBuffer::create(uint16_t width, uint16_t height, bgfx::TextureFormat::Enum format,
+                               uint64_t textureFlags) {
+    mHandle = bgfx::createFrameBuffer(width, height, format, textureFlags);
+    if (!bgfx::isValid(mHandle)) {
+        LOGE("XImageFrameBuffer::create failed, width=%d, height=%d", width, height);
+    }
+}
+
 bimg::ImageContainer *XImageFrameBuffer::getImageContainer(bgfx::TextureFormat::Enum dstFormat) {
+    if (mImagePath.empty()) {
+        LOGE("XImageFrameBuffer::getImageContainer image path is invalid.");
+        return nullptr;
+    }
     return imageLoad(mImagePath.data(), dstFormat);
 }
 
 bgfx::TextureHandle XImageFrameBuffer::getTexture() {
     return bgfx::getTexture(mHandle);
+}
+
+bgfx::FrameBufferHandle XImageFrameBuffer::get() {
+    return mHandle;
 }
 NS_X_IMAGE_END

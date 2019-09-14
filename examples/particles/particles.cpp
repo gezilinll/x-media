@@ -319,7 +319,7 @@ namespace {
 
                 m_emitter[currentEmitter].update();
                 particles->updateViewAndEye(view, eye);
-                fileOutput->render(deltaTime * timeScale);
+                fileOutput->renderTargetsByNewOutputTexture(deltaTime * timeScale);
 
                 if (showBounds) {
                     Aabb aabb;

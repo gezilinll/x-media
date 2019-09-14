@@ -26,6 +26,9 @@ public:
      */
     void loadFromImage(std::string path);
 
+    void create(uint16_t width, uint16_t height, bgfx::TextureFormat::Enum format,
+                uint64_t textureFlags = BGFX_SAMPLER_U_CLAMP|BGFX_SAMPLER_V_CLAMP);
+
     /**
      * @brief get image container from image path
      * @param dstFormat target format
@@ -39,6 +42,8 @@ public:
      * @return texture of this frame
      */
     bgfx::TextureHandle getTexture();
+
+    bgfx::FrameBufferHandle get();
 private:
     bgfx::FrameBufferHandle mHandle; /// handle of FBO
     std::string mImagePath;
