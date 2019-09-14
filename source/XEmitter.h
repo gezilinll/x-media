@@ -113,7 +113,7 @@ struct PosColorTexCoord0Vertex
     static bgfx::VertexDecl ms_decl;
 };
 
-class Emitter {
+class XEmitter {
 public:
     void create(EmitterShape::Enum _shape, EmitterDirection::Enum _direction, uint32_t _maxParticles, bx::AllocatorI *allocatorI);
 

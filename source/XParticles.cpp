@@ -54,7 +54,7 @@ void XParticles::init(uint16_t maxEmitters, bx::AllocatorI *allocator) {
     }
 
     mEmitterAlloc = bx::createHandleAlloc(mAllocator, maxEmitters);
-    mEmitter = (Emitter *) BX_ALLOC(mAllocator, sizeof(Emitter) * maxEmitters);
+    mEmitter = (XEmitter *) BX_ALLOC(mAllocator, sizeof(XEmitter) * maxEmitters);
 
     PosColorTexCoord0Vertex::init();
 
@@ -106,7 +106,7 @@ void XParticles::destroyEmitter(EmitterHandle handle) {
 void XParticles::updateEmitter(EmitterHandle handle, EmitterUniforms *uniforms) {
     BX_CHECK(mEmitterAlloc.isValid(handle.idx), "destroyEmitter handle %d is not valid.", handle.idx);
 
-    Emitter &emitter = mEmitter[handle.idx];
+    XEmitter &emitter = mEmitter[handle.idx];
 
     if (nullptr == uniforms) {
         emitter.reset();
@@ -124,7 +124,7 @@ void XParticles::renderAtProgress(float progress, int index) {
     uint32_t numParticles = 0;
     for (uint16_t ii = 0, num = mEmitterAlloc->getNumHandles(); ii < num; ++ii) {
         const uint16_t idx = mEmitterAlloc->getHandleAt(ii);
-        Emitter &emitter = mEmitter[idx];
+        XEmitter &emitter = mEmitter[idx];
         emitter.update(progress);
         numParticles += emitter.m_num;
     }
@@ -152,7 +152,7 @@ void XParticles::renderAtProgress(float progress, int index) {
             uint32_t pos = 0;
             for (uint16_t ii = 0, numEmitters = mEmitterAlloc->getNumHandles(); ii < numEmitters; ++ii) {
                 const uint16_t idx = mEmitterAlloc->getHandleAt(ii);
-                Emitter &emitter = mEmitter[idx];
+                XEmitter &emitter = mEmitter[idx];
 
                 const Pack2D &pack = mSprite.get(emitter.m_uniforms.sprite);
                 const float invTextureSize = 1.0f / SPRITE_TEXTURE_SIZE;

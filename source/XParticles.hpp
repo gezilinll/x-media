@@ -8,9 +8,9 @@
 #include "XMacros.hpp"
 #include "XImageInput.hpp"
 #include "XImageOutput.hpp"
-#include "PackRect.hpp"
+#include "packrect.h"
 #include "bounds.h"
-#include "Emitter.h"
+#include "XEmitter.h"
 #include <bx/allocator.h>
 #include <bx/easing.h>
 #include <bx/rng.h>
@@ -127,7 +127,7 @@ private:
     bx::AllocatorI* mAllocator;
 
     bx::HandleAlloc* mEmitterAlloc;
-    Emitter* mEmitter;
+    XEmitter* mEmitter;
 
     typedef SpriteT<256, SPRITE_TEXTURE_SIZE> Sprite;
     Sprite mSprite;

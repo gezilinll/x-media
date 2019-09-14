@@ -2,7 +2,7 @@
 // Created by 林炳河 on 2019-07-29.
 //
 
-#include "Emitter.h"
+#include "XEmitter.h"
 #include <bx/allocator.h>
 
 NS_X_IMAGE_BEGIN
@@ -59,7 +59,7 @@ void EmitterUniforms::reset() {
     easeScale = bx::Easing::Linear;
 }
 
-void Emitter::reset() {
+void XEmitter::reset() {
     m_dt = 0.0f;
     m_uniforms.reset();
     m_num = 0;
@@ -68,7 +68,7 @@ void Emitter::reset() {
     m_rng.reset();
 }
 
-void Emitter::update(float _dt) {
+void XEmitter::update(float _dt) {
     uint32_t num = m_num;
     for (uint32_t ii = 0; ii < num; ++ii)
     {
@@ -95,7 +95,7 @@ void Emitter::update(float _dt) {
     }
 }
 
-void Emitter::spawn(float _dt) {
+void XEmitter::spawn(float _dt) {
     float mtx[16];
     bx::mtxSRT(mtx
             , 1.0f, 1.0f, 1.0f
@@ -193,7 +193,7 @@ void Emitter::spawn(float _dt) {
     }
 }
 
-void Emitter::create(XImage::EmitterShape::Enum _shape, XImage::EmitterDirection::Enum _direction,
+void XEmitter::create(XImage::EmitterShape::Enum _shape, XImage::EmitterDirection::Enum _direction,
                      uint32_t _maxParticles, bx::AllocatorI *allocatorI) {
     reset();
 
@@ -203,12 +203,12 @@ void Emitter::create(XImage::EmitterShape::Enum _shape, XImage::EmitterDirection
     m_particles = (Particle*)BX_ALLOC(allocatorI, m_max*sizeof(Particle) );
 }
 
-void Emitter::destroy(bx::AllocatorI *allocatorI) {
+void XEmitter::destroy(bx::AllocatorI *allocatorI) {
     BX_FREE(allocatorI, m_particles);
     m_particles = NULL;
 }
 
-uint32_t Emitter::render(const float *_uv, const float *_mtxView, const bx::Vec3 &_eye, uint32_t _first, uint32_t _max,
+uint32_t XEmitter::render(const float *_uv, const float *_mtxView, const bx::Vec3 &_eye, uint32_t _first, uint32_t _max,
                          XImage::ParticleSort *_outSort, XImage::PosColorTexCoord0Vertex *_outVertices) {
     bx::EaseFn easeRgba  = bx::getEaseFunc(m_uniforms.easeRgba);
     bx::EaseFn easePos   = bx::getEaseFunc(m_uniforms.easePos);
