@@ -18,6 +18,7 @@
 #include "bgfx_utils.h"
 #include <unordered_map>
 #include <iostream>
+#include <stdlib.h>
 
 USING_NS_X_IMAGE
 const char *FILTER_ITEMS[] = {"None", "Saturation", "Contrast", "Brightness", "Exposure", "RGB", "HUE",
@@ -57,18 +58,17 @@ public:
         mOutput = new XImageFileOutput();
         mOutput->initWithPath("images/scene.jpg");
         mFilter = nullptr;
-        mRatio = 0.0f;
-        mOffset = 0.001f;
     }
 
     virtual int shutdown() override
     {
         SAFE_DELETE(mOutput);
         SAFE_DELETE(mFilter);
+        SAFE_DELETE_ARRAY(mCombinedIndex);
 
         auto iter = mCombinedEffects.begin();
         while (iter != mCombinedEffects.end()) {
-            XImageInputOutput *input = *iter;
+            XImageFilter *input = iter->second;
             SAFE_DELETE(input);
             iter++;
         }
@@ -106,15 +106,6 @@ public:
             ImGui::Begin("Settings"
                     , NULL
             );
-
-            mRatio = mRatio + mOffset;
-            if (mRatio > 1.0f) {
-                mOffset = -0.001;
-                mRatio = 1.0f;
-            } else if (mRatio < 0.0f) {
-                mOffset = 0.001;
-                mRatio = 0.0f;
-            }
             
             int size = IM_ARRAYSIZE(FILTER_ITEMS);
             static int filterItemCurrent = 0;
@@ -124,16 +115,38 @@ public:
                     mFilter->clearTarget();
                 }
                 if (filterItemCurrent == size - 1) {
-                    if (mCombinedEffects.empty()) {
-                        XImageFilter *brightnessFilter = new XImageFilter("vs_filter_normal", "fs_filter_brightness");
-                        brightnessFilter->setViewRect(0, 0, mWidth, mHeight);
-                        Brightness brightness;
-                        brightnessFilter->setVec4(brightness.paramName,
-                                                  XImage::wrapFloatToVec4(0.3));
-                        mCombinedEffects.push_back(brightnessFilter);
+                    updateFilterSettings(mCurrentIndex, mFilter, true);
+                    for (int i = 0; i < 2; i++) {
+                        if (!mCombined) {
+                            int combineIndex = mCurrentIndex;
+                            while (combineIndex == 0 || combineIndex == mCurrentIndex
+                                   || (i == 1 && combineIndex == mCombinedIndex[0])) {
+                                combineIndex = rand() % size;
+                            }
+                            mCombinedIndex[i] = combineIndex;
+                        }
+                        XImageFilter *combinedFilter = nullptr;
+                        auto iter = mCombinedEffects.find(mCombinedIndex[i]);
+                        if (iter != mCombinedEffects.end()) {
+                            combinedFilter = iter->second;
+                            updateFilterSettings(mCombinedIndex[i], combinedFilter, true);
+                        } else {
+                            combinedFilter = new XImageFilter("vs_filter_normal",
+                                                              FILTER_FRAGMENT_SHADERS[mCombinedIndex[i]]);
+                            combinedFilter->setViewRect(0, 0, mWidth, mHeight);
+                            updateFilterSettings(mCombinedIndex[i], combinedFilter, false);
+                            mCombinedEffects.insert(std::make_pair(mCombinedIndex[i], combinedFilter));
+                        }
                     }
-                    mFilter->addTarget(mCombinedEffects.at(0));
+                    XImageFilter *firstCombinedFilter =  mCombinedEffects.find(mCombinedIndex[0])->second;
+                    XImageFilter *secondCombinedFilter =  mCombinedEffects.find(mCombinedIndex[1])->second;
+                    mFilter->addTarget(firstCombinedFilter);
+                    firstCombinedFilter->clearTarget();
+                    secondCombinedFilter->clearTarget();
+                    firstCombinedFilter->addTarget(secondCombinedFilter);
+                    mCombined = true;
                 } else if (mCurrentIndex != filterItemCurrent) {
+                    mCombined = false;
                     mOutput->clearTarget();
                     SAFE_DELETE(mFilter);
                     mFilter = new XImageFilter("vs_filter_normal",
@@ -141,9 +154,10 @@ public:
                     mFilter->setViewRect(0, 0, mWidth, mHeight);
                     mOutput->addTarget(mFilter);
                     mCurrentIndex = filterItemCurrent;
-                    updateFilterSettings(filterItemCurrent, mRatio, false);
+                    updateFilterSettings(filterItemCurrent, mFilter, false);
                 } else {
-                    updateFilterSettings(filterItemCurrent, mRatio, true);
+                    mCombined = false;
+                    updateFilterSettings(filterItemCurrent, mFilter, true);
                 }
 
                 mOutput->renderTargetsByNewOutputTexture(0);
@@ -160,9 +174,10 @@ public:
         return false;
     }
 
-    void updateFilterSettings(int index, float ratio, bool updateOnly) {
+    void updateFilterSettings(int index, XImageFilter* filter, bool updateOnly) {
         ImGui::Separator();
         const char *type = FILTER_ITEMS[index];
+        ImGui::Text(type);
         if (strcmp("None", type) == 0) {
         } else if (strcmp("Saturation", type) == 0) {
             Saturation saturation;
@@ -174,7 +189,7 @@ public:
                     , saturation.paramMin
                     , saturation.paramMax
             );
-            mFilter->setVec4(saturation.paramName, XImage::wrapFloatToVec4(mValues[saturation.paramName]));
+            filter->setVec4(saturation.paramName, XImage::wrapFloatToVec4(mValues[saturation.paramName]));
         } else if (strcmp("Contrast", type) == 0) {
             Contrast contrast;
             if (!updateOnly) {
@@ -185,7 +200,7 @@ public:
                     , contrast.paramMin
                     , contrast.paramMax
             );
-            mFilter->setVec4(contrast.paramName, XImage::wrapFloatToVec4(mValues[contrast.paramName]));
+            filter->setVec4(contrast.paramName, XImage::wrapFloatToVec4(mValues[contrast.paramName]));
         } else if (strcmp("Brightness", type) == 0) {
             Brightness brightness;
             if (!updateOnly) {
@@ -196,7 +211,7 @@ public:
                     , brightness.paramMin
                     , brightness.paramMax
             );
-            mFilter->setVec4(brightness.paramName,
+            filter->setVec4(brightness.paramName,
                              XImage::wrapFloatToVec4(mValues[brightness.paramName]));
         } else if (strcmp("Exposure", type) == 0) {
             Exposure exposure;
@@ -208,7 +223,7 @@ public:
                     , exposure.paramMin
                     , exposure.paramMax
             );
-            mFilter->setVec4(exposure.paramName,
+            filter->setVec4(exposure.paramName,
                              XImage::wrapFloatToVec4(mValues[exposure.paramName]));
         } else if (strcmp("RGB", type) == 0) {
             RGB rgb;
@@ -232,9 +247,9 @@ public:
                     , rgb.paramMin
                     , 10.0f
             );
-            mFilter->setVec4(rgb.paramRedName, XImage::wrapFloatToVec4(mValues[rgb.paramRedName]));
-            mFilter->setVec4(rgb.paramGreenName, XImage::wrapFloatToVec4(mValues[rgb.paramRedName]));
-            mFilter->setVec4(rgb.paramBlueName, XImage::wrapFloatToVec4(mValues[rgb.paramBlueName]));
+            filter->setVec4(rgb.paramRedName, XImage::wrapFloatToVec4(mValues[rgb.paramRedName]));
+            filter->setVec4(rgb.paramGreenName, XImage::wrapFloatToVec4(mValues[rgb.paramRedName]));
+            filter->setVec4(rgb.paramBlueName, XImage::wrapFloatToVec4(mValues[rgb.paramBlueName]));
         } else if (strcmp("HUE", type) == 0) {
             HUE hue;
             if (!updateOnly) {
@@ -245,7 +260,7 @@ public:
                     , hue.paramMin
                     , hue.paramMax
             );
-            mFilter->setVec4(hue.paramName, XImage::wrapFloatToVec4(mValues[hue.paramName]));
+            filter->setVec4(hue.paramName, XImage::wrapFloatToVec4(mValues[hue.paramName]));
         } else if (strcmp("Levels", type) == 0) {
             Levels levels;
             if (!updateOnly) {
@@ -344,23 +359,23 @@ public:
                     , levels.paramMin[2]
                     , levels.paramMax[2]
             );
-            mFilter->setVec4(levels.paramMinLevelName,
+            filter->setVec4(levels.paramMinLevelName,
                              XImage::wrapVec3ToVec4(mValues[levels.paramMinLevelName + "R"],
                                                          mValues[levels.paramMinLevelName + "G"],
                                                          mValues[levels.paramMinLevelName + "B"]));
-            mFilter->setVec4(levels.paramMiddleLevelName,
+            filter->setVec4(levels.paramMiddleLevelName,
                              XImage::wrapVec3ToVec4(mValues[levels.paramMiddleLevelName + "R"],
                                                          mValues[levels.paramMiddleLevelName + "G"],
                                                          mValues[levels.paramMiddleLevelName + "B"]));
-            mFilter->setVec4(levels.paramMaxLevelName,
+            filter->setVec4(levels.paramMaxLevelName,
                              XImage::wrapVec3ToVec4(mValues[levels.paramMaxLevelName + "R"],
                                                          mValues[levels.paramMaxLevelName + "G"],
                                                          mValues[levels.paramMaxLevelName + "B"]));
-            mFilter->setVec4(levels.paramMinOutName,
+            filter->setVec4(levels.paramMinOutName,
                              XImage::wrapVec3ToVec4(mValues[levels.paramMinOutName + "R"],
                                                          mValues[levels.paramMinOutName + "G"],
                                                          mValues[levels.paramMinOutName + "B"]));
-            mFilter->setVec4(levels.paramMaxOutName,
+            filter->setVec4(levels.paramMaxOutName,
                              XImage::wrapVec3ToVec4(mValues[levels.paramMaxOutName + "R"],
                                                          mValues[levels.paramMaxOutName + "G"],
                                                          mValues[levels.paramMaxOutName + "B"]));
@@ -380,9 +395,9 @@ public:
                     , -10
                     , 10
             );
-            mFilter->setVec4(whiteBalance.paramTemperatureName,
+            filter->setVec4(whiteBalance.paramTemperatureName,
                              XImage::wrapFloatToVec4(mValues[whiteBalance.paramTemperatureName]));
-            mFilter->setVec4(whiteBalance.paramTintName,
+            filter->setVec4(whiteBalance.paramTintName,
                              XImage::wrapFloatToVec4(mValues[whiteBalance.paramTintName]));
         } else if (strcmp("Monochrome", type) == 0) {
             Monochrome monochrome;
@@ -413,9 +428,9 @@ public:
                     , monochrome.paramFilterColorMin[2]
                     , monochrome.paramFilterColorMax[2]
             );
-            mFilter->setVec4(monochrome.paramIntensityName,
+            filter->setVec4(monochrome.paramIntensityName,
                              XImage::wrapFloatToVec4(mValues[monochrome.paramIntensityName]));
-            mFilter->setVec4(monochrome.paramFilterColorName,
+            filter->setVec4(monochrome.paramFilterColorName,
                              XImage::wrapVec3ToVec4(mValues[monochrome.paramFilterColorName + "R"],
                                                          mValues[monochrome.paramFilterColorName + "G"],
                                                          mValues[monochrome.paramFilterColorName + "B"]));
@@ -426,14 +441,14 @@ private:
     entry::MouseState m_mouseState;
     XImageFileOutput *mOutput;
     XImageFilter *mFilter;
-    std::vector<XImageInputOutput *> mCombinedEffects;
+    std::unordered_map<int, XImageFilter*> mCombinedEffects;
     int mCurrentIndex = -1;
     uint32_t mWidth;
     uint32_t mHeight;
     uint32_t m_debug;
     uint32_t m_reset;
-    float mRatio;
-    float mOffset;
+    bool mCombined = false;
+    int *mCombinedIndex = new int[2]{0, 0};
     std::unordered_map<std::string, float > mValues;
 };
 

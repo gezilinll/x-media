@@ -18,7 +18,7 @@
 #include "XImageFileOutput.hpp"
 #include "XImage.hpp"
 
-using namespace XImage;
+USING_NS_X_IMAGE
 
 namespace {
     XParticles *particles = new XParticles();
