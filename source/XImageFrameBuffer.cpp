@@ -3,7 +3,7 @@
 //
 
 #include "XImageFrameBuffer.hpp"
-#include "XImageUtils.hpp"
+#include "XImage.hpp"
 #include "XLog.hpp"
 
 NS_X_IMAGE_BEGIN
@@ -12,13 +12,13 @@ XImageFrameBuffer::XImageFrameBuffer() {
 }
 
 XImageFrameBuffer::~XImageFrameBuffer() {
-    XImageUtils::destroy(mHandle);
+    XImage::destroy(mHandle);
 }
 
 void XImageFrameBuffer::loadFromImage(std::string path) {
     if (bgfx::isValid(mHandle)) {
         LOGW("XImageFrameBuffer::loadFromImage recycle existed FrameBufferHandle, path=%s", path.data());
-        XImageUtils::destroy(mHandle);
+        XImage::destroy(mHandle);
     }
     mImagePath = path;
     bgfx::TextureHandle textureHandle = loadTexture(path.data());

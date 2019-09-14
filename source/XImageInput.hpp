@@ -19,9 +19,8 @@ public:
     /**
      * @brief notify new frame is ready and do process
      * @param[in] progress current progress, [0.0, 1.0]
-     * @param[in] index index of this filter in the render sequence
      */
-    virtual void renderAtProgress(float progress, int index);
+    virtual void renderAtProgress(float progress);
 
     /**
      * @brief set frame buffer to be processing

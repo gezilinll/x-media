@@ -1,5 +1,5 @@
 #include "XParticles.hpp"
-#include "XImageUtils.hpp"
+#include "XImage.hpp"
 #include <bgfx/bgfx.h>
 #include <bgfx/embedded_shader.h>
 #include "ps/vs_particle.bin.h"
@@ -120,7 +120,7 @@ void XParticles::updateViewAndEye(float *mtxView, const bx::Vec3 &eye) {
     mEyePos = eye;
 }
 
-void XParticles::renderAtProgress(float progress, int index) {
+void XParticles::renderAtProgress(float progress) {
     uint32_t numParticles = 0;
     for (uint16_t ii = 0, num = mEmitterAlloc->getNumHandles(); ii < num; ++ii) {
         const uint16_t idx = mEmitterAlloc->getHandleAt(ii);
@@ -193,7 +193,7 @@ void XParticles::renderAtProgress(float progress, int index) {
             bgfx::setVertexBuffer(0, &tvb);
             bgfx::setIndexBuffer(&tib);
             bgfx::setTexture(0, mTexColor, mTexture);
-            bgfx::submit(index, mParticleProgram);
+            bgfx::submit(XImage::renderIndex(), mParticleProgram);
         }
     }
 }

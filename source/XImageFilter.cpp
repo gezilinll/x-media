@@ -3,7 +3,7 @@
 //
 
 #include "XImageFilter.hpp"
-#include "XImageUtils.hpp"
+#include "XImage.hpp"
 #include "XLog.hpp"
 
 NS_X_IMAGE_BEGIN
@@ -58,13 +58,13 @@ XImageFilter::XImageFilter(std::string vertex, std::string fragment) {
 }
 
 XImageFilter::~XImageFilter() {
-    XImageUtils::destroy(mProgram);
-    XImageUtils::destroy(mVertexBuffer);
-    XImageUtils::destroy(mIndexBuffer);
+    XImage::destroy(mProgram);
+    XImage::destroy(mVertexBuffer);
+    XImage::destroy(mIndexBuffer);
 
     auto iter = mUniformHandles.begin();
     while (iter != mUniformHandles.end()) {
-        XImageUtils::destroy(iter->second);
+        XImage::destroy(iter->second);
         iter++;
     }
     mUniformHandles.clear();
@@ -81,7 +81,7 @@ void XImageFilter::setViewRect(int x, int y, int width, int height) {
     mViewRectHeight = height;
 }
 
-void XImageFilter::renderAtProgress(float progress, int index) {
+void XImageFilter::renderAtProgress(float progress) {
     if (!isViewRectValid()) {
         LOGE("XImageFilter::renderAtProgress view rect args is invalid.");
         return;
@@ -101,14 +101,12 @@ void XImageFilter::renderAtProgress(float progress, int index) {
         mVertexBuffer = bgfx::createVertexBuffer(
                 // Static data can be passed with bgfx::makeRef
                 bgfx::makeRef(s_vertices, sizeof(s_vertices) )
-                , PosTexVertex::ms_decl
-        );
+                , PosTexVertex::ms_decl);
 
         // Create static index buffer for triangle list rendering.
         mIndexBuffer = bgfx::createIndexBuffer(
                 // Static data can be passed with bgfx::makeRef
-                bgfx::makeRef(s_triList, sizeof(s_triList) )
-        );
+                bgfx::makeRef(s_triList, sizeof(s_triList) ));
     }
     
     if (!bgfx::isValid(mProgram)) {
@@ -116,37 +114,33 @@ void XImageFilter::renderAtProgress(float progress, int index) {
         return;
     }
 
-
+    int renderIndex = XImage::renderIndex();
     if (!mTargets.empty()) {
         if (!bgfx::isValid(mOutputFrameBuffer->get())) {
             mOutputFrameBuffer->create(mViewRectWidth, mViewRectHeight, bgfx::TextureFormat::BGRA8);
         }
-        index = 0;
-        bgfx::setViewFrameBuffer(0, mOutputFrameBuffer->get());
+        bgfx::setViewFrameBuffer(renderIndex, mOutputFrameBuffer->get());
     } else {
-        index = 1;
-        bgfx::setViewFrameBuffer(1, BGFX_INVALID_HANDLE);
+        bgfx::setViewFrameBuffer(renderIndex, BGFX_INVALID_HANDLE);
     }
-    bgfx::setViewClear(index
+    bgfx::setViewClear(renderIndex
             , BGFX_CLEAR_COLOR|BGFX_CLEAR_DEPTH
             , 0x303030ff
             , 1.0f
-            , 0
-    );
+            , 0);
     uint64_t state = 0
                      | BGFX_STATE_WRITE_R
                      | BGFX_STATE_WRITE_G
                      | BGFX_STATE_WRITE_B
                      | BGFX_STATE_WRITE_A
-                     | UINT64_C(0)
-    ;
-    bgfx::touch(index);
-    bgfx::setViewRect(index, mViewRectX, mViewRectY, mViewRectWidth, mViewRectHeight);
+                     | UINT64_C(0);
+    bgfx::touch(renderIndex);
+    bgfx::setViewRect(renderIndex, mViewRectX, mViewRectY, mViewRectWidth, mViewRectHeight);
     bgfx::setVertexBuffer(0, mVertexBuffer);
     bgfx::setIndexBuffer(mIndexBuffer);
     bgfx::setState(state);
     bgfx::setTexture(0, mUniformHandles.find("s_texColor")->second, mFirstInputFrameBuffer->getTexture());
-    bgfx::submit(index, mProgram);
+    bgfx::submit(renderIndex, mProgram);
 
     renderTargetsByNewOutputTexture(progress);
 }

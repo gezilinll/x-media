@@ -11,7 +11,7 @@
 #include "XImageFileOutput.hpp"
 #include "XImageFilter.hpp"
 #include "XLog.hpp"
-#include "XImageUtils.hpp"
+#include "XImage.hpp"
 #include "XImageShaderInfo.hpp"
 #include "entry/entry.h"
 #include "imgui/imgui.h"
@@ -52,14 +52,6 @@ public:
         m_debug = BGFX_DEBUG_TEXT;
         m_reset = BGFX_RESET_VSYNC;
         
-        // Set view 0 clear state.
-        bgfx::setViewClear(0
-                , BGFX_CLEAR_COLOR|BGFX_CLEAR_DEPTH
-                , 0x303030ff
-                , 1.0f
-                , 0
-        );
-
         imguiCreate();
 
         mOutput = new XImageFileOutput();
@@ -93,6 +85,7 @@ public:
     bool update() override {
         if (!entry::processEvents(mWidth, mHeight, m_debug, m_reset, &m_mouseState) )
         {
+            XImage::begin();
             imguiBeginFrame(m_mouseState.m_mx
                             ,  m_mouseState.m_my
                             , (m_mouseState.m_buttons[entry::MouseButton::Left  ] ? IMGUI_MBUT_LEFT   : 0)
@@ -136,7 +129,7 @@ public:
                         brightnessFilter->setViewRect(0, 0, mWidth, mHeight);
                         Brightness brightness;
                         brightnessFilter->setVec4(brightness.paramName,
-                                                  XImageUtils::wrapFloatToVec4(0.3));
+                                                  XImage::wrapFloatToVec4(0.3));
                         mCombinedEffects.push_back(brightnessFilter);
                     }
                     mFilter->addTarget(mCombinedEffects.at(0));
@@ -159,9 +152,7 @@ public:
             ImGui::End();
             imguiEndFrame();
 
-            // Advance to next frame. Rendering thread will be kicked to
-            // process submitted rendering primitives.
-            bgfx::frame();
+            XImage::end();
             
             return true;
         }
@@ -183,7 +174,7 @@ public:
                     , saturation.paramMin
                     , saturation.paramMax
             );
-            mFilter->setVec4(saturation.paramName, XImageUtils::wrapFloatToVec4(mValues[saturation.paramName]));
+            mFilter->setVec4(saturation.paramName, XImage::wrapFloatToVec4(mValues[saturation.paramName]));
         } else if (strcmp("Contrast", type) == 0) {
             Contrast contrast;
             if (!updateOnly) {
@@ -194,7 +185,7 @@ public:
                     , contrast.paramMin
                     , contrast.paramMax
             );
-            mFilter->setVec4(contrast.paramName, XImageUtils::wrapFloatToVec4(mValues[contrast.paramName]));
+            mFilter->setVec4(contrast.paramName, XImage::wrapFloatToVec4(mValues[contrast.paramName]));
         } else if (strcmp("Brightness", type) == 0) {
             Brightness brightness;
             if (!updateOnly) {
@@ -206,7 +197,7 @@ public:
                     , brightness.paramMax
             );
             mFilter->setVec4(brightness.paramName,
-                             XImageUtils::wrapFloatToVec4(mValues[brightness.paramName]));
+                             XImage::wrapFloatToVec4(mValues[brightness.paramName]));
         } else if (strcmp("Exposure", type) == 0) {
             Exposure exposure;
             if (!updateOnly) {
@@ -218,7 +209,7 @@ public:
                     , exposure.paramMax
             );
             mFilter->setVec4(exposure.paramName,
-                             XImageUtils::wrapFloatToVec4(mValues[exposure.paramName]));
+                             XImage::wrapFloatToVec4(mValues[exposure.paramName]));
         } else if (strcmp("RGB", type) == 0) {
             RGB rgb;
             if (!updateOnly) {
@@ -241,9 +232,9 @@ public:
                     , rgb.paramMin
                     , 10.0f
             );
-            mFilter->setVec4(rgb.paramRedName, XImageUtils::wrapFloatToVec4(mValues[rgb.paramRedName]));
-            mFilter->setVec4(rgb.paramGreenName, XImageUtils::wrapFloatToVec4(mValues[rgb.paramRedName]));
-            mFilter->setVec4(rgb.paramBlueName, XImageUtils::wrapFloatToVec4(mValues[rgb.paramBlueName]));
+            mFilter->setVec4(rgb.paramRedName, XImage::wrapFloatToVec4(mValues[rgb.paramRedName]));
+            mFilter->setVec4(rgb.paramGreenName, XImage::wrapFloatToVec4(mValues[rgb.paramRedName]));
+            mFilter->setVec4(rgb.paramBlueName, XImage::wrapFloatToVec4(mValues[rgb.paramBlueName]));
         } else if (strcmp("HUE", type) == 0) {
             HUE hue;
             if (!updateOnly) {
@@ -254,7 +245,7 @@ public:
                     , hue.paramMin
                     , hue.paramMax
             );
-            mFilter->setVec4(hue.paramName, XImageUtils::wrapFloatToVec4(mValues[hue.paramName]));
+            mFilter->setVec4(hue.paramName, XImage::wrapFloatToVec4(mValues[hue.paramName]));
         } else if (strcmp("Levels", type) == 0) {
             Levels levels;
             if (!updateOnly) {
@@ -354,23 +345,23 @@ public:
                     , levels.paramMax[2]
             );
             mFilter->setVec4(levels.paramMinLevelName,
-                             XImageUtils::wrapVec3ToVec4(mValues[levels.paramMinLevelName + "R"],
+                             XImage::wrapVec3ToVec4(mValues[levels.paramMinLevelName + "R"],
                                                          mValues[levels.paramMinLevelName + "G"],
                                                          mValues[levels.paramMinLevelName + "B"]));
             mFilter->setVec4(levels.paramMiddleLevelName,
-                             XImageUtils::wrapVec3ToVec4(mValues[levels.paramMiddleLevelName + "R"],
+                             XImage::wrapVec3ToVec4(mValues[levels.paramMiddleLevelName + "R"],
                                                          mValues[levels.paramMiddleLevelName + "G"],
                                                          mValues[levels.paramMiddleLevelName + "B"]));
             mFilter->setVec4(levels.paramMaxLevelName,
-                             XImageUtils::wrapVec3ToVec4(mValues[levels.paramMaxLevelName + "R"],
+                             XImage::wrapVec3ToVec4(mValues[levels.paramMaxLevelName + "R"],
                                                          mValues[levels.paramMaxLevelName + "G"],
                                                          mValues[levels.paramMaxLevelName + "B"]));
             mFilter->setVec4(levels.paramMinOutName,
-                             XImageUtils::wrapVec3ToVec4(mValues[levels.paramMinOutName + "R"],
+                             XImage::wrapVec3ToVec4(mValues[levels.paramMinOutName + "R"],
                                                          mValues[levels.paramMinOutName + "G"],
                                                          mValues[levels.paramMinOutName + "B"]));
             mFilter->setVec4(levels.paramMaxOutName,
-                             XImageUtils::wrapVec3ToVec4(mValues[levels.paramMaxOutName + "R"],
+                             XImage::wrapVec3ToVec4(mValues[levels.paramMaxOutName + "R"],
                                                          mValues[levels.paramMaxOutName + "G"],
                                                          mValues[levels.paramMaxOutName + "B"]));
         } else if (strcmp("WhiteBalance", type) == 0) {
@@ -390,9 +381,9 @@ public:
                     , 10
             );
             mFilter->setVec4(whiteBalance.paramTemperatureName,
-                             XImageUtils::wrapFloatToVec4(mValues[whiteBalance.paramTemperatureName]));
+                             XImage::wrapFloatToVec4(mValues[whiteBalance.paramTemperatureName]));
             mFilter->setVec4(whiteBalance.paramTintName,
-                             XImageUtils::wrapFloatToVec4(mValues[whiteBalance.paramTintName]));
+                             XImage::wrapFloatToVec4(mValues[whiteBalance.paramTintName]));
         } else if (strcmp("Monochrome", type) == 0) {
             Monochrome monochrome;
             if (!updateOnly) {
@@ -423,9 +414,9 @@ public:
                     , monochrome.paramFilterColorMax[2]
             );
             mFilter->setVec4(monochrome.paramIntensityName,
-                             XImageUtils::wrapFloatToVec4(mValues[monochrome.paramIntensityName]));
+                             XImage::wrapFloatToVec4(mValues[monochrome.paramIntensityName]));
             mFilter->setVec4(monochrome.paramFilterColorName,
-                             XImageUtils::wrapVec3ToVec4(mValues[monochrome.paramFilterColorName + "R"],
+                             XImage::wrapVec3ToVec4(mValues[monochrome.paramFilterColorName + "R"],
                                                          mValues[monochrome.paramFilterColorName + "G"],
                                                          mValues[monochrome.paramFilterColorName + "B"]));
         }

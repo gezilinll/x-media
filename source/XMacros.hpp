@@ -54,10 +54,10 @@
 
 
 #ifdef __cplusplus
-#define NS_X_IMAGE_BEGIN namespace XImage {
+#define NS_X_IMAGE_BEGIN namespace XImageNS {
 #define NS_X_IMAGE_END }
-#define USING_NS_X_IMAGE using namespace XImage;
-#define NS_X_IMAGE XImage
+#define USING_NS_X_IMAGE using namespace XImageNS;
+#define NS_X_IMAGE XImageNS
 #else
 #define NS_X_IMAGE_BEGIN
 #define NS_X_IMAGE_END

@@ -104,7 +104,7 @@ public:
      */
     void updateViewAndEye(float *mtxView, const bx::Vec3 &eye);
 
-    void renderAtProgress(float progress, int index) override;
+    void renderAtProgress(float progress) override;
 
     /**
      * @brief destroy selected emitter

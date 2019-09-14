@@ -16,7 +16,7 @@
 
 #include "XParticles.hpp"
 #include "XImageFileOutput.hpp"
-#include "XImageUtils.hpp"
+#include "XImage.hpp"
 
 using namespace XImage;
 

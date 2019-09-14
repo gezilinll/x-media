@@ -15,8 +15,14 @@ NS_X_IMAGE_BEGIN
 /**
  * @brief XImage's utils to make develop easier.
  */
-class XImageUtils {
+class XImage {
 public:
+    static void begin();
+
+    static int renderIndex();
+
+    static void end();
+
     /**
      * @brief wrap float value to vec4 needed form
      * @param[in] value float value
@@ -64,8 +70,6 @@ public:
      */
     static void destroy(bgfx::VertexBufferHandle &handle);
 
-
-
     /**
      * @brief destroy index buffer loaded by bgfx safely
      * @param[in] handle loaded index buffer handle
@@ -78,6 +82,8 @@ public:
      */
     static void destroy(bgfx::UniformHandle &handle);
 
+private:
+    static int sRenderIndex;
 };
 NS_X_IMAGE_END
 

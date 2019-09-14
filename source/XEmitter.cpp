@@ -193,7 +193,7 @@ void XEmitter::spawn(float _dt) {
     }
 }
 
-void XEmitter::create(XImage::EmitterShape::Enum _shape, XImage::EmitterDirection::Enum _direction,
+void XEmitter::create(EmitterShape::Enum _shape, EmitterDirection::Enum _direction,
                      uint32_t _maxParticles, bx::AllocatorI *allocatorI) {
     reset();
 
@@ -209,7 +209,7 @@ void XEmitter::destroy(bx::AllocatorI *allocatorI) {
 }
 
 uint32_t XEmitter::render(const float *_uv, const float *_mtxView, const bx::Vec3 &_eye, uint32_t _first, uint32_t _max,
-                         XImage::ParticleSort *_outSort, XImage::PosColorTexCoord0Vertex *_outVertices) {
+                         ParticleSort *_outSort, PosColorTexCoord0Vertex *_outVertices) {
     bx::EaseFn easeRgba  = bx::getEaseFunc(m_uniforms.easeRgba);
     bx::EaseFn easePos   = bx::getEaseFunc(m_uniforms.easePos);
     bx::EaseFn easeBlend = bx::getEaseFunc(m_uniforms.easeBlend);

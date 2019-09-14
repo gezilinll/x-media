@@ -24,12 +24,11 @@ void XImageOutput::clearTarget() {
 }
 
 void XImageOutput::renderTargetsByNewOutputTexture(float progress) {
-    int index = 0;
     auto iter = mTargets.begin();
     while (iter != mTargets.end()) {
         XImageInput* input = *iter;
         input->setInputFrameBuffer(mOutputFrameBuffer);
-        input->renderAtProgress(progress, index);
+        input->renderAtProgress(progress);
         ++iter;
     }
 }

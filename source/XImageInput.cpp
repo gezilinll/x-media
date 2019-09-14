@@ -9,7 +9,7 @@ void XImageInput::setInputFrameBuffer(XImageFrameBuffer *input) {
 
 }
 
-void XImageInput::renderAtProgress(float progress, int index) {
+void XImageInput::renderAtProgress(float progress) {
 
 }
 NS_X_IMAGE_END
