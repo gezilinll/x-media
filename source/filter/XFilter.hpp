@@ -5,7 +5,7 @@
 #ifndef GPUIMAGE_X_XIMAGEFILTER_HPP
 #define GPUIMAGE_X_XIMAGEFILTER_HPP
 
-#include "XInputOutput.hpp"
+#include "inout/XInputOutput.hpp"
 #include <string>
 #include <unordered_map>
 

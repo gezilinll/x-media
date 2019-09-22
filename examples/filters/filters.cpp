@@ -8,8 +8,8 @@
  */
 
 #include <bx/string.h>
-#include "XFrameOutput.hpp"
-#include "XFilter.hpp"
+#include "inout/XFrameOutput.hpp"
+#include "filter/XFilter.hpp"
 #include "XLog.hpp"
 #include "XImage.hpp"
 #include "XImageShaderInfo.hpp"

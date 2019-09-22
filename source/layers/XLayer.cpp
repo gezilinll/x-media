@@ -43,7 +43,7 @@ void XLayer::submit() {
 
     mLayerSource->clearTargets();
     for (XEffect *effect : mEffects) {
-        XInputOutput *target = effect->process();
+        XInputOutput *target = effect->get();
         target->setViewRect(mViewRect);
         mLayerSource->addTarget(target);
     }

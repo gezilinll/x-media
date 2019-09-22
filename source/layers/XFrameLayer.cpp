@@ -3,7 +3,7 @@
 //
 
 #include "XFrameLayer.hpp"
-#include "XFrameOutput.hpp"
+#include "inout/XFrameOutput.hpp"
 
 NS_X_IMAGE_BEGIN
 void XFrameLayer::updateSource() {

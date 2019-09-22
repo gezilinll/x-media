@@ -6,7 +6,7 @@
 #define GPUIMAGE_X_XFILTEREFFECT_HPP
 
 #include "XEffect.hpp"
-#include "XFilter.hpp"
+#include "filter/XFilter.hpp"
 #include <unordered_map>
 #include <glm/vec4.hpp>
 

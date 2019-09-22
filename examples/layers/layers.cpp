@@ -10,8 +10,8 @@
 #include "entry/entry.h"
 #include "imgui/imgui.h"
 #include "XImage.hpp"
-#include "XFrameLayer.hpp"
-#include "XFilterEffect.hpp"
+#include "layers/XFrameLayer.hpp"
+#include "filter/XFilterEffect.hpp"
 
 USING_NS_X_IMAGE
 

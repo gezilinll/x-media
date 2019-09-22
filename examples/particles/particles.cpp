@@ -14,8 +14,8 @@
 #include <bx/rng.h>
 #include <bx/easing.h>
 
-#include "XParticles.hpp"
-#include "XFrameOutput.hpp"
+#include "particles/XParticles.hpp"
+#include "inout/XFrameOutput.hpp"
 #include "XImage.hpp"
 
 USING_NS_X_IMAGE

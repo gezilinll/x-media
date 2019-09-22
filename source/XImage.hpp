@@ -7,7 +7,7 @@
 
 #include "bgfx/bgfx.h"
 #include "bgfx_utils.h"
-#include "XLayer.hpp"
+#include "layers/XLayer.hpp"
 #include <string>
 
 NS_X_IMAGE_BEGIN

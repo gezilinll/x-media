@@ -6,7 +6,7 @@
 #define GPUIMAGE_X_XPARTICLES_HPP
 
 #include "XMacros.hpp"
-#include "XInputOutput.hpp"
+#include "inout/XInputOutput.hpp"
 #include "packrect.h"
 #include "bounds.h"
 #include "XEmitter.h"

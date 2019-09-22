@@ -5,7 +5,7 @@
 #ifndef GPUIMAGE_X_XEFFECT_HPP
 #define GPUIMAGE_X_XEFFECT_HPP
 
-#include "XInputOutput.hpp"
+#include "inout/XInputOutput.hpp"
 #include "XLog.hpp"
 
 NS_X_IMAGE_BEGIN
