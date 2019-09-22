@@ -25,7 +25,7 @@ public:
     /**
      * @brief 创建图层
      * @param id 图层ID
-     * @attention 图层ID不可重复，并且需要控制在256以内
+     * @attention 图层ID不可重复
      */
     XLayer(int id);
 

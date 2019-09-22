@@ -3,15 +3,25 @@
 //
 
 #include "XImage.hpp"
+#include "XFrameBufferPool.hpp"
 
 NS_X_IMAGE_BEGIN
 
 int XImage::sRenderIndex = -1;
+int XImage::sCanvasWidth = 0;
+int XImage::sCanvasHeight = 0;
+int XImage::sFrame = nullptr;
+std::vector<XLayer *> XImage::sLayers;
+
+void XImage::setCanvasSize(int width, int height) {
+    sCanvasWidth = width;
+    sCanvasHeight = height;
+}
 
 void XImage::begin() {
 }
 
-void XImage::addLayer(XLayer &layer) {
+void XImage::addLayer(XLayer *layer) {
 }
 
 void XImage::submit() {
@@ -32,6 +42,11 @@ void XImage::end() {
     bgfx::frame();
 
     sRenderIndex = -1;
+}
+
+void XImage::destroy() {
+    sLayers.clear();
+    XFrameBufferPool::destroy();
 }
 
 float* XImage::wrapFloatToVec4(float value) {

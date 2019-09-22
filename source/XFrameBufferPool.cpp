@@ -54,4 +54,11 @@ void XFrameBufferPool::recycle(XImageNS::XFrameBuffer *buffer) {
     }
     buffer->setOccupied(false);
 }
+
+void XFrameBufferPool::destroy() {
+    for (XFrameBuffer* buffer : sBuffers) {
+        SAFE_DELETE(buffer);
+    }
+    sBuffers.clear();
+}
 NS_X_IMAGE_END

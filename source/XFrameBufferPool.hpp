@@ -37,6 +37,11 @@ public:
      */
     static void recycle(XFrameBuffer* buffer);
 
+    /**
+     * @brief 销毁所有帧数据资源，该操作帧数据无论是否被占用都将被销毁
+     */
+    static void destroy();
+
 private:
     /**
      * @brief 从缓存池里获取符合宽高并非占用状态的帧数据对象

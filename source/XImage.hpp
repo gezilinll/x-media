@@ -7,7 +7,7 @@
 
 #include "bgfx/bgfx.h"
 #include "bgfx_utils.h"
-#include "layers/XLayer.hpp"
+#include "XLayer.hpp"
 #include <string>
 
 NS_X_IMAGE_BEGIN
@@ -15,82 +15,75 @@ NS_X_IMAGE_BEGIN
 /**
  * @brief XImage's utils to make develop easier.
  */
+/**
+ * @brief 负责对外提供统一接口、逻辑控制、部分工具能力等内容的门面类，使用者应通过该类来实现主要的渲染数据设置和逻辑控制等
+ *
+ * 主要使用流程如下：
+ */
 class XImage {
 public:
+    /**
+     * @brief 开始进入渲染流程
+     */
     static void begin();
 
-    static void addLayer(XLayer &layer);
+    static void setCanvasSize(int width, int height);
 
+    /**
+     * @brief 添加图层，图层数据直接在图层对象上设置
+     * @param layer 图层
+     * @attention 该图层对象的内存管理由创建者负责，该类不进行控制
+     */
+    static void addLayer(XLayer *layer);
+
+    /**
+     * @brief 提交包含图层等在内的渲染数据并进行离屏渲染
+     * @note 该接口不会将渲染结果直接呈现在屏幕上
+     */
     static void submit();
 
+    /**
+     * @brief 将调用 #submit 后的离屏渲染的结果渲染到屏幕上
+     */
     static void frame();
 
+    /**
+     * @brief 获取当前渲染的视图ID，不同图层渲染时需要调用该接口来获取自身的渲染次序
+     * @return 当前渲染次序的ID
+     * @attention 该渲染ID会在调用 #end 时进行重置
+     */
     static int renderIndex();
 
+    /**
+     * @brief 结束该轮渲染流程
+     */
     static void end();
 
     /**
-     * @brief wrap float value to vec4 needed form
-     * @param[in] value float value
-     * @return float array, length:4
+     * @brief 销毁所有资源
      */
-    static float* wrapFloatToVec4(float value);
+    static void destroy();
 
-    /**
-     * @brief wrap three float value to vec4 needed form
-     * @param[in] x first float value
-     * @param[in] y second float value
-     * @param[in] z third float value
-     * @return float array, length is 4
-     */
-    static float* wrapVec3ToVec4(float x, float y, float z);
-
-    /**
-     * @brief wrap three float value to vec4 needed form
-     * @param[in] xyz length is 3
-     * @return float array, length is 4
-     */
-    static float* wrapVec3ToVec4(float* xyz);
-
-    /**
-     * @brief destroy program loaded by bgfx safely
-     * @param[in] handle loaded program handle
-     */
+    /***** 安全释放bgfx中数据的接口列表 *****/
     static void destroy(bgfx::ProgramHandle &handle);
-
-    /**
-     * @brief destroy frame buffer loaded by bgfx safely
-     * @param[in] handle loaded frame buffer handle
-     */
     static void destroy(bgfx::FrameBufferHandle &handle);
-
-    /**
-     * @brief destroy texture loaded by bgfx safely
-     * @param[in] handle loaded texture handle
-     */
     static void destroy(bgfx::TextureHandle &handle);
-
-    /**
-     * @brief destroy vertex buffer loaded by bgfx safely
-     * @param[in] handle loaded vertex buffer handle
-     */
     static void destroy(bgfx::VertexBufferHandle &handle);
-
-    /**
-     * @brief destroy index buffer loaded by bgfx safely
-     * @param[in] handle loaded index buffer handle
-     */
     static void destroy(bgfx::IndexBufferHandle &handle);
-
-    /**
-     * @brief destroy uniform created by bgfx safely
-     * @param[in] handle created uniform handle
-     */
     static void destroy(bgfx::UniformHandle &handle);
 
+    static float* wrapFloatToVec4(float value);
+
+    static float* wrapVec3ToVec4(float x, float y, float z);
+
+    static float* wrapVec3ToVec4(float* xyz);
+
 private:
-    static int sRenderIndex;
-    static XFrameBuffer *mFrame;
+    static int sRenderIndex; /// 渲染次序ID
+    static int sCanvasWidth; /// 画布宽度
+    static int sCanvasHeight; /// 画布高度
+    static XFrameBuffer *sFrame; /// 离屏渲染帧数据
+    static std::vector<XLayer *> sLayers; /// 图层列表
 };
 NS_X_IMAGE_END
 
