@@ -2,9 +2,10 @@
 // Created by 林炳河 on 2019/7/14.
 //
 
-#include "XImageFilter.hpp"
+#include "XFilter.hpp"
 #include "XImage.hpp"
 #include "XLog.hpp"
+#include "XFrameBufferPool.hpp"
 
 NS_X_IMAGE_BEGIN
 //顶点以及纹理坐标对象
@@ -44,20 +45,15 @@ static const uint16_t s_triList[] =
                 1, 3, 2,
         };
 
-XImageFilter::XImageFilter(std::string vertex, std::string fragment) {
+XFilter::XFilter(std::string vertex, std::string fragment) {
     mVertexShaderPath = vertex;
     mFragmentShaderPath = fragment;
     mProgram = BGFX_INVALID_HANDLE;
     mVertexBuffer = BGFX_INVALID_HANDLE;
     mIndexBuffer = BGFX_INVALID_HANDLE;
-
-    mViewRectX = 0;
-    mViewRectY = 0;
-    mViewRectWidth = 0;
-    mViewRectHeight = 0;
 }
 
-XImageFilter::~XImageFilter() {
+XFilter::~XFilter() {
     XImage::destroy(mProgram);
     XImage::destroy(mVertexBuffer);
     XImage::destroy(mIndexBuffer);
@@ -70,24 +66,25 @@ XImageFilter::~XImageFilter() {
     mUniformHandles.clear();
 }
 
-void XImageFilter::setInputFrameBuffer(XImageFrameBuffer *input) {
+void XFilter::init() {
+    if (mOutputFrameBuffer == nullptr) {
+        mOutputFrameBuffer = XFrameBufferPool::get(mViewRect.width, mViewRect.height);
+    }
+}
+
+void XFilter::setInputFrameBuffer(XFrameBuffer *input) {
     mFirstInputFrameBuffer = input;
 }
 
-void XImageFilter::setViewRect(int x, int y, int width, int height) {
-    mViewRectX = x;
-    mViewRectY = y;
-    mViewRectWidth = width;
-    mViewRectHeight = height;
-}
+void XFilter::submit(int index) {
+    init();
 
-void XImageFilter::renderAtProgress(float progress) {
     if (!isViewRectValid()) {
-        LOGE("XImageFilter::renderAtProgress view rect args is invalid.");
+        LOGE("XFilter::renderAtProgress view rect args is invalid.");
         return;
     }
     if (mFirstInputFrameBuffer == nullptr || !bgfx::isValid(mFirstInputFrameBuffer->getTexture())) {
-        LOGE("XImageFilter::renderAtProgress intput frame is invalid.");
+        LOGE("XFilter::renderAtProgress input frame is invalid.");
         return;
     }
     if (!bgfx::isValid(mProgram)) {
@@ -110,20 +107,16 @@ void XImageFilter::renderAtProgress(float progress) {
     }
     
     if (!bgfx::isValid(mProgram)) {
-        LOGE("XImageFilter::renderAtProgress load program failed. vsPath=%s, fsPath=%s", mVertexShaderPath.data(), mFragmentShaderPath.data());
+        LOGE("XFilter::renderAtProgress load program failed. vsPath=%s, fsPath=%s", mVertexShaderPath.data(), mFragmentShaderPath.data());
         return;
     }
 
-    int renderIndex = XImage::renderIndex();
     if (!mTargets.empty()) {
-        if (!bgfx::isValid(mOutputFrameBuffer->get())) {
-            mOutputFrameBuffer->create(mViewRectWidth, mViewRectHeight, bgfx::TextureFormat::BGRA8);
-        }
-        bgfx::setViewFrameBuffer(renderIndex, mOutputFrameBuffer->get());
+        bgfx::setViewFrameBuffer(index, mOutputFrameBuffer->get());
     } else {
-        bgfx::setViewFrameBuffer(renderIndex, BGFX_INVALID_HANDLE);
+        bgfx::setViewFrameBuffer(index, BGFX_INVALID_HANDLE);
     }
-    bgfx::setViewClear(renderIndex
+    bgfx::setViewClear(index
             , BGFX_CLEAR_COLOR|BGFX_CLEAR_DEPTH
             , 0x303030ff
             , 1.0f
@@ -134,18 +127,18 @@ void XImageFilter::renderAtProgress(float progress) {
                      | BGFX_STATE_WRITE_B
                      | BGFX_STATE_WRITE_A
                      | UINT64_C(0);
-    bgfx::touch(renderIndex);
-    bgfx::setViewRect(renderIndex, mViewRectX, mViewRectY, mViewRectWidth, mViewRectHeight);
+    bgfx::touch(index);
+    bgfx::setViewRect(index, mViewRect.x, mViewRect.y, mViewRect.width, mViewRect.height);
     bgfx::setVertexBuffer(0, mVertexBuffer);
     bgfx::setIndexBuffer(mIndexBuffer);
     bgfx::setState(state);
     bgfx::setTexture(0, mUniformHandles.find("s_texColor")->second, mFirstInputFrameBuffer->getTexture());
-    bgfx::submit(renderIndex, mProgram);
+    bgfx::submit(index, mProgram);
 
-    renderTargetsByNewOutputTexture(progress);
+    XOutput::submit(index);
 }
 
-void XImageFilter::setVec4(std::string paramName, float *paramValue) {
+void XFilter::setVec4(std::string paramName, float *paramValue) {
     bgfx::UniformHandle handle;
     auto iter = mUniformHandles.find(paramName);
     if (iter == mUniformHandles.end()) {
@@ -155,12 +148,12 @@ void XImageFilter::setVec4(std::string paramName, float *paramValue) {
         handle = iter->second;
     }
     if (!bgfx::isValid(handle)) {
-        LOGE("XImageFilter::setVec4 uniform handle is invalid.");
+        LOGE("XFilter::setVec4 uniform handle is invalid.");
     }
     bgfx::setUniform(handle, paramValue);
 }
 
-bool XImageFilter::isViewRectValid() {
-    return mViewRectWidth > 0 && mViewRectHeight > 0;
+bool XFilter::isViewRectValid() {
+    return mViewRect.width > 0 && mViewRect.height > 0;
 }
 NS_X_IMAGE_END

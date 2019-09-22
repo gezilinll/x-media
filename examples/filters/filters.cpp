@@ -8,8 +8,8 @@
  */
 
 #include <bx/string.h>
-#include "XImageFileOutput.hpp"
-#include "XImageFilter.hpp"
+#include "XFrameOutput.hpp"
+#include "XFilter.hpp"
 #include "XLog.hpp"
 #include "XImage.hpp"
 #include "XImageShaderInfo.hpp"
@@ -55,7 +55,7 @@ public:
         
         imguiCreate();
 
-        mOutput = new XImageFileOutput();
+        mOutput = new XFrameOutput();
         mOutput->initWithPath("images/scene.jpg");
         mFilter = nullptr;
     }
@@ -68,7 +68,7 @@ public:
 
         auto iter = mCombinedEffects.begin();
         while (iter != mCombinedEffects.end()) {
-            XImageFilter *input = iter->second;
+            XFilter *input = iter->second;
             SAFE_DELETE(input);
             iter++;
         }
@@ -125,21 +125,21 @@ public:
                             }
                             mCombinedIndex[i] = combineIndex;
                         }
-                        XImageFilter *combinedFilter = nullptr;
+                        XFilter *combinedFilter = nullptr;
                         auto iter = mCombinedEffects.find(mCombinedIndex[i]);
                         if (iter != mCombinedEffects.end()) {
                             combinedFilter = iter->second;
                             updateFilterSettings(mCombinedIndex[i], combinedFilter, true);
                         } else {
-                            combinedFilter = new XImageFilter("vs_filter_normal",
+                            combinedFilter = new XFilter("vs_filter_normal",
                                                               FILTER_FRAGMENT_SHADERS[mCombinedIndex[i]]);
                             combinedFilter->setViewRect(0, 0, mWidth, mHeight);
                             updateFilterSettings(mCombinedIndex[i], combinedFilter, false);
                             mCombinedEffects.insert(std::make_pair(mCombinedIndex[i], combinedFilter));
                         }
                     }
-                    XImageFilter *firstCombinedFilter =  mCombinedEffects.find(mCombinedIndex[0])->second;
-                    XImageFilter *secondCombinedFilter =  mCombinedEffects.find(mCombinedIndex[1])->second;
+                    XFilter *firstCombinedFilter =  mCombinedEffects.find(mCombinedIndex[0])->second;
+                    XFilter *secondCombinedFilter =  mCombinedEffects.find(mCombinedIndex[1])->second;
                     mFilter->addTarget(firstCombinedFilter);
                     firstCombinedFilter->clearTarget();
                     secondCombinedFilter->clearTarget();
@@ -149,7 +149,7 @@ public:
                     mCombined = false;
                     mOutput->clearTarget();
                     SAFE_DELETE(mFilter);
-                    mFilter = new XImageFilter("vs_filter_normal",
+                    mFilter = new XFilter("vs_filter_normal",
                                                FILTER_FRAGMENT_SHADERS[filterItemCurrent]);
                     mFilter->setViewRect(0, 0, mWidth, mHeight);
                     mOutput->addTarget(mFilter);
@@ -174,7 +174,7 @@ public:
         return false;
     }
 
-    void updateFilterSettings(int index, XImageFilter* filter, bool updateOnly) {
+    void updateFilterSettings(int index, XFilter* filter, bool updateOnly) {
         ImGui::Separator();
         const char *type = FILTER_ITEMS[index];
         ImGui::Text(type);
@@ -439,9 +439,9 @@ public:
 
 private:
     entry::MouseState m_mouseState;
-    XImageFileOutput *mOutput;
-    XImageFilter *mFilter;
-    std::unordered_map<int, XImageFilter*> mCombinedEffects;
+    XFrameOutput *mOutput;
+    XFilter *mFilter;
+    std::unordered_map<int, XFilter*> mCombinedEffects;
     int mCurrentIndex = -1;
     uint32_t mWidth;
     uint32_t mHeight;

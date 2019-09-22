@@ -5,6 +5,7 @@
 #ifndef MMMacros_h
 #define MMMacros_h
 
+/***** 安全释放资源相关宏定义 *****/
 #define SAFE_DELETE(p)     \
     do {                   \
         if (p) {           \
@@ -49,10 +50,7 @@
 #define BREAK_IF(cond) \
     if (cond) break
 
-// 计算数组的长度
-#define NUM_OF_ARRAY_ELEMENT(a) (sizeof(a) / sizeof(a[0]))
-
-
+/***** 命名空间相关宏定义 *****/
 #ifdef __cplusplus
 #define NS_X_IMAGE_BEGIN namespace XImageNS {
 #define NS_X_IMAGE_END }

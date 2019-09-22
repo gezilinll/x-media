@@ -7,7 +7,7 @@
 
 #include "bgfx/bgfx.h"
 #include "bgfx_utils.h"
-#include "XMacros.hpp"
+#include "XLayer.hpp"
 #include <string>
 
 NS_X_IMAGE_BEGIN
@@ -18,6 +18,12 @@ NS_X_IMAGE_BEGIN
 class XImage {
 public:
     static void begin();
+
+    static void addLayer(XLayer &layer);
+
+    static void submit();
+
+    static void frame();
 
     static int renderIndex();
 
@@ -84,6 +90,7 @@ public:
 
 private:
     static int sRenderIndex;
+    static XFrameBuffer *mFrame;
 };
 NS_X_IMAGE_END
 

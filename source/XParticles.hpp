@@ -6,7 +6,7 @@
 #define GPUIMAGE_X_XPARTICLES_HPP
 
 #include "XMacros.hpp"
-#include "XImageInputOutput.hpp"
+#include "XInputOutput.hpp"
 #include "packrect.h"
 #include "bounds.h"
 #include "XEmitter.h"
@@ -60,7 +60,7 @@ inline bool isValid(Ty handle)
     return handle.idx != UINT16_MAX;
 }
 
-class XParticles: public XImageInputOutput {
+class XParticles: public XInputOutput {
 public:
     XParticles();
 
@@ -104,7 +104,7 @@ public:
      */
     void updateViewAndEye(float *mtxView, const bx::Vec3 &eye);
 
-    void renderAtProgress(float progress) override;
+    void submit(int index) override;
 
     /**
      * @brief destroy selected emitter

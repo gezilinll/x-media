@@ -11,6 +11,17 @@ int XImage::sRenderIndex = -1;
 void XImage::begin() {
 }
 
+void XImage::addLayer(XLayer &layer) {
+}
+
+void XImage::submit() {
+
+}
+
+void XImage::frame() {
+
+}
+
 int XImage::renderIndex() {
     return ++sRenderIndex;
 }
@@ -20,7 +31,7 @@ void XImage::end() {
     // process submitted rendering primitives.
     bgfx::frame();
 
-    sRenderIndex = 0;
+    sRenderIndex = -1;
 }
 
 float* XImage::wrapFloatToVec4(float value) {

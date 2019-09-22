@@ -15,14 +15,13 @@
 #include <bx/easing.h>
 
 #include "XParticles.hpp"
-#include "XImageFileOutput.hpp"
+#include "XFrameOutput.hpp"
 #include "XImage.hpp"
 
 USING_NS_X_IMAGE
 
 namespace {
     XParticles *particles = new XParticles();
-    XImageFileOutput *fileOutput = new XImageFileOutput();
 
     static const char *s_shapeNames[] =
             {
@@ -201,7 +200,6 @@ namespace {
             ddInit();
 
             particles->init();
-            fileOutput->addTarget(particles);
             EmitterSpriteHandle sprite = particles->createSprite("textures/particle.ktx", bgfx::TextureFormat::BGRA8);
             for (uint32_t ii = 0; ii < BX_COUNTOF(m_emitter); ++ii) {
                 m_emitter[ii].create();
@@ -224,7 +222,6 @@ namespace {
                 m_emitter[ii].destroy();
             }
 
-            SAFE_DELETE(fileOutput);
             SAFE_DELETE(particles);
 
             ddShutdown();
@@ -241,10 +238,9 @@ namespace {
 
         bool update() override {
             if (!entry::processEvents(m_width, m_height, m_debug, m_reset, &m_mouseState)) {
+                XImage::begin();
                 // Set view 0 default viewport.
                 bgfx::setViewRect(0, 0, 0, uint16_t(m_width), uint16_t(m_height));
-
-                bgfx::touch(0);
 
                 int64_t now = bx::getHPCounter() - m_timeOffset;
                 static int64_t last = now;
@@ -319,7 +315,7 @@ namespace {
 
                 m_emitter[currentEmitter].update();
                 particles->updateViewAndEye(view, eye);
-                fileOutput->renderTargetsByNewOutputTexture(deltaTime * timeScale);
+                particles->renderAtProgress(deltaTime * timeScale);
 
                 if (showBounds) {
                     Aabb aabb;
@@ -333,7 +329,7 @@ namespace {
 
                 dde.end();
 
-                bgfx::frame();
+                XImage::end();
 
                 return true;
             }

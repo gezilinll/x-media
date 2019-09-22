@@ -120,12 +120,12 @@ void XParticles::updateViewAndEye(float *mtxView, const bx::Vec3 &eye) {
     mEyePos = eye;
 }
 
-void XParticles::renderAtProgress(float progress) {
+void XParticles::submit(int index) {
     uint32_t numParticles = 0;
     for (uint16_t ii = 0, num = mEmitterAlloc->getNumHandles(); ii < num; ++ii) {
         const uint16_t idx = mEmitterAlloc->getHandleAt(ii);
         XEmitter &emitter = mEmitter[idx];
-        emitter.update(progress);
+        emitter.update(0.5);
         numParticles += emitter.m_num;
     }
 
@@ -184,6 +184,7 @@ void XParticles::renderAtProgress(float progress) {
 
             BX_FREE(mAllocator, particleSort);
 
+            bgfx::touch(index);
             bgfx::setState(0
                            | BGFX_STATE_WRITE_RGB
                            | BGFX_STATE_WRITE_A
@@ -193,7 +194,7 @@ void XParticles::renderAtProgress(float progress) {
             bgfx::setVertexBuffer(0, &tvb);
             bgfx::setIndexBuffer(&tib);
             bgfx::setTexture(0, mTexColor, mTexture);
-            bgfx::submit(XImage::renderIndex(), mParticleProgram);
+            bgfx::submit(index, mParticleProgram);
         }
     }
 }
