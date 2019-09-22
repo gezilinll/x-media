@@ -22,12 +22,12 @@ NS_X_IMAGE_BEGIN
  */
 class XImage {
 public:
+    static void init(bgfx::Init &init);
+
     /**
      * @brief 开始进入渲染流程
      */
     static void begin();
-
-    static void setCanvasSize(int width, int height);
 
     /**
      * @brief 添加图层，图层数据直接在图层对象上设置
@@ -80,8 +80,6 @@ public:
 
 private:
     static int sRenderIndex; /// 渲染次序ID
-    static int sCanvasWidth; /// 画布宽度
-    static int sCanvasHeight; /// 画布高度
     static XFrameBuffer *sFrame; /// 离屏渲染帧数据
     static std::vector<XLayer *> sLayers; /// 图层列表
 };

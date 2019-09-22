@@ -8,24 +8,24 @@
 NS_X_IMAGE_BEGIN
 
 int XImage::sRenderIndex = -1;
-int XImage::sCanvasWidth = 0;
-int XImage::sCanvasHeight = 0;
-int XImage::sFrame = nullptr;
+XFrameBuffer* XImage::sFrame = nullptr;
 std::vector<XLayer *> XImage::sLayers;
 
-void XImage::setCanvasSize(int width, int height) {
-    sCanvasWidth = width;
-    sCanvasHeight = height;
+void XImage::init(bgfx::Init &init) {
+    bgfx::init(init);
 }
 
 void XImage::begin() {
 }
 
 void XImage::addLayer(XLayer *layer) {
+    sLayers.push_back(layer);
 }
 
 void XImage::submit() {
-
+    for (XLayer *layer : sLayers) {
+        layer->submit();
+    }
 }
 
 void XImage::frame() {
@@ -47,6 +47,7 @@ void XImage::end() {
 void XImage::destroy() {
     sLayers.clear();
     XFrameBufferPool::destroy();
+    bgfx::shutdown();
 }
 
 float* XImage::wrapFloatToVec4(float value) {

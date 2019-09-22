@@ -12,10 +12,10 @@ NS_X_IMAGE_BEGIN
  * @brief 存储矩形区域数据
  */
 struct XRect {
-    float x; /// x开始坐标
-    float y; /// y开始坐标
-    float width; /// 矩形宽度
-    float height; /// 矩形高度
+    int x; /// x开始坐标
+    int y; /// y开始坐标
+    unsigned int width; /// 矩形宽度
+    unsigned int height; /// 矩形高度
 };
 NS_X_IMAGE_END
 
