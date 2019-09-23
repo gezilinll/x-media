@@ -17,8 +17,8 @@ XSaturationUI::XSaturationUI(XSaturation *saturation) : XFilterEffectUI(saturati
 void XSaturationUI::imgui() {
     XSaturation* saturation = dynamic_cast<XSaturation *>(mEffect);
     ImGui::Separator();
-    ImGui::Text(u8"饱和度");
-    ImGui::SliderFloat(saturation->paramSaturation.data()
+    ImGui::Text("Saturation");
+    ImGui::SliderFloat((saturation->paramSaturation + std::to_string(mIndex)).data()
             , &mSaturationValue
             , saturation->paramSaturationMin
             , saturation->paramSaturationMax

@@ -31,7 +31,6 @@ XInputOutput* XFilterEffect::get() {
         glm::vec4 &paramValue = value.second;
         float *valueArray = new float[4]{paramValue.x, paramValue.y, paramValue.z, paramValue.w};
         mFilter->setVec4(paramName, valueArray);
-        SAFE_DELETE_ARRAY(valueArray);
     }
     return mFilter;
 }

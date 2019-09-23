@@ -46,8 +46,18 @@ void XLayer::submit() {
     }
 
     mLayerSource->clearTargets();
-    for (XEffect *effect : mEffects) {
-        XInputOutput *target = effect->get();
+    int size = mEffects.size();
+    for (int i = 0; i < size - 1; i++) {
+        XInputOutput *current = mEffects[i]->get();
+        XInputOutput *next = mEffects[i + 1]->get();
+        current->clearTargets();
+        next->clearTargets();
+        current->setViewRect(mViewRect);
+        next->setViewRect(mViewRect);
+        current->addTarget(next);
+    }
+    if (size > 0) {
+        XInputOutput *target = mEffects[0]->get();
         target->setViewRect(mViewRect);
         mLayerSource->addTarget(target);
     }

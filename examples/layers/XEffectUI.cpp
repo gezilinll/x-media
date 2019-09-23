@@ -8,6 +8,14 @@ XEffectUI::XEffectUI(XEffect *effect) {
     mEffect = effect;
 }
 
+XEffect* XEffectUI::getEffect() {
+    return mEffect;
+}
+
+void XEffectUI::setIndex(int index) {
+    mIndex = index;
+}
+
 void XEffectUI::imgui() {
 
 }

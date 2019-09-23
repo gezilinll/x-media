@@ -58,12 +58,12 @@ XFilter::~XFilter() {
     XImage::destroy(mVertexBuffer);
     XImage::destroy(mIndexBuffer);
 
-    auto iter = mUniformHandles.begin();
-    while (iter != mUniformHandles.end()) {
+    auto iter = mParamHandles.begin();
+    while (iter != mParamHandles.end()) {
         XImage::destroy(iter->second);
         iter++;
     }
-    mUniformHandles.clear();
+    mParamHandles.clear();
 }
 
 void XFilter::init() {
@@ -90,7 +90,7 @@ void XFilter::submit(int index) {
     if (!bgfx::isValid(mProgram)) {
         mProgram = loadProgram(mVertexShaderPath.data(), mFragmentShaderPath.data());
         bgfx::UniformHandle texture = bgfx::createUniform("s_texColor", bgfx::UniformType::Sampler);
-        mUniformHandles.insert(std::make_pair("s_texColor", texture));
+        mParamHandles.insert(std::make_pair("s_texColor", texture));
         // Create vertex stream declaration.
         PosTexVertex::init();
 
@@ -132,25 +132,36 @@ void XFilter::submit(int index) {
     bgfx::setVertexBuffer(0, mVertexBuffer);
     bgfx::setIndexBuffer(mIndexBuffer);
     bgfx::setState(state);
-    bgfx::setTexture(0, mUniformHandles.find("s_texColor")->second, mFirstInputFrameBuffer->getTexture());
+    bgfx::setTexture(0, mParamHandles.find("s_texColor")->second, mFirstInputFrameBuffer->getTexture());
+    updateParams();
     bgfx::submit(index, mProgram);
 
     XOutput::submit(index);
 }
 
 void XFilter::setVec4(std::string paramName, float *paramValue) {
-    bgfx::UniformHandle handle;
-    auto iter = mUniformHandles.find(paramName);
-    if (iter == mUniformHandles.end()) {
-        handle = bgfx::createUniform(paramName.data(), bgfx::UniformType::Vec4);
-        mUniformHandles.insert(std::make_pair(paramName, handle));
-    } else {
-        handle = iter->second;
+    mParams[paramName] = paramValue;
+}
+
+void XFilter::updateParams() {
+    for (std::pair<std::string, float*> param : mParams) {
+        if (param.first == "s_texColor") {
+            continue;
+        }
+        bgfx::UniformHandle handle;
+        auto iter = mParamHandles.find(param.first);
+        if (iter == mParamHandles.end()) {
+            handle = bgfx::createUniform(param.first.data(), bgfx::UniformType::Vec4);
+            mParamHandles.insert(std::make_pair(param.first, handle));
+        } else {
+            handle = iter->second;
+        }
+        if (!bgfx::isValid(handle)) {
+            LOGE("XFilter::setVec4 uniform handle is invalid.");
+        }
+
+        bgfx::setUniform(handle, param.second);
     }
-    if (!bgfx::isValid(handle)) {
-        LOGE("XFilter::setVec4 uniform handle is invalid.");
-    }
-    bgfx::setUniform(handle, paramValue);
 }
 
 bool XFilter::isViewRectValid() {

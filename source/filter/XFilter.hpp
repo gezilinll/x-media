@@ -31,6 +31,9 @@ public:
 
     void setVec4(std::string paramName, float *paramValue);
 
+private:
+    void updateParams();
+
 protected:
     void init() override ;
 
@@ -46,7 +49,8 @@ protected:
     std::string mVertexShaderPath; /// vertex shader path
     std::string mFragmentShaderPath; /// fragment shader path
     bgfx::ProgramHandle mProgram; /// filter program handle
-    std::unordered_map<std::string, bgfx::UniformHandle> mUniformHandles; /// filter params of uniform type
+    std::unordered_map<std::string, float*> mParams;
+    std::unordered_map<std::string, bgfx::UniformHandle> mParamHandles; /// filter params of uniform type
     bgfx::VertexBufferHandle mVertexBuffer; /// filter vertex buffer handle
     bgfx::IndexBufferHandle mIndexBuffer; /// filter index buffer handle
     XFrameBuffer* mFirstInputFrameBuffer; /// filter input frame buffer which is used to be texture

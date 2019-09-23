@@ -1,4 +1,4 @@
-add_executable(layers layers.cpp XEffectUI.cpp XEffectUI.hpp XFilterEffectUI.cpp XFilterEffectUI.hpp)
+add_executable(layers layers.cpp XEffectUI.cpp XEffectUI.hpp XFilterEffectUI.cpp XFilterEffectUI.hpp XEffectListUI.cpp XEffectListUI.hpp)
 target_link_libraries(layers GPUImage-X)
 set_target_properties(layers PROPERTIES FOLDER "examples")
 target_compile_definitions(layers PRIVATE "-D_CRT_SECURE_NO_WARNINGS" "-D__STDC_FORMAT_MACROS" "-DENTRY_CONFIG_IMPLEMENT_MAIN=1")
