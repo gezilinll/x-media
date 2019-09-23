@@ -315,7 +315,7 @@ namespace {
 
                 m_emitter[currentEmitter].update();
                 particles->updateViewAndEye(view, eye);
-                particles->renderAtProgress(deltaTime * timeScale);
+                particles->submit(0);
 
                 if (showBounds) {
                     Aabb aabb;

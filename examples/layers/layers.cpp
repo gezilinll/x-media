@@ -3,6 +3,7 @@
 #include "XImage.hpp"
 #include "layers/XFrameLayer.hpp"
 #include "filter/XFilterEffect.hpp"
+#include "XFilterEffectUI.hpp"
 
 USING_NS_X_IMAGE
 class ExampleLayers : public entry::AppI {
@@ -34,9 +35,10 @@ public:
         mFrameLayer->setViewRect(layerRect);
         mFrameLayer->setPath("images/scene.jpg");
         mFilter = new XSaturation();
-        mFilter->paramSaturationValue = 1.8;
         mFrameLayer->addEffect(mFilter);
         XImage::addLayer(mFrameLayer);
+        XSaturationUI *saturationUI = new XSaturationUI(mFilter);
+        mEffectUIs[mFrameLayer->getID()].push_back(saturationUI);
     }
 
     virtual int shutdown() override {
@@ -73,6 +75,13 @@ public:
             ImGui::Begin("Settings"
                     , NULL
             );
+
+            std::vector<XEffectUI *> effectUIs = mEffectUIs[mFrameLayer->getID()];
+            for (XEffectUI *effectUI : effectUIs) {
+                effectUI->imgui();
+                effectUI->update();
+            }
+
             ImGui::End();
             imguiEndFrame();
 
@@ -95,6 +104,7 @@ private:
     uint32_t mReset;
 
     XFrameLayer *mFrameLayer;
+    std::unordered_map<int, std::vector<XEffectUI *>> mEffectUIs;
     XSaturation *mFilter;
 };
 

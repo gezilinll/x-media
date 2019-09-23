@@ -21,6 +21,10 @@ XLayer::~XLayer() {
     mEffects.clear();
 }
 
+int XLayer::getID() {
+    return mID;
+}
+
 void XLayer::addEffect(XEffect *effect) {
     mEffects.push_back(effect);
 }

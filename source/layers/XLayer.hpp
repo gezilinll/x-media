@@ -32,6 +32,12 @@ public:
     virtual ~XLayer();
 
     /**
+     * @brief 获取图层ID
+     * @return 图层ID
+     */
+    int getID();
+
+    /**
      * @brief 设置图层渲染区域
      * @param rect 渲染区域
      * @attention 宽高必须 > 0
