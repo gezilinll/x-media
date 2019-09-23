@@ -76,7 +76,7 @@ void XFilter::setInputFrameBuffer(XFrameBuffer *input) {
     mFirstInputFrameBuffer = input;
 }
 
-void XFilter::submit(int index) {
+void XFilter::submit() {
     init();
 
     if (!isViewRectValid()) {
@@ -111,12 +111,13 @@ void XFilter::submit(int index) {
         return;
     }
 
+    int renderIndex = XImage::nextRenderIndex();
     if (!mTargets.empty()) {
-        bgfx::setViewFrameBuffer(index, mOutputFrameBuffer->get());
+        bgfx::setViewFrameBuffer(renderIndex, mOutputFrameBuffer->get());
     } else {
-        bgfx::setViewFrameBuffer(index, BGFX_INVALID_HANDLE);
+        bgfx::setViewFrameBuffer(renderIndex, BGFX_INVALID_HANDLE);
     }
-    bgfx::setViewClear(index
+    bgfx::setViewClear(renderIndex
             , BGFX_CLEAR_COLOR|BGFX_CLEAR_DEPTH
             , 0x303030ff
             , 1.0f
@@ -127,16 +128,16 @@ void XFilter::submit(int index) {
                      | BGFX_STATE_WRITE_B
                      | BGFX_STATE_WRITE_A
                      | UINT64_C(0);
-    bgfx::touch(index);
-    bgfx::setViewRect(index, mViewRect.x, mViewRect.y, mViewRect.width, mViewRect.height);
+    bgfx::touch(renderIndex);
+    bgfx::setViewRect(renderIndex, mViewRect.x, mViewRect.y, mViewRect.width, mViewRect.height);
     bgfx::setVertexBuffer(0, mVertexBuffer);
     bgfx::setIndexBuffer(mIndexBuffer);
     bgfx::setState(state);
     bgfx::setTexture(0, mParamHandles.find("s_texColor")->second, mFirstInputFrameBuffer->getTexture());
     updateParams();
-    bgfx::submit(index, mProgram);
+    bgfx::submit(renderIndex, mProgram);
 
-    XOutput::submit(index);
+    XOutput::submit();
 }
 
 void XFilter::setVec4(std::string paramName, float *paramValue) {

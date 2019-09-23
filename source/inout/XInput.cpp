@@ -17,7 +17,7 @@ void XInput::setInputFrameBuffer(XFrameBuffer *input) {
 
 }
 
-void XInput::submit(int index) {
+void XInput::submit() {
 
 }
 NS_X_IMAGE_END

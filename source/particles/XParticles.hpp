@@ -104,7 +104,7 @@ public:
      */
     void updateViewAndEye(float *mtxView, const bx::Vec3 &eye);
 
-    void submit(int index) override;
+    void submit() override;
 
     /**
      * @brief destroy selected emitter

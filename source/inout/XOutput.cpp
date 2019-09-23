@@ -26,14 +26,14 @@ void XOutput::clearTargets() {
     mTargets.clear();
 }
 
-void XOutput::submit(int index) {
+void XOutput::submit() {
     init();
 
     auto iter = mTargets.begin();
     while (iter != mTargets.end()) {
         XInput* input = *iter;
         input->setInputFrameBuffer(mOutputFrameBuffer);
-        input->submit(index);
+        input->submit();
         ++iter;
     }
 }

@@ -18,7 +18,8 @@ void XSaturationUI::imgui() {
     XSaturation* saturation = dynamic_cast<XSaturation *>(mEffect);
     ImGui::Separator();
     ImGui::Text("Saturation");
-    ImGui::SliderFloat((saturation->paramSaturation + std::to_string(mIndex)).data()
+    ImGui::SliderFloat(
+            (saturation->paramSaturation + ":" + std::to_string(mIndex)).data()
             , &mSaturationValue
             , saturation->paramSaturationMin
             , saturation->paramSaturationMax

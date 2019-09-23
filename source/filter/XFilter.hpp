@@ -25,7 +25,7 @@ public:
 
     ~XFilter();
 
-    void submit(int index) override;
+    void submit() override;
 
     void setInputFrameBuffer(XFrameBuffer* input) override ;
 

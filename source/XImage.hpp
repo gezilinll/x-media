@@ -48,11 +48,18 @@ public:
     static void frame();
 
     /**
-     * @brief 获取当前渲染的视图ID，不同图层渲染时需要调用该接口来获取自身的渲染次序
-     * @return 当前渲染次序的ID
-     * @attention 该渲染ID会在调用 #end 时进行重置
+     * @brief 获取下一次渲染的视图ID，在各个渲染环节时需要调用该接口来获取自身的渲染次序
+     * @return 下一次渲染次序的ID
+     * @attention 该渲染ID会在调用 #end 时进行重置为-1
      */
-    static int renderIndex();
+    static int nextRenderIndex();
+
+    /**
+     * @brief 获取当前渲染到的视图的ID
+     * @return 当前渲染次序的ID
+     * @attention 该渲染ID会在调用 #end 时进行重置为-1
+     */
+    static int currentRenderIndex();
 
     /**
      * @brief 结束该轮渲染流程

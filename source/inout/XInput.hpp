@@ -35,10 +35,8 @@ public:
 
     /**
      * @brief 提交相关数据并进行处理
-     * @param index 当前处理视图Index
-     * @attention index不可重复，并且需要控制在256以内
      */
-    virtual void submit(int index);
+    virtual void submit();
 
 protected:
     XRect mViewRect; /// 视图大小

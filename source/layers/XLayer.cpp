@@ -38,10 +38,9 @@ void XLayer::updateSource() {
 }
 
 void XLayer::submit() {
-    int renderIndex = XImage::renderIndex();
     updateSource();
     if (mLayerSource == nullptr) {
-        LOGE("[XLayer::submit] layer source is nullptr. id=%d, renderIndex=%d", mID, renderIndex);
+        LOGE("[XLayer::submit] layer source is nullptr. id=%d", mID);
         return;
     }
 
@@ -62,7 +61,7 @@ void XLayer::submit() {
         mLayerSource->addTarget(target);
     }
 
-    mLayerSource->submit(renderIndex);
+    mLayerSource->submit();
 }
 
 NS_X_IMAGE_END

@@ -32,8 +32,12 @@ void XImage::frame() {
 
 }
 
-int XImage::renderIndex() {
+int XImage::nextRenderIndex() {
     return ++sRenderIndex;
+}
+
+int XImage::currentRenderIndex() {
+    return sRenderIndex;
 }
 
 void XImage::end() {
