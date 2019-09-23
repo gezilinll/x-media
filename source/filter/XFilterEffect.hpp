@@ -73,6 +73,75 @@ protected:
         return result;
     }
 };
+
+/**
+ * @brief 对比度调节滤镜
+ */
+class XContrast : public XFilterEffect {
+public:
+    std::string paramContrast = "contrast";
+    float paramContrastMin = 0.0f;
+    float paramContrastMax = 4.0f;
+    float paramContrastDefault = 1.0f;
+    float paramContrastValue = paramContrastDefault;
+
+protected:
+    std::string getFragmentShaderName() override {
+        return "fs_filter_contrast";
+    }
+
+    std::unordered_map<std::string, glm::vec4> getValues() override {
+        std::unordered_map<std::string, glm::vec4> result;
+        result.insert(std::make_pair(paramContrast, paramContrastValue));
+        return result;
+    }
+};
+
+/**
+ * @brief 亮度调节滤镜
+ */
+class XBrightness : public XFilterEffect {
+public:
+    std::string paramBrightness = "brightness";
+    float paramBrightnessMin = -1.0f;
+    float paramBrightnessMax = 1.0f;
+    float paramBrightnessDefault = 0.0f;
+    float paramBrightnessValue = paramBrightnessDefault;
+
+protected:
+    std::string getFragmentShaderName() override {
+        return "fs_filter_brightness";
+    }
+
+    std::unordered_map<std::string, glm::vec4> getValues() override {
+        std::unordered_map<std::string, glm::vec4> result;
+        result.insert(std::make_pair(paramBrightness, paramBrightnessValue));
+        return result;
+    }
+};
+
+/**
+ * @brief HUE调节滤镜
+ */
+class XHUE : public XFilterEffect {
+public:
+    std::string paramHUE = "hueAdjust";
+    float paramHUEMin = 0.0f;
+    float paramHUEMax =  2 * M_PI;
+    float paramHUEDefault = 0.0f;
+    float paramHUEValue = paramHUEDefault;
+
+protected:
+    std::string getFragmentShaderName() override {
+        return "fs_filter_hue";
+    }
+
+    std::unordered_map<std::string, glm::vec4> getValues() override {
+        std::unordered_map<std::string, glm::vec4> result;
+        result.insert(std::make_pair(paramHUE, paramHUEValue));
+        return result;
+    }
+};
 NS_X_IMAGE_END
 
 #endif //GPUIMAGE_X_XFILTEREFFECT_HPP
