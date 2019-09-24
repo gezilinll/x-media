@@ -9,7 +9,9 @@ NS_X_IMAGE_BEGIN
 std::vector<XFrameBuffer *> XFrameBufferPool::sBuffers;
 const int MAX_SIZE = 50;
 
-XFrameBuffer* XFrameBufferPool::get(int width, int height) {
+XFrameBuffer* XFrameBufferPool::get() {
+    int width = XImage::getCanvasWidth();
+    int height = XImage::getCanvasHeight();
     XFrameBuffer *result = getFromPool(width, height);
     if (result == nullptr) {
         LOGE("[XFrameBufferPool::get|size] width=%d, height=%d", width, height);
@@ -22,12 +24,13 @@ XFrameBuffer* XFrameBufferPool::get(int width, int height) {
 }
 
 XFrameBuffer* XFrameBufferPool::get(std::string path) {
-    bimg::ImageContainer* container = imageLoad(path.data(), bgfx::TextureFormat::BGRA8);
-    XFrameBuffer *result = getFromPool(container->m_width, container->m_height);
+    int width = XImage::getCanvasWidth();
+    int height = XImage::getCanvasHeight();
+    XFrameBuffer *result = getFromPool(width, height);
     if (result == nullptr) {
         LOGE("[XFrameBufferPool::get] path=%s, width=%d, height=%d",
-             path.data(), container->m_width, container->m_height);
-        result = new XFrameBuffer(BGFX_INVALID_HANDLE, container->m_width, container->m_height);
+             path.data(), width, height);
+        result = new XFrameBuffer(BGFX_INVALID_HANDLE, width, height);
     }
     bgfx::TextureHandle textureHandle = loadTexture(path.data());
     if (!bgfx::isValid(textureHandle)) {
@@ -36,7 +39,6 @@ XFrameBuffer* XFrameBufferPool::get(std::string path) {
     bgfx::FrameBufferHandle frameBufferHandle = bgfx::createFrameBuffer(1, &textureHandle, true);
     result->setFrameBufferHandle(frameBufferHandle);
     return result;
-
 }
 
 XFrameBuffer* XFrameBufferPool::getFromPool(int width, int height) {

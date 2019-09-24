@@ -16,12 +16,10 @@ class XFrameBufferPool {
 public:
     /**
      * @brief 获取对应宽高的帧数据对象
-     * @param width 宽度，必须大于0
-     * @param height 高度，必须大于0
      * @return 帧数据对象
      * @attention 当不再使用该帧数据对象时，必须通过 #recycle 进行回收
      */
-    static XFrameBuffer* get(int width, int height);
+    static XFrameBuffer* get();
 
     /**
      * @brief 获取承载对应图片路径数据的帧对象

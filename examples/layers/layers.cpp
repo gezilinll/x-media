@@ -33,33 +33,37 @@ public:
         mDefaultFilter = new XFilterEffect();
 
         mFrameLayers.push_back(new XFrameLayer(0));
-        XRect leftTop = {0, 0, mWidth / 2, mHeight / 2};
-        mFrameLayers[0]->setViewRect(leftTop);
-        mFrameLayers[0]->setPath("images/scene.jpg");
-        mFrameLayers[0]->addEffect(mDefaultFilter);
-
-        mFrameLayers.push_back(new XFrameLayer(1));
+//        XRect leftTop = {0, 0, mWidth / 2, mHeight / 2};
         XRect rightTop = {static_cast<int>(mWidth / 2), 0, mWidth / 2, mHeight / 2};
-        mFrameLayers[1]->setViewRect(rightTop);
-        mFrameLayers[1]->setPath("images/scene.jpg");
-        mFrameLayers[1]->addEffect(mDefaultFilter);
+        mFrameLayers[0]->setViewRect(rightTop);
+        mFrameLayers[0]->setPath("images/spring.jpg");
+        XContrast *contrast = new XContrast();
+        mFrameLayers[0]->addEffect(new XFilterEffect());
+        mFrameLayers[0]->addEffect(contrast);
+        mEffectUIs[mFrameLayers[0]->getID()].push_back(new XFilterEffectUI(contrast));
 
-        mFrameLayers.push_back(new XFrameLayer(2));
-        XRect leftBottom = {0, static_cast<int>(mHeight / 2), mWidth / 2, mHeight / 2};
-        mFrameLayers[2]->setViewRect(leftBottom);
-        mFrameLayers[2]->setPath("images/scene.jpg");
-        mFrameLayers[2]->addEffect(mDefaultFilter);
+//        mFrameLayers.push_back(new XFrameLayer(1));
+//        XRect rightTop = {static_cast<int>(mWidth / 2), 0, mWidth / 2, mHeight / 2};
+//        mFrameLayers[1]->setViewRect(rightTop);
+//        mFrameLayers[1]->setPath("images/summer.jpg");
+//        mFrameLayers[1]->addEffect(new XFilterEffect());
 
-        mFrameLayers.push_back(new XFrameLayer(3));
-        XRect rightBottom = {static_cast<int>(mWidth / 2), static_cast<int>(mHeight / 2), mWidth / 2, mHeight / 2};
-        mFrameLayers[3]->setViewRect(rightBottom);
-        mFrameLayers[3]->setPath("images/scene.jpg");
-        mFrameLayers[3]->addEffect(mDefaultFilter);
+//        mFrameLayers.push_back(new XFrameLayer(2));
+//        XRect leftBottom = {0, static_cast<int>(mHeight / 2), mWidth / 2, mHeight / 2};
+//        mFrameLayers[2]->setViewRect(leftBottom);
+//        mFrameLayers[2]->setPath("images/autumn.jpg");
+//        mFrameLayers[2]->addEffect(new XFilterEffect());
+//
+//        mFrameLayers.push_back(new XFrameLayer(3));
+//        XRect rightBottom = {static_cast<int>(mWidth / 2), static_cast<int>(mHeight / 2), mWidth / 2, mHeight / 2};
+//        mFrameLayers[3]->setViewRect(rightBottom);
+//        mFrameLayers[3]->setPath("images/winter.jpg");
+//        mFrameLayers[3]->addEffect(new XFilterEffect());
 
         XImage::addLayer(mFrameLayers[0]);
-        XImage::addLayer(mFrameLayers[1]);
-        XImage::addLayer(mFrameLayers[2]);
-        XImage::addLayer(mFrameLayers[3]);
+//        XImage::addLayer(mFrameLayers[1]);
+//        XImage::addLayer(mFrameLayers[2]);
+//        XImage::addLayer(mFrameLayers[3]);
     }
 
     virtual int shutdown() override {

@@ -38,6 +38,20 @@ public:
     static void addLayer(XLayer *layer);
 
     /**
+     * @brief 获取画布宽度
+     * @return 画布宽度
+     * @attention 需要先调用 #init
+     */
+    static int getCanvasWidth();
+
+    /**
+     * @brief 获取画布高度
+     * @return 画布高度
+     * @attention 需要先调用 #init
+     */
+    static int getCanvasHeight();
+
+    /**
      * @brief 提交包含图层等在内的渲染数据并进行离屏渲染
      * @note 该接口不会将渲染结果直接呈现在屏幕上
      */
@@ -92,6 +106,7 @@ private:
     static int sRenderIndex; /// 渲染次序ID
     static XFrameBuffer *sFrame; /// 离屏渲染帧数据
     static std::vector<XLayer *> sLayers; /// 图层列表
+    static bgfx::Init sInit;
 };
 NS_X_IMAGE_END
 

@@ -10,9 +10,19 @@ NS_X_IMAGE_BEGIN
 int XImage::sRenderIndex = -1;
 XFrameBuffer* XImage::sFrame = nullptr;
 std::vector<XLayer *> XImage::sLayers;
+bgfx::Init XImage::sInit;
 
 void XImage::init(bgfx::Init &init) {
+    sInit = init;
     bgfx::init(init);
+}
+
+int XImage::getCanvasWidth() {
+    return sInit.resolution.width;
+}
+
+int XImage::getCanvasHeight() {
+    return sInit.resolution.height;
 }
 
 void XImage::begin() {
