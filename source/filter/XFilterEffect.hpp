@@ -11,6 +11,15 @@
 #include <glm/vec4.hpp>
 
 NS_X_IMAGE_BEGIN
+struct XFilterParam {
+    std::string name;
+    glm::vec4 valueMin;
+    glm::vec4 valueMax;
+    glm::vec4 valueDefault;
+    glm::vec4 value;
+    int valueNum;
+};
+
 /**
  * @brief 滤镜效果基类，负责控制滤镜通用逻辑
  *
@@ -28,27 +37,24 @@ public:
 
     XInputOutput *get() override;
 
+    XFilterParam getParam(std::string name);
+
+    void updateValue(std::string name, glm::vec4 value);
+
 protected:
-    /**
-     * @brief 获取滤镜顶点着色器文件名
-     * @return 顶点着色器文件名
-     */
-    virtual std::string getVertexShaderName();
+    void addParam(std::string name, float valueMin, float valueMax, float valueDefault, float value, int valueNum);
 
-    /**
-     * @brief 获取滤镜片段着色器文件名
-     * @return 片段着色器文件名
-     */
-    virtual std::string getFragmentShaderName();
+    void addParam(XFilterParam param);
 
-    /**
-     * @brief 获取滤镜的参数名与参数值列表
-     * @return 参数列表
-     */
-    virtual std::unordered_map<std::string, glm::vec4> getValues() = 0;
+    void setVertexShaderName(std::string name);
+
+    void setFragmentShaderName(std::string name);
 
 private:
     XFilter *mFilter; /// 滤镜处理类
+    std::string mVertexShaderName;
+    std::string mFragmentShaderName;
+    std::unordered_map<std::string, XFilterParam> mParams;
 };
 
 /**
@@ -56,21 +62,9 @@ private:
  */
 class XSaturation : public XFilterEffect {
 public:
-    std::string paramSaturation = "saturation";
-    float paramSaturationMin = 0.0f;
-    float paramSaturationMax = 2.0f;
-    float paramSaturationDefault = 1.0f;
-    float paramSaturationValue = paramSaturationDefault;
-
-protected:
-    std::string getFragmentShaderName() override {
-        return "fs_filter_saturation";
-    }
-
-    std::unordered_map<std::string, glm::vec4> getValues() override {
-        std::unordered_map<std::string, glm::vec4> result;
-        result.insert(std::make_pair(paramSaturation, paramSaturationValue));
-        return result;
+    XSaturation() {
+        setFragmentShaderName("fs_filter_saturation");
+        addParam("saturation", 0.0f, 2.0f, 1.0f, 1.0f, 1);
     }
 };
 
@@ -79,21 +73,9 @@ protected:
  */
 class XContrast : public XFilterEffect {
 public:
-    std::string paramContrast = "contrast";
-    float paramContrastMin = 0.0f;
-    float paramContrastMax = 4.0f;
-    float paramContrastDefault = 1.0f;
-    float paramContrastValue = paramContrastDefault;
-
-protected:
-    std::string getFragmentShaderName() override {
-        return "fs_filter_contrast";
-    }
-
-    std::unordered_map<std::string, glm::vec4> getValues() override {
-        std::unordered_map<std::string, glm::vec4> result;
-        result.insert(std::make_pair(paramContrast, paramContrastValue));
-        return result;
+    XContrast() {
+        setFragmentShaderName("fs_filter_contrast");
+        addParam("contrast", 0.0f, 4.0f, 1.0f, 1.0f, 1);
     }
 };
 
@@ -102,21 +84,9 @@ protected:
  */
 class XBrightness : public XFilterEffect {
 public:
-    std::string paramBrightness = "brightness";
-    float paramBrightnessMin = -1.0f;
-    float paramBrightnessMax = 1.0f;
-    float paramBrightnessDefault = 0.0f;
-    float paramBrightnessValue = paramBrightnessDefault;
-
-protected:
-    std::string getFragmentShaderName() override {
-        return "fs_filter_brightness";
-    }
-
-    std::unordered_map<std::string, glm::vec4> getValues() override {
-        std::unordered_map<std::string, glm::vec4> result;
-        result.insert(std::make_pair(paramBrightness, paramBrightnessValue));
-        return result;
+    XBrightness() {
+        setFragmentShaderName("fs_filter_brightness");
+        addParam("brightness", -1.0f, 1.0f, 0.0f, 0.0f, 1);
     }
 };
 
@@ -125,21 +95,9 @@ protected:
  */
 class XHUE : public XFilterEffect {
 public:
-    std::string paramHUE = "hueAdjust";
-    float paramHUEMin = 0.0f;
-    float paramHUEMax =  2 * M_PI;
-    float paramHUEDefault = 0.0f;
-    float paramHUEValue = paramHUEDefault;
-
-protected:
-    std::string getFragmentShaderName() override {
-        return "fs_filter_hue";
-    }
-
-    std::unordered_map<std::string, glm::vec4> getValues() override {
-        std::unordered_map<std::string, glm::vec4> result;
-        result.insert(std::make_pair(paramHUE, paramHUEValue));
-        return result;
+    XHUE() {
+        setFragmentShaderName("fs_filter_hue");
+        addParam("hueAdjust", 0.0f, 2 * M_PI, 0.0f, 0.0f, 1);
     }
 };
 NS_X_IMAGE_END

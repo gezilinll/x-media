@@ -11,24 +11,27 @@ XFilterEffectUI::XFilterEffectUI(XImageNS::XFilterEffect *effect) : XEffectUI(ef
 }
 
 XSaturationUI::XSaturationUI(XSaturation *saturation) : XFilterEffectUI(saturation) {
-    mSaturationValue = saturation->paramSaturationDefault;
+    XFilterParam param = saturation->getParam("saturation");
+    mSaturationValue = param.value[0];
 }
 
 void XSaturationUI::imgui() {
     XSaturation* saturation = dynamic_cast<XSaturation *>(mEffect);
     ImGui::Separator();
     ImGui::Text("Saturation");
+    XFilterParam param = saturation->getParam("saturation");
     ImGui::SliderFloat(
-            (saturation->paramSaturation + ":" + std::to_string(mIndex)).data()
+            ("saturation :" + std::to_string(mIndex)).data()
             , &mSaturationValue
-            , saturation->paramSaturationMin
-            , saturation->paramSaturationMax
+            , param.valueMin[0]
+            , param.valueMax[0]
     );
 }
 
 void XSaturationUI::update() {
     XSaturation* saturation = dynamic_cast<XSaturation *>(mEffect);
-    saturation->paramSaturationValue = mSaturationValue;
+    glm::vec4 value = {mSaturationValue, mSaturationValue, mSaturationValue, mSaturationValue};
+    saturation->updateValue("saturation", value);
 }
 
 NS_X_IMAGE_END
