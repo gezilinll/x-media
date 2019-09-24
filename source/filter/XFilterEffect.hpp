@@ -39,6 +39,8 @@ public:
 
     XFilterParam getParam(std::string name);
 
+    std::unordered_map<std::string, XFilterParam> getParams();
+
     void updateValue(std::string name, glm::vec4 value);
 
 protected:
@@ -66,6 +68,10 @@ public:
         setFragmentShaderName("fs_filter_saturation");
         addParam("saturation", 0.0f, 2.0f, 1.0f, 1.0f, 1);
     }
+
+    std::string getName() override {
+        return "Saturation";
+    }
 };
 
 /**
@@ -76,6 +82,10 @@ public:
     XContrast() {
         setFragmentShaderName("fs_filter_contrast");
         addParam("contrast", 0.0f, 4.0f, 1.0f, 1.0f, 1);
+    }
+
+    std::string getName() override {
+        return "Contrast";
     }
 };
 
@@ -88,6 +98,10 @@ public:
         setFragmentShaderName("fs_filter_brightness");
         addParam("brightness", -1.0f, 1.0f, 0.0f, 0.0f, 1);
     }
+
+    std::string getName() override {
+        return "Brightness";
+    }
 };
 
 /**
@@ -98,6 +112,10 @@ public:
     XHUE() {
         setFragmentShaderName("fs_filter_hue");
         addParam("hueAdjust", 0.0f, 2 * M_PI, 0.0f, 0.0f, 1);
+    }
+
+    std::string getName() override {
+        return "HUE";
     }
 };
 NS_X_IMAGE_END

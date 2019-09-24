@@ -16,4 +16,8 @@ XInputOutput* XEffect::get() {
     LOGE("[XEffect::process] nothing happened when base class called.");
     return nullptr;
 }
+
+std::string XEffect::getName() {
+    return "None";
+}
 NS_X_IMAGE_END

@@ -3,6 +3,7 @@
 //
 
 #include "XFilterEffect.hpp"
+#include "XImage.hpp"
 
 NS_X_IMAGE_BEGIN
 XFilterEffect::XFilterEffect() : XEffect() {
@@ -44,17 +45,18 @@ XFilterParam XFilterEffect::getParam(std::string name) {
     return mParams.find(name)->second;
 }
 
+std::unordered_map<std::string, XFilterParam> XFilterEffect::getParams() {
+    return mParams;
+}
+
 void XFilterEffect::addParam(XImageNS::XFilterParam param) {
     mParams[param.name] = param;
 }
 
 void XFilterEffect::addParam(std::string name,float valueMin, float valueMax,
         float valueDefault, float value, int valueNum) {
-    glm::vec4 vecMin = {valueMin, valueMin, valueMin, valueMin};
-    glm::vec4 vecMax = {valueMax, valueMax, valueMax, valueMax};
-    glm::vec4 vecDefault = {valueDefault, valueDefault, valueDefault, valueDefault};
-    glm::vec4 vecValue = {value, value, value, value};
-    XFilterParam param = {name, vecMin, vecMax, vecDefault, vecValue, valueNum};
+    XFilterParam param = {name, XImage::wrapFloat(valueMin), XImage::wrapFloat(valueMax),
+                          XImage::wrapFloat(valueDefault), XImage::wrapFloat(value), valueNum};
     mParams[name] = param;
 }
 

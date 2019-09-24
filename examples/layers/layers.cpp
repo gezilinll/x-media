@@ -37,7 +37,7 @@ public:
         mFilter = new XSaturation();
         mFrameLayers[0]->addEffect(mFilter);
         XImage::addLayer(mFrameLayers[0]);
-        XSaturationUI *saturationUI = new XSaturationUI(mFilter);
+        XFilterEffectUI *saturationUI = new XFilterEffectUI(mFilter);
         mEffectUIs[mFrameLayers[0]->getID()].push_back(saturationUI);
     }
 

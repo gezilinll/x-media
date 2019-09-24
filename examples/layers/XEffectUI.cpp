@@ -6,14 +6,15 @@
 NS_X_IMAGE_BEGIN
 XEffectUI::XEffectUI(XEffect *effect) {
     mEffect = effect;
-}
-
-XEffect* XEffectUI::getEffect() {
-    return mEffect;
+    mIndex = 0;
 }
 
 void XEffectUI::setIndex(int index) {
     mIndex = index;
+}
+
+XEffect* XEffectUI::getEffect() {
+    return mEffect;
 }
 
 void XEffectUI::imgui() {

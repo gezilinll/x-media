@@ -12,18 +12,16 @@ NS_X_IMAGE_BEGIN
 class XFilterEffectUI : public XEffectUI {
 public:
     XFilterEffectUI(XFilterEffect *effect);
-};
-
-class XSaturationUI : public XFilterEffectUI {
-public:
-    XSaturationUI(XSaturation *saturation);
 
     void imgui() override ;
 
     void update() override ;
 
 private:
-    float mSaturationValue;
+    std::string getLocationName(int i);
+
+private:
+    std::unordered_map<std::string, XFilterParam> mParams;
 };
 
 NS_X_IMAGE_END

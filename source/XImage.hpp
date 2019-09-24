@@ -8,6 +8,7 @@
 #include "bgfx/bgfx.h"
 #include "bgfx_utils.h"
 #include "XLayer.hpp"
+#include "glm/vec4.hpp"
 #include <string>
 
 NS_X_IMAGE_BEGIN
@@ -78,6 +79,8 @@ public:
     static void destroy(bgfx::VertexBufferHandle &handle);
     static void destroy(bgfx::IndexBufferHandle &handle);
     static void destroy(bgfx::UniformHandle &handle);
+
+    static glm::vec4 wrapFloat(float value);
 
     static float* wrapFloatToVec4(float value);
 

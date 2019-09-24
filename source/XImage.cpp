@@ -54,6 +54,10 @@ void XImage::destroy() {
     bgfx::shutdown();
 }
 
+glm::vec4 XImage::wrapFloat(float value) {
+    return {value, value, value, value};
+}
+
 float* XImage::wrapFloatToVec4(float value) {
     return new float[4]{value, 1.0f, 1.0f, 1.0f};
 }

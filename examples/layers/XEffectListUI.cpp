@@ -20,7 +20,7 @@ void XEffectListUI::imgui() {
     ImGui::Combo("", &mCurrentIndex, EFFECT_ITEMS, size, 5);
     if (mLastIndex != mCurrentIndex) {
         if (EFFECT_ITEMS[mCurrentIndex] == "Saturation") {
-            mNewEffectUI = new XSaturationUI(new XSaturation());
+            mNewEffectUI = new XFilterEffectUI(new XSaturation());
         } else {
             mNewEffectUI = nullptr;
         }

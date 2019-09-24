@@ -26,6 +26,12 @@ public:
      * @attention 继承自该效果的子类需要重载该接口实现自身效果
      */
     virtual XInputOutput *get();
+
+    /**
+     * @brief 获取效果名
+     * @return 效果名
+     */
+    virtual std::string getName();
 };
 NS_X_IMAGE_END
 
