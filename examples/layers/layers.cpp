@@ -28,21 +28,42 @@ public:
         // 创建调试ui
         imguiCreate();
 
-        // 初始化图层与滤镜
+        // 初始化图层与默认滤镜
         mEffectListUI = new XEffectListUI();
+        mDefaultFilter = new XFilterEffect();
+
         mFrameLayers.push_back(new XFrameLayer(0));
-        XRect layerRect = {0, 0, mWidth, mHeight};
-        mFrameLayers[0]->setViewRect(layerRect);
+        XRect leftTop = {0, 0, mWidth / 2, mHeight / 2};
+        mFrameLayers[0]->setViewRect(leftTop);
         mFrameLayers[0]->setPath("images/scene.jpg");
-        mFilter = new XSaturation();
-        mFrameLayers[0]->addEffect(mFilter);
+        mFrameLayers[0]->addEffect(mDefaultFilter);
+
+        mFrameLayers.push_back(new XFrameLayer(1));
+        XRect rightTop = {static_cast<int>(mWidth / 2), 0, mWidth / 2, mHeight / 2};
+        mFrameLayers[1]->setViewRect(rightTop);
+        mFrameLayers[1]->setPath("images/scene.jpg");
+        mFrameLayers[1]->addEffect(mDefaultFilter);
+
+        mFrameLayers.push_back(new XFrameLayer(2));
+        XRect leftBottom = {0, static_cast<int>(mHeight / 2), mWidth / 2, mHeight / 2};
+        mFrameLayers[2]->setViewRect(leftBottom);
+        mFrameLayers[2]->setPath("images/scene.jpg");
+        mFrameLayers[2]->addEffect(mDefaultFilter);
+
+        mFrameLayers.push_back(new XFrameLayer(3));
+        XRect rightBottom = {static_cast<int>(mWidth / 2), static_cast<int>(mHeight / 2), mWidth / 2, mHeight / 2};
+        mFrameLayers[3]->setViewRect(rightBottom);
+        mFrameLayers[3]->setPath("images/scene.jpg");
+        mFrameLayers[3]->addEffect(mDefaultFilter);
+
         XImage::addLayer(mFrameLayers[0]);
-        XFilterEffectUI *saturationUI = new XFilterEffectUI(mFilter);
-        mEffectUIs[mFrameLayers[0]->getID()].push_back(saturationUI);
+        XImage::addLayer(mFrameLayers[1]);
+        XImage::addLayer(mFrameLayers[2]);
+        XImage::addLayer(mFrameLayers[3]);
     }
 
     virtual int shutdown() override {
-        SAFE_DELETE(mFilter);
+        SAFE_DELETE(mDefaultFilter);
 
         imguiDestroy();
 
@@ -86,7 +107,6 @@ public:
             mEffectListUI->imgui();
             XEffectUI *newEffectUI = mEffectListUI->newEffectUI();
             if (newEffectUI != nullptr) {
-                LOGE("lbh newEffectUI != nullptr");
                 mEffectUIs[mFrameLayers[mCurrentLayer]->getID()].push_back(newEffectUI);
                 mFrameLayers[mCurrentLayer]->addEffect(newEffectUI->getEffect());
             }
@@ -123,7 +143,7 @@ private:
     XEffectListUI *mEffectListUI;
     std::vector<XFrameLayer *> mFrameLayers;
     std::unordered_map<int, std::vector<XEffectUI *>> mEffectUIs;
-    XSaturation *mFilter;
+    XFilterEffect *mDefaultFilter;
     int mCurrentLayer = 0;
 };
 

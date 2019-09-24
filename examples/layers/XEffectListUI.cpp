@@ -6,7 +6,7 @@
 #include "imgui/imgui.h"
 
 NS_X_IMAGE_BEGIN
-const char *EFFECT_ITEMS[] = {"None", "Saturation"};
+const char *EFFECT_ITEMS[] = {"None", "Saturation", "Contrast", "Brightness", "HUE"};
 
 XEffectListUI::XEffectListUI() {
     mNewEffectUI = nullptr;
@@ -21,6 +21,12 @@ void XEffectListUI::imgui() {
     if (mLastIndex != mCurrentIndex) {
         if (EFFECT_ITEMS[mCurrentIndex] == "Saturation") {
             mNewEffectUI = new XFilterEffectUI(new XSaturation());
+        } else if (EFFECT_ITEMS[mCurrentIndex] == "Contrast") {
+            mNewEffectUI = new XFilterEffectUI(new XContrast());
+        } else if (EFFECT_ITEMS[mCurrentIndex] == "Brightness") {
+            mNewEffectUI = new XFilterEffectUI(new XBrightness());
+        } else if (EFFECT_ITEMS[mCurrentIndex] == "HUE") {
+            mNewEffectUI = new XFilterEffectUI(new XHUE());
         } else {
             mNewEffectUI = nullptr;
         }
