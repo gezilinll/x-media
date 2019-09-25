@@ -23,8 +23,7 @@ XInputOutput* XFilterEffect::get() {
     for (std::pair<std::string, XFilterParam> value : mParams) {
         std::string &paramName = value.first;
         XFilterParam &param = value.second;
-        float *valueArray = new float[4]{param.value.x, param.value.y, param.value.z, param.value.w};
-        mFilter->setVec4(paramName, valueArray);
+        mFilter->setVec4(paramName, param.value);
     }
     return mFilter;
 }

@@ -128,8 +128,7 @@ void XFilter::submit() {
     bgfx::setViewRect(renderIndex, mRect.x, mRect.y, mRect.width, mRect.height);
     bgfx::setViewClear(renderIndex, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x00000000, 1.0f, 0);
     bgfx::touch(renderIndex);
-    uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | UINT64_C(0);
-    bgfx::setState(state);
+    bgfx::setState(0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_BLEND_INDEPENDENT);
     bgfx::setVertexBuffer(0, mVertexBuffer);
     bgfx::setIndexBuffer(mIndexBuffer);
     bgfx::setTexture(0, mParamHandles.find("s_texColor")->second, mFirstInputFrameBuffer->getTexture());
@@ -138,12 +137,12 @@ void XFilter::submit() {
     XOutput::submit();
 }
 
-void XFilter::setVec4(std::string paramName, float *paramValue) {
-    mParams[paramName] = paramValue;
+void XFilter::setVec4(std::string paramName, glm::vec4 &value) {
+    mParams[paramName] = value;
 }
 
 void XFilter::updateParams() {
-    for (std::pair<std::string, float*> param : mParams) {
+    for (std::pair<std::string, glm::vec4> param : mParams) {
         if (param.first == "s_texColor") {
             continue;
         }
@@ -158,8 +157,9 @@ void XFilter::updateParams() {
         if (!bgfx::isValid(handle)) {
             LOGE("XFilter::setVec4 uniform handle is invalid.");
         }
-
-        bgfx::setUniform(handle, param.second);
+        float *paramValue = new float[4]{param.second[0], param.second[1], param.second[2], param.second[3]};
+        bgfx::setUniform(handle, paramValue);
+        SAFE_DELETE_ARRAY(paramValue);
     }
 }
 
