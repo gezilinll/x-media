@@ -4,6 +4,8 @@
 
 #include "XImage.hpp"
 #include "XFrameBufferPool.hpp"
+#include "XFilter.hpp"
+#include "XFilterEffect.hpp"
 
 NS_X_IMAGE_BEGIN
 
@@ -39,7 +41,19 @@ void XImage::submit() {
 }
 
 void XImage::frame() {
+    for (XLayer *layer : sLayers) {
+        XFilterEffect *filterEffect = new XFilterEffect();
+        XFilter *filter = dynamic_cast<XFilter *>(filterEffect->get());
+        XRect rect = layer->getViewRect();
+        filter->setViewRect(rect);
+        filter->setInputFrameBuffer(layer->get());
+        filter->submit();
+        SAFE_DELETE(filterEffect);
+    }
 
+    // Advance to next frame. Rendering thread will be kicked to
+    // process submitted rendering primitives.
+    bgfx::frame();
 }
 
 int XImage::nextRenderIndex() {
@@ -51,10 +65,6 @@ int XImage::currentRenderIndex() {
 }
 
 void XImage::end() {
-    // Advance to next frame. Rendering thread will be kicked to
-    // process submitted rendering primitives.
-    bgfx::frame();
-
     sRenderIndex = -1;
 }
 

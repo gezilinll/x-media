@@ -6,13 +6,15 @@
 
 NS_X_IMAGE_BEGIN
 XInput::XInput() {
-    mWidth = 0;
-    mHeight = 0;
+    mRect = {0, 0, 0, 0};
 }
 
-void XInput::setViewSize(int width, int height) {
-    mWidth = width;
-    mHeight = height;
+void XInput::setViewRect(XRect &rect) {
+    mRect = rect;
+}
+
+XRect XInput::getViewRect() {
+    return mRect;
 }
 
 void XInput::setInputFrameBuffer(XFrameBuffer *input) {

@@ -36,17 +36,33 @@ public:
     void clearTargets();
 
     /**
+     * @brief 设置是否将结果强制存到帧对象中
+     * @param toBuffer 是否存到帧对象中
+     * @note 当Output具有target或者 toBuffer 为 TRUE 时都会将结果存到帧对象中
+     */
+    void setToBuffer(bool toBuffer);
+
+    /**
+     * @brief 获取输出帧数据
+     * @return 帧数据
+     */
+    XFrameBuffer *get();
+
+    /**
      * @brief 提交相关数据并进行处理
      */
     void submit();
 
 protected:
+    /**
+     * @brief 初始化接口，可在该接口进行数据加载、初始绘制等逻辑
+     */
     virtual void init();
 
 protected:
     XFrameBuffer* mOutputFrameBuffer; /// 输出数据Buffer
     std::vector<XInput *> mTargets; /// 接收输出数据的目标列表
-
+    bool mToBuffer; /// 是否强制将结果存到帧数据中
 };
 NS_X_IMAGE_END
 

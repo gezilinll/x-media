@@ -26,11 +26,16 @@ int XLayer::getID() {
 }
 
 void XLayer::addEffect(XEffect *effect) {
+
     mEffects.push_back(effect);
 }
 
 void XLayer::setViewRect(XRect &rect) {
     mViewRect = rect;
+}
+
+XRect XLayer::getViewRect() {
+    return mViewRect;
 }
 
 void XLayer::updateSource() {
@@ -46,22 +51,31 @@ void XLayer::submit() {
 
     mLayerSource->clearTargets();
     int size = mEffects.size();
+    XRect rect = {0, 0, mViewRect.width, mViewRect.height};
     for (int i = 0; i < size - 1; i++) {
         XInputOutput *current = mEffects[i]->get();
         XInputOutput *next = mEffects[i + 1]->get();
         current->clearTargets();
         next->clearTargets();
-        current->setViewSize(mViewRect.width, mViewRect.height);
-        next->setViewSize(mViewRect.width, mViewRect.height);
+        current->setViewRect(rect);
+        current->setToBuffer(true);
+        next->setViewRect(rect);
+        next->setToBuffer(true);
         current->addTarget(next);
     }
     if (size > 0) {
         XInputOutput *target = mEffects[0]->get();
-        target->setViewSize(mViewRect.width, mViewRect.height);
+        target->setViewRect(rect);
+        target->setToBuffer(true);
         mLayerSource->addTarget(target);
     }
 
     mLayerSource->submit();
+}
+
+XFrameBuffer* XLayer::get() {
+    int size = mEffects.size();
+    return mEffects[size - 1]->get()->get();
 }
 
 NS_X_IMAGE_END

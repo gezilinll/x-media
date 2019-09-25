@@ -45,6 +45,12 @@ public:
     void setViewRect(XRect &rect);
 
     /**
+     * @brief 获取图层渲染区域
+     * @return 渲染区域
+     */
+    XRect getViewRect();
+
+    /**
      * @brief 添加图层的叠加效果
      * @param effect 叠加效果
      * @attention 该对象的内存空间由外部控制释放
@@ -53,9 +59,19 @@ public:
 
     /**
      * @brief 提交该图层数据进行渲染
+     * @note
+     * 1. 因为图层区域不一定是整个屏幕，因此在绘制时会将效果链的渲染区域设置成 {0,0,rect.width,rect.height} ，
+     *    这一方面可以在非全屏情况下节省内存提升性能，另一方面避免了创建 rect 的宽高尺寸的FBO，但是设置给效果链绘制区域却不是从左上角
+     *    [0,0] 开始，导致效果丢失等问题
+     * 2. 在渲染的初始化步骤，除了设置区域外，还会将效果链都设置成渲染到帧数据中，包括最后一个效果
      */
     void submit();
 
+    /**
+     * @brief 获取图层叠加效果后的渲染结果
+     * @return 渲染结果
+     */
+    XFrameBuffer* get();
 protected:
     /**
      * @brief 更新图层初始输出内容

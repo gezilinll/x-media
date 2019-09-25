@@ -8,6 +8,7 @@
 NS_X_IMAGE_BEGIN
 XOutput::XOutput() {
     mOutputFrameBuffer = nullptr;
+    mToBuffer = false;
 }
 
 XOutput::~XOutput() {
@@ -24,6 +25,14 @@ void XOutput::addTarget(XInput *target) {
 
 void XOutput::clearTargets() {
     mTargets.clear();
+}
+
+void XOutput::setToBuffer(bool toBuffer) {
+    mToBuffer = toBuffer;
+}
+
+XFrameBuffer* XOutput::get() {
+    return mOutputFrameBuffer;
 }
 
 void XOutput::submit() {

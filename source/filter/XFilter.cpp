@@ -67,8 +67,8 @@ XFilter::~XFilter() {
 }
 
 void XFilter::init() {
-    if (mOutputFrameBuffer == nullptr) {
-        mOutputFrameBuffer = XFrameBufferPool::get(mWidth, mHeight);
+    if ((!mTargets.empty() || mToBuffer) && mOutputFrameBuffer == nullptr) {
+        mOutputFrameBuffer = XFrameBufferPool::get(mRect.width, mRect.height);
     }
 }
 
@@ -112,7 +112,7 @@ void XFilter::submit() {
     }
 
     int renderIndex = XImage::nextRenderIndex();
-    if (!mTargets.empty()) {
+    if (!mTargets.empty() || mToBuffer) {
         bgfx::setViewFrameBuffer(renderIndex, mOutputFrameBuffer->get());
     } else {
         bgfx::setViewFrameBuffer(renderIndex, BGFX_INVALID_HANDLE);
@@ -128,8 +128,9 @@ void XFilter::submit() {
                      | BGFX_STATE_WRITE_B
                      | BGFX_STATE_WRITE_A
                      | UINT64_C(0);
+    LOGE("lbh renderIndex=%d, fbo=%d, texture=%d", renderIndex, mFirstInputFrameBuffer->get().idx, mFirstInputFrameBuffer->getTexture().idx);
     bgfx::touch(renderIndex);
-    bgfx::setViewRect(renderIndex, 0, 0, mWidth, mHeight);
+    bgfx::setViewRect(renderIndex, mRect.x, mRect.y, mRect.width, mRect.height);
     bgfx::setVertexBuffer(0, mVertexBuffer);
     bgfx::setIndexBuffer(mIndexBuffer);
     bgfx::setState(state);
@@ -165,6 +166,6 @@ void XFilter::updateParams() {
 }
 
 bool XFilter::isViewSizeValid() {
-    return mWidth > 0 && mHeight > 0;
+    return mRect.width > 0 && mRect.height > 0;
 }
 NS_X_IMAGE_END

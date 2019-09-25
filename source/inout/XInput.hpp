@@ -22,11 +22,15 @@ public:
 
     /**
      * @brief 设置输入数据的处理视图大小
-     * @param width 宽度
-     * @param height 宽度
-     * @attention 宽高必须 > 0
+     * @param rect 渲染区域
      */
-    void setViewSize(int width, int height);
+    void setViewRect(XRect &rect);
+
+    /**
+     * @brief 获取处理区域数据
+     * @return 区域数据
+     */
+    XRect getViewRect();
 
     /**
      * @brief 设置输入数据
@@ -40,8 +44,7 @@ public:
     virtual void submit();
 
 protected:
-    int mWidth;
-    int mHeight;
+    XRect mRect;
 };
 NS_X_IMAGE_END
 
