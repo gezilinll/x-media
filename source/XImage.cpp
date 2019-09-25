@@ -41,11 +41,12 @@ void XImage::submit() {
 }
 
 void XImage::frame() {
+    XRect screen = {0, 0, static_cast<unsigned int>(XImage::getCanvasWidth()),
+                    static_cast<unsigned int>(XImage::getCanvasHeight())};
     for (XLayer *layer : sLayers) {
         XFilterEffect *filterEffect = new XFilterEffect();
         XFilter *filter = dynamic_cast<XFilter *>(filterEffect->get());
-        XRect rect = layer->getViewRect();
-        filter->setViewRect(rect);
+        filter->setViewRect(screen);
         filter->setInputFrameBuffer(layer->get());
         filter->submit();
         SAFE_DELETE(filterEffect);

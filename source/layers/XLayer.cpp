@@ -51,23 +51,28 @@ void XLayer::submit() {
 
     mLayerSource->clearTargets();
     int size = mEffects.size();
-    XRect rect = {0, 0, mViewRect.width, mViewRect.height};
-    for (int i = 0; i < size - 1; i++) {
-        XInputOutput *current = mEffects[i]->get();
-        XInputOutput *next = mEffects[i + 1]->get();
-        current->clearTargets();
-        next->clearTargets();
-        current->setViewRect(rect);
-        current->setToBuffer(true);
-        next->setViewRect(rect);
-        next->setToBuffer(true);
-        current->addTarget(next);
-    }
     if (size > 0) {
+        XRect rect = {0, 0, mViewRect.width, mViewRect.height};
         XInputOutput *target = mEffects[0]->get();
         target->setViewRect(rect);
         target->setToBuffer(true);
         mLayerSource->addTarget(target);
+        for (int i = 0; i < size - 1; i++) {
+            XInputOutput *current = mEffects[i]->get();
+            XInputOutput *next = mEffects[i + 1]->get();
+            current->clearTargets();
+            next->clearTargets();
+            current->addTarget(next);
+
+            current->setViewRect(rect);
+            current->setOutputSize(mViewRect.width, mViewRect.height);
+            current->setToBuffer(true);
+            next->setViewRect(rect);
+            next->setToBuffer(true);
+            next->setOutputSize(mViewRect.width, mViewRect.height);
+        }
+        mEffects[size - 1]->get()->setOutputSize(XImage::getCanvasWidth(), XImage::getCanvasHeight());
+        mEffects[size - 1]->get()->setViewRect(mViewRect);
     }
 
     mLayerSource->submit();

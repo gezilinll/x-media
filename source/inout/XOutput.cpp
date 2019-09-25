@@ -31,6 +31,11 @@ void XOutput::setToBuffer(bool toBuffer) {
     mToBuffer = toBuffer;
 }
 
+void XOutput::setOutputSize(int width, int height) {
+    mOutputWidth = width;
+    mOutputHeight = height;
+}
+
 XFrameBuffer* XOutput::get() {
     return mOutputFrameBuffer;
 }

@@ -14,7 +14,8 @@ XFrameBuffer* XFrameBufferPool::get(int width, int height) {
     if (result == nullptr) {
         LOGE("[XFrameBufferPool::get|size] width=%d, height=%d", width, height);
         bgfx::FrameBufferHandle handle = bgfx::createFrameBuffer(width, height,
-                                                                 bgfx::TextureFormat::BGRA8, BGFX_SAMPLER_U_CLAMP|BGFX_SAMPLER_V_CLAMP);
+                                                                 bgfx::TextureFormat::BGRA8,
+                                                                 BGFX_SAMPLER_U_CLAMP | BGFX_SAMPLER_V_CLAMP);
         result = new XFrameBuffer(handle, width, height);
         sBuffers.push_back(result);
     }

@@ -36,6 +36,14 @@ public:
     void clearTargets();
 
     /**
+     * @brief 设置输出尺寸
+     * @param width 宽度
+     * @param height 高度
+     * @note 宽高 <= 0 时使用帧数据的狂傲
+     */
+    void setOutputSize(int width, int height);
+
+    /**
      * @brief 设置是否将结果强制存到帧对象中
      * @param toBuffer 是否存到帧对象中
      * @note 当Output具有target或者 toBuffer 为 TRUE 时都会将结果存到帧对象中
@@ -63,6 +71,8 @@ protected:
     XFrameBuffer* mOutputFrameBuffer; /// 输出数据Buffer
     std::vector<XInput *> mTargets; /// 接收输出数据的目标列表
     bool mToBuffer; /// 是否强制将结果存到帧数据中
+    int mOutputWidth; /// 输出宽度
+    int mOutputHeight; /// 输出高度
 };
 NS_X_IMAGE_END
 

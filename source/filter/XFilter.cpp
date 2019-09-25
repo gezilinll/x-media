@@ -67,8 +67,16 @@ XFilter::~XFilter() {
 }
 
 void XFilter::init() {
-    if ((!mTargets.empty() || mToBuffer) && mOutputFrameBuffer == nullptr) {
-        mOutputFrameBuffer = XFrameBufferPool::get(mRect.width, mRect.height);
+    int width = mRect.width;
+    int height = mRect.height;
+    if (mOutputWidth > 0 && mOutputHeight > 0) {
+        width = mOutputWidth;
+        height = mOutputHeight;
+    }
+    if ((!mTargets.empty() || mToBuffer)
+            && (mOutputFrameBuffer == nullptr || !mOutputFrameBuffer->isSameSize(width, height))) {
+        XFrameBufferPool::recycle(mOutputFrameBuffer);
+        mOutputFrameBuffer = XFrameBufferPool::get(width, height);
     }
 }
 
@@ -117,23 +125,13 @@ void XFilter::submit() {
     } else {
         bgfx::setViewFrameBuffer(renderIndex, BGFX_INVALID_HANDLE);
     }
-    bgfx::setViewClear(renderIndex
-            , BGFX_CLEAR_COLOR|BGFX_CLEAR_DEPTH
-            , 0x303030ff
-            , 1.0f
-            , 0);
-    uint64_t state = 0
-                     | BGFX_STATE_WRITE_R
-                     | BGFX_STATE_WRITE_G
-                     | BGFX_STATE_WRITE_B
-                     | BGFX_STATE_WRITE_A
-                     | UINT64_C(0);
-    LOGE("lbh renderIndex=%d, fbo=%d, texture=%d", renderIndex, mFirstInputFrameBuffer->get().idx, mFirstInputFrameBuffer->getTexture().idx);
-    bgfx::touch(renderIndex);
     bgfx::setViewRect(renderIndex, mRect.x, mRect.y, mRect.width, mRect.height);
+    bgfx::setViewClear(renderIndex, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x00000000, 1.0f, 0);
+    bgfx::touch(renderIndex);
+    uint64_t state = 0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | UINT64_C(0);
+    bgfx::setState(state);
     bgfx::setVertexBuffer(0, mVertexBuffer);
     bgfx::setIndexBuffer(mIndexBuffer);
-    bgfx::setState(state);
     bgfx::setTexture(0, mParamHandles.find("s_texColor")->second, mFirstInputFrameBuffer->getTexture());
     updateParams();
     bgfx::submit(renderIndex, mProgram);

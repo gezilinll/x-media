@@ -26,9 +26,4 @@ void XFrameOutput::setPath(std::string path) {
     }
 }
 
-void XFrameOutput::setOutputSize(int width, int height) {
-    mOutputWidth = width;
-    mOutputHeight = height;
-}
-
 NS_X_IMAGE_END
