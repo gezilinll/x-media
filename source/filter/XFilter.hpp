@@ -35,28 +35,28 @@ public:
      */
     void setVec4(std::string paramName, glm::vec4 &value);
 
-private:
-    /**
-     * @brief 实际更新滤镜参数的接口，在 #submit 中调用避免多次调用同一个 uniform 的设置
-     * @note bgfx在一轮渲染中如果对同一个uniform多次设置会崩溃
-     */
-    void updateParams();
-
 protected:
     void init() override ;
 
-private:
     /**
-     * @brief 渲染尺寸是否正确
-     * @retval true 是
-     * @retval false 否
+     * @brief 实际更新滤镜参数的接口，在 #submit 中调用避免多次调用同一个 uniform 的设置
+     * @note bgfx在一轮渲染中如果对同一个uniform多次设置会崩溃
+     * @note 子类可重载该接口并实现自身的参数设置逻辑，但是需要注意同步调用基类的该接口避免参数设置丢失
      */
-    bool isViewSizeValid();
+    virtual void updateParams();
+
+    /**
+     * @brief 判断各项条件是否符合可渲染要求
+     * @return 是否符合
+     * @note 子类可重载该接口并结合基类该接口共同完成渲染要求的检验
+     */
+    virtual bool isValid();
 
 protected:
     std::string mVertexShaderPath; /// 顶点着色器路径
     std::string mFragmentShaderPath; /// 片段着色器路径
     bgfx::ProgramHandle mProgram; /// 滤镜Program
+    bgfx::UniformHandle mTexture; /// 一号纹理
     std::unordered_map<std::string, glm::vec4> mParams; /// 滤镜参数值容器
     std::unordered_map<std::string, bgfx::UniformHandle> mParamHandles; /// 滤镜参数uniform容器
     bgfx::VertexBufferHandle mVertexBuffer; /// 滤镜顶点缓冲

@@ -8,3 +8,4 @@ FS_LEVELS:fs_filter_levels.sc,filter.varying.def.sc
 FS_WHITE_BALANCE:fs_filter_white_balance.sc,filter.varying.def.sc
 FS_MONOCHROME:fs_filter_monochrome.sc,filter.varying.def.sc
 VS_NORMAL:vs_filter_normal.sc,filter.varying.def.sc
+FS_BLEND_MULTIPLY:fs_blend_multiply.sc,filter.varying.def.sc

@@ -6,6 +6,7 @@
 #include "XFrameBufferPool.hpp"
 #include "XFilter.hpp"
 #include "XFilterEffect.hpp"
+#include "XBlender.hpp"
 
 NS_X_IMAGE_BEGIN
 
@@ -43,14 +44,15 @@ void XImage::submit() {
 void XImage::frame() {
     XRect screen = {0, 0, static_cast<unsigned int>(XImage::getCanvasWidth()),
                     static_cast<unsigned int>(XImage::getCanvasHeight())};
-    for (XLayer *layer : sLayers) {
-        XFilterEffect *filterEffect = new XFilterEffect();
-        XFilter *filter = dynamic_cast<XFilter *>(filterEffect->get());
-        filter->setViewRect(screen);
-        filter->setInputFrameBuffer(layer->get());
-        filter->submit();
-        SAFE_DELETE(filterEffect);
-    }
+    XBlender::blend(sLayers[0]->get(), sLayers[1]->get());
+//    for (XLayer *layer : sLayers) {
+//        XFilterEffect *filterEffect = new XFilterEffect();
+//        XFilter *filter = dynamic_cast<XFilter *>(filterEffect->get());
+//        filter->setViewRect(screen);
+//        filter->setInputFrameBuffer(layer->get());
+//        filter->submit();
+//        SAFE_DELETE(filterEffect);
+//    }
 
     // Advance to next frame. Rendering thread will be kicked to
     // process submitted rendering primitives.

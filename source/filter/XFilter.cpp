@@ -85,20 +85,15 @@ void XFilter::setInputFrameBuffer(XFrameBuffer *input) {
 }
 
 void XFilter::submit() {
+    if (!isValid()) {
+        return;
+    }
+
     init();
 
-    if (!isViewSizeValid()) {
-        LOGE("XFilter::renderAtProgress view size args is invalid.");
-        return;
-    }
-    if (mFirstInputFrameBuffer == nullptr || !bgfx::isValid(mFirstInputFrameBuffer->getTexture())) {
-        LOGE("XFilter::renderAtProgress input frame is invalid.");
-        return;
-    }
     if (!bgfx::isValid(mProgram)) {
         mProgram = loadProgram(mVertexShaderPath.data(), mFragmentShaderPath.data());
-        bgfx::UniformHandle texture = bgfx::createUniform("s_texColor", bgfx::UniformType::Sampler);
-        mParamHandles.insert(std::make_pair("s_texColor", texture));
+        mTexture = bgfx::createUniform("s_texColor", bgfx::UniformType::Sampler);
         // Create vertex stream declaration.
         PosTexVertex::init();
 
@@ -115,7 +110,7 @@ void XFilter::submit() {
     }
     
     if (!bgfx::isValid(mProgram)) {
-        LOGE("XFilter::renderAtProgress load program failed. vsPath=%s, fsPath=%s", mVertexShaderPath.data(), mFragmentShaderPath.data());
+        LOGE("[XFilter::submit] load program failed. vsPath=%s, fsPath=%s", mVertexShaderPath.data(), mFragmentShaderPath.data());
         return;
     }
 
@@ -128,10 +123,10 @@ void XFilter::submit() {
     bgfx::setViewRect(renderIndex, mRect.x, mRect.y, mRect.width, mRect.height);
     bgfx::setViewClear(renderIndex, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x00000000, 1.0f, 0);
     bgfx::touch(renderIndex);
-    bgfx::setState(0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_BLEND_INDEPENDENT);
+    bgfx::setState(0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A);
     bgfx::setVertexBuffer(0, mVertexBuffer);
     bgfx::setIndexBuffer(mIndexBuffer);
-    bgfx::setTexture(0, mParamHandles.find("s_texColor")->second, mFirstInputFrameBuffer->getTexture());
+    bgfx::setTexture(0, mTexture, mFirstInputFrameBuffer->getTexture());
     updateParams();
     bgfx::submit(renderIndex, mProgram);
     XOutput::submit();
@@ -143,9 +138,6 @@ void XFilter::setVec4(std::string paramName, glm::vec4 &value) {
 
 void XFilter::updateParams() {
     for (std::pair<std::string, glm::vec4> param : mParams) {
-        if (param.first == "s_texColor") {
-            continue;
-        }
         bgfx::UniformHandle handle;
         auto iter = mParamHandles.find(param.first);
         if (iter == mParamHandles.end()) {
@@ -163,7 +155,15 @@ void XFilter::updateParams() {
     }
 }
 
-bool XFilter::isViewSizeValid() {
-    return mRect.width > 0 && mRect.height > 0;
+bool XFilter::isValid() {
+    if (mRect.width <= 0 || mRect.height <= 0) {
+        LOGE("[XFilter::submit] view size args is invalid.");
+        return false;
+    }
+    if (mFirstInputFrameBuffer == nullptr || !bgfx::isValid(mFirstInputFrameBuffer->getTexture())) {
+        LOGE("[XFilter::submit] input frame is invalid.");
+        return false;
+    }
+    return true;
 }
 NS_X_IMAGE_END
