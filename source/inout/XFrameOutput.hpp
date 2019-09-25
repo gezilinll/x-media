@@ -26,9 +26,18 @@ public:
      */
     void setPath(std::string path);
 
+    /**
+     * @brief 设置输出尺寸
+     * @param width 宽度
+     * @param height 高度
+     * @note 宽高 <= 0 时使用帧数据的狂傲
+     */
+    void setOutputSize(int width, int height);
 private:
     bool mOutputUpdated; /// 帧数据是否已更新
     std::string mFramePath; /// 图片类型数据路径
+    int mOutputWidth;
+    int mOutputHeight;
 };
 NS_X_IMAGE_END
 

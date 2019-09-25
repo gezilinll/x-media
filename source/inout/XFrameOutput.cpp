@@ -8,11 +8,13 @@
 NS_X_IMAGE_BEGIN
 XFrameOutput::XFrameOutput() : XOutput() {
     mOutputUpdated = false;
+    mOutputWidth = 0;
+    mOutputHeight = 0;
 }
 
 void XFrameOutput::init() {
     if (!mOutputUpdated) {
-        mOutputFrameBuffer = XFrameBufferPool::get(mFramePath);
+        mOutputFrameBuffer = XFrameBufferPool::get(mFramePath, mOutputWidth, mOutputHeight);
         mOutputUpdated = true;
     }
 }
@@ -22,6 +24,11 @@ void XFrameOutput::setPath(std::string path) {
         mFramePath = path;
         mOutputUpdated = false;
     }
+}
+
+void XFrameOutput::setOutputSize(int width, int height) {
+    mOutputWidth = width;
+    mOutputHeight = height;
 }
 
 NS_X_IMAGE_END

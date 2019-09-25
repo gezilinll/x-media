@@ -9,9 +9,7 @@ NS_X_IMAGE_BEGIN
 std::vector<XFrameBuffer *> XFrameBufferPool::sBuffers;
 const int MAX_SIZE = 50;
 
-XFrameBuffer* XFrameBufferPool::get() {
-    int width = XImage::getCanvasWidth();
-    int height = XImage::getCanvasHeight();
+XFrameBuffer* XFrameBufferPool::get(int width, int height) {
     XFrameBuffer *result = getFromPool(width, height);
     if (result == nullptr) {
         LOGE("[XFrameBufferPool::get|size] width=%d, height=%d", width, height);
@@ -23,9 +21,14 @@ XFrameBuffer* XFrameBufferPool::get() {
     return result;
 }
 
-XFrameBuffer* XFrameBufferPool::get(std::string path) {
-    int width = XImage::getCanvasWidth();
-    int height = XImage::getCanvasHeight();
+XFrameBuffer * XFrameBufferPool::get(std::string path, int width, int height) {
+    if (width <= 0 || height <= 0) {
+        bimg::ImageContainer *container = imageLoad(path.data(), bgfx::TextureFormat::BGRA8);
+        width = container->m_width;
+        height = container->m_height;
+        bimg::imageFree(container);
+    }
+
     XFrameBuffer *result = getFromPool(width, height);
     if (result == nullptr) {
         LOGE("[XFrameBufferPool::get] path=%s, width=%d, height=%d",

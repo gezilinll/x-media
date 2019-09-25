@@ -11,6 +11,7 @@ void XFrameLayer::updateSource() {
         mLayerSource = new XFrameOutput();
         XFrameOutput *output = dynamic_cast<XFrameOutput *>(mLayerSource);
         output->setPath(mFramePath);
+        output->setOutputSize(mViewRect.width, mViewRect.height);
     }
 }
 

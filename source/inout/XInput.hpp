@@ -22,10 +22,11 @@ public:
 
     /**
      * @brief 设置输入数据的处理视图大小
-     * @param rect 视图大小
+     * @param width 宽度
+     * @param height 宽度
      * @attention 宽高必须 > 0
      */
-    void setViewRect(XRect &rect);
+    void setViewSize(int width, int height);
 
     /**
      * @brief 设置输入数据
@@ -39,7 +40,8 @@ public:
     virtual void submit();
 
 protected:
-    XRect mViewRect; /// 视图大小
+    int mWidth;
+    int mHeight;
 };
 NS_X_IMAGE_END
 

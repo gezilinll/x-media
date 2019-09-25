@@ -68,7 +68,7 @@ XFilter::~XFilter() {
 
 void XFilter::init() {
     if (mOutputFrameBuffer == nullptr) {
-        mOutputFrameBuffer = XFrameBufferPool::get();
+        mOutputFrameBuffer = XFrameBufferPool::get(mWidth, mHeight);
     }
 }
 
@@ -79,8 +79,8 @@ void XFilter::setInputFrameBuffer(XFrameBuffer *input) {
 void XFilter::submit() {
     init();
 
-    if (!isViewRectValid()) {
-        LOGE("XFilter::renderAtProgress view rect args is invalid.");
+    if (!isViewSizeValid()) {
+        LOGE("XFilter::renderAtProgress view size args is invalid.");
         return;
     }
     if (mFirstInputFrameBuffer == nullptr || !bgfx::isValid(mFirstInputFrameBuffer->getTexture())) {
@@ -114,10 +114,8 @@ void XFilter::submit() {
     int renderIndex = XImage::nextRenderIndex();
     if (!mTargets.empty()) {
         bgfx::setViewFrameBuffer(renderIndex, mOutputFrameBuffer->get());
-        bgfx::setViewRect(renderIndex, mViewRect.x, mViewRect.y, mViewRect.width, mViewRect.height);
     } else {
         bgfx::setViewFrameBuffer(renderIndex, BGFX_INVALID_HANDLE);
-        bgfx::setViewRect(renderIndex, 0, 0, mViewRect.width * 2, mViewRect.height * 2);
     }
     bgfx::setViewClear(renderIndex
             , BGFX_CLEAR_COLOR|BGFX_CLEAR_DEPTH
@@ -130,9 +128,8 @@ void XFilter::submit() {
                      | BGFX_STATE_WRITE_B
                      | BGFX_STATE_WRITE_A
                      | UINT64_C(0);
-    LOGE("lbh renderIndex=%d, vertex=%s, fragment=%s, empty=%d", renderIndex, mVertexShaderPath.data(), mFragmentShaderPath.data(), mTargets.empty());
     bgfx::touch(renderIndex);
-//    bgfx::setViewRect(renderIndex, mViewRect.x, mViewRect.y, mViewRect.width, mViewRect.height);
+    bgfx::setViewRect(renderIndex, 0, 0, mWidth, mHeight);
     bgfx::setVertexBuffer(0, mVertexBuffer);
     bgfx::setIndexBuffer(mIndexBuffer);
     bgfx::setState(state);
@@ -152,7 +149,6 @@ void XFilter::updateParams() {
             continue;
         }
         bgfx::UniformHandle handle;
-//        LOGE("lbh name=%s, value=%f, x=%d, y=%d, width=%d, height=%d", param.first.data(), param.second[0], mViewRect.x, mViewRect.y, mViewRect.width, mViewRect.height);
         auto iter = mParamHandles.find(param.first);
         if (iter == mParamHandles.end()) {
             handle = bgfx::createUniform(param.first.data(), bgfx::UniformType::Vec4);
@@ -168,7 +164,7 @@ void XFilter::updateParams() {
     }
 }
 
-bool XFilter::isViewRectValid() {
-    return mViewRect.width > 0 && mViewRect.height > 0;
+bool XFilter::isViewSizeValid() {
+    return mWidth > 0 && mHeight > 0;
 }
 NS_X_IMAGE_END

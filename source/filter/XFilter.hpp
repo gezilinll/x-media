@@ -43,7 +43,7 @@ private:
      * @retval true YES
      * @retval false NO
      */
-    bool isViewRectValid();
+    bool isViewSizeValid();
 
 protected:
     std::string mVertexShaderPath; /// vertex shader path

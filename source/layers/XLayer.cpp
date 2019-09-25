@@ -51,13 +51,13 @@ void XLayer::submit() {
         XInputOutput *next = mEffects[i + 1]->get();
         current->clearTargets();
         next->clearTargets();
-        current->setViewRect(mViewRect);
-        next->setViewRect(mViewRect);
+        current->setViewSize(mViewRect.width, mViewRect.height);
+        next->setViewSize(mViewRect.width, mViewRect.height);
         current->addTarget(next);
     }
     if (size > 0) {
         XInputOutput *target = mEffects[0]->get();
-        target->setViewRect(mViewRect);
+        target->setViewSize(mViewRect.width, mViewRect.height);
         mLayerSource->addTarget(target);
     }
 

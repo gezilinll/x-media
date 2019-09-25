@@ -68,10 +68,10 @@ private:
 
 protected:
     XOutput *mLayerSource; /// 存储图层初始内容，并作为效果链的开头
+    XRect mViewRect; /// 图层区域
 
 private:
     int mID; /// 图层ID
-    XRect mViewRect; /// 图层区域
     std::vector<XEffect *> mEffects; /// 叠加效果链
 };
 NS_X_IMAGE_END
