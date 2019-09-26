@@ -21,7 +21,7 @@ void XTwoInputFilter::updateParams() {
         mTexture2 = bgfx::createUniform("s_texColor1", bgfx::UniformType::Sampler);
     }
 
-    bgfx::setTexture(0, mTexture2, mSecondInputFrameBuffer->getTexture());
+    bgfx::setTexture(1, mTexture2, mSecondInputFrameBuffer->getTexture());
 }
 
 bool XTwoInputFilter::isValid() {

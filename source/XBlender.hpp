@@ -6,11 +6,15 @@
 #define GPUIMAGE_X_XBLENDER_HPP
 
 #include "XFrameBuffer.hpp"
+#include "XTwoInputFilter.hpp"
 
 NS_X_IMAGE_BEGIN
 class XBlender {
 public:
     static void blend(XFrameBuffer *bottom, XFrameBuffer *top);
+
+private:
+    static XTwoInputFilter *sTwoInputFilter;
 };
 NS_X_IMAGE_END
 

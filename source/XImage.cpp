@@ -42,16 +42,7 @@ void XImage::submit() {
 }
 
 void XImage::frame() {
-    for (XLayer *layer : sLayers) {
-        XFilterEffect *filterEffect = new XFilterEffect();
-        XFilter *filter = dynamic_cast<XFilter *>(filterEffect->get());
-        XRect rect = layer->getViewRect();
-        filter->setViewRect(rect);
-        filter->setInputFrameBuffer(layer->get());
-        filter->submit();
-        SAFE_DELETE(filterEffect);
-    }
-
+    XBlender::blend(sLayers[0]->get(), sLayers[1]->get());
     // Advance to next frame. Rendering thread will be kicked to
     // process submitted rendering primitives.
     bgfx::frame();
