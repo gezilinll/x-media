@@ -51,6 +51,8 @@ XFilter::XFilter(std::string vertex, std::string fragment) {
     mProgram = BGFX_INVALID_HANDLE;
     mVertexBuffer = BGFX_INVALID_HANDLE;
     mIndexBuffer = BGFX_INVALID_HANDLE;
+    mOutputWidth = 0;
+    mOutputHeight = 0;
 }
 
 XFilter::~XFilter() {
@@ -115,14 +117,15 @@ void XFilter::submit() {
     }
 
     int renderIndex = XImage::nextRenderIndex();
+    bgfx::setViewRect(renderIndex, mRect.x, mRect.y, mRect.width, mRect.height);
+    bgfx::setPaletteColor(renderIndex, 0.0f, 0.0f, 0.0f, 0.0f);
+    bgfx::setViewClear(renderIndex, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 1.0f, 0, 0);
+    bgfx::touch(renderIndex);
     if (!mTargets.empty() || mToBuffer) {
         bgfx::setViewFrameBuffer(renderIndex, mOutputFrameBuffer->get());
     } else {
         bgfx::setViewFrameBuffer(renderIndex, BGFX_INVALID_HANDLE);
     }
-    bgfx::setViewRect(renderIndex, mRect.x, mRect.y, mRect.width, mRect.height);
-    bgfx::setViewClear(renderIndex, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x00000000, 1.0f, 0);
-    bgfx::touch(renderIndex);
     bgfx::setState(0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A);
     bgfx::setVertexBuffer(0, mVertexBuffer);
     bgfx::setIndexBuffer(mIndexBuffer);

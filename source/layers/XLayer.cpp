@@ -71,8 +71,6 @@ void XLayer::submit() {
             next->setToBuffer(true);
             next->setOutputSize(mViewRect.width, mViewRect.height);
         }
-        mEffects[size - 1]->get()->setOutputSize(XImage::getCanvasWidth(), XImage::getCanvasHeight());
-        mEffects[size - 1]->get()->setViewRect(mViewRect);
     }
 
     mLayerSource->submit();
