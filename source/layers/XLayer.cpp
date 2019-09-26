@@ -15,6 +15,7 @@ XLayer::XLayer(int id) {
     mID = id;
     mViewRect = {0, 0, 0, 0};
     mLayerSource = nullptr;
+    mBlend = {XBlend::Type::Normal};
 }
 
 XLayer::~XLayer() {
@@ -26,10 +27,16 @@ int XLayer::getID() {
 }
 
 void XLayer::addEffect(XEffect *effect) {
-
     mEffects.push_back(effect);
 }
 
+void XLayer::setBlend(XBlend blend) {
+    mBlend = blend;
+}
+
+XBlend XLayer::getBlend() {
+    return mBlend;
+}
 void XLayer::setViewRect(XRect &rect) {
     mViewRect = rect;
 }

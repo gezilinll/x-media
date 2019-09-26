@@ -44,6 +44,11 @@ public:
     void updateValue(std::string name, glm::vec4 value);
 
 protected:
+    /**
+     * @brief 初始化接口，子类可继承该接口实现自身的初始化
+     */
+    virtual void init();
+
     void addParam(std::string name, float valueMin, float valueMax, float valueDefault, float value, int valueNum);
 
     void addParam(XFilterParam param);
@@ -52,10 +57,12 @@ protected:
 
     void setFragmentShaderName(std::string name);
 
-private:
+protected:
     XFilter *mFilter; /// 滤镜处理类
     std::string mVertexShaderName;
     std::string mFragmentShaderName;
+
+private:
     std::unordered_map<std::string, XFilterParam> mParams;
 };
 
@@ -64,7 +71,7 @@ private:
  */
 class XSaturation : public XFilterEffect {
 public:
-    XSaturation() {
+    XSaturation() : XFilterEffect() {
         setFragmentShaderName("fs_filter_saturation");
         addParam("saturation", 0.0f, 2.0f, 1.0f, 1.0f, 1);
     }
@@ -79,7 +86,7 @@ public:
  */
 class XContrast : public XFilterEffect {
 public:
-    XContrast() {
+    XContrast() : XFilterEffect() {
         setFragmentShaderName("fs_filter_contrast");
         addParam("contrast", 0.0f, 4.0f, 1.0f, 1.0f, 1);
     }
@@ -94,7 +101,7 @@ public:
  */
 class XBrightness : public XFilterEffect {
 public:
-    XBrightness() {
+    XBrightness() : XFilterEffect() {
         setFragmentShaderName("fs_filter_brightness");
         addParam("brightness", -1.0f, 1.0f, 0.0f, 0.0f, 1);
     }
@@ -109,7 +116,7 @@ public:
  */
 class XHUE : public XFilterEffect {
 public:
-    XHUE() {
+    XHUE() : XFilterEffect() {
         setFragmentShaderName("fs_filter_hue");
         addParam("hueAdjust", 0.0f, 2 * M_PI, 0.0f, 0.0f, 1);
     }

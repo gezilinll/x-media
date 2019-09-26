@@ -16,10 +16,14 @@ XFilterEffect::~XFilterEffect() {
     SAFE_DELETE(mFilter);
 }
 
-XInputOutput* XFilterEffect::get() {
+void XFilterEffect::init() {
     if (mFilter == nullptr) {
         mFilter = new XFilter(mVertexShaderName, mFragmentShaderName);
     }
+}
+
+XInputOutput* XFilterEffect::get() {
+    init();
     for (std::pair<std::string, XFilterParam> value : mParams) {
         std::string &paramName = value.first;
         XFilterParam &param = value.second;

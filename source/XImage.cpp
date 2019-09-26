@@ -6,7 +6,7 @@
 #include "XFrameBufferPool.hpp"
 #include "XFilter.hpp"
 #include "XFilterEffect.hpp"
-#include "XBlender.hpp"
+#include "XBlendHelper.hpp"
 
 NS_X_IMAGE_BEGIN
 
@@ -42,7 +42,7 @@ void XImage::submit() {
 }
 
 void XImage::frame() {
-    XBlender::blend(sLayers[0]->get(), sLayers[1]->get());
+    XBlendHelper::blend(sLayers, nullptr);
     // Advance to next frame. Rendering thread will be kicked to
     // process submitted rendering primitives.
     bgfx::frame();

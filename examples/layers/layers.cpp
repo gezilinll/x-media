@@ -58,7 +58,6 @@ public:
         mFrameLayers[3]->setViewRect(rightBottom);
         mFrameLayers[3]->setPath("images/winter.jpg");
         mFrameLayers[3]->addEffect(mDefaultFilters[3]);
-
         XImage::addLayer(mFrameLayers[0]);
         XImage::addLayer(mFrameLayers[1]);
         XImage::addLayer(mFrameLayers[2]);

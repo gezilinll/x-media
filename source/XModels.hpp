@@ -6,8 +6,18 @@
 #define GPUIMAGE_X_XMODELS_HPP
 
 #include "XMacros.hpp"
+#include <cstdio>
 
 NS_X_IMAGE_BEGIN
+struct EnumClassHash
+{
+    template <typename T>
+    std::size_t operator()(T t) const
+    {
+        return static_cast<std::size_t>(t);
+    }
+};
+
 /**
  * @brief 存储矩形区域数据
  */
