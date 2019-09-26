@@ -30,7 +30,9 @@ void XOutput::clearTargets() {
 }
 
 void XOutput::setOutputBuffer(XFrameBuffer *outputBuffer) {
-    XFrameBufferPool::recycle(mOutputFrameBuffer);
+    if (mOutputFrameBuffer != outputBuffer) {
+        XFrameBufferPool::recycle(mOutputFrameBuffer);
+    }
     mOutputFrameBuffer = outputBuffer;
     mOuterBuffer = true;
 }

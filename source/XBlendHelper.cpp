@@ -28,35 +28,9 @@ void XBlendHelper::blend(std::vector<XLayer *> layers, XFrameBuffer* toResult) {
     blendChain->addTarget(blendChain2);
     blendChain2->addTarget(blendChain3);
     blendChain->submit();
-
-
-//    std::vector<XBlender *> blenders;
-//    XBlender *blender = new XBlender(layers[0]->getBlend());
-//    XTwoInputFilter *blendChain = dynamic_cast<XTwoInputFilter*>(blender->get());
-//    blendChain->setInputFrameBuffer(layers[0]->get());
-//    blendChain->setSecondInputFrameBuffer(layers[1]->get());
-//    blendChain->setViewRect(screen);
-//    XTwoInputFilter *lastOutput = blendChain;
-//    blenders.push_back(blender);
-//
-//    int size = layers.size();
-//    for (int index = 1; index < size - 1; index++) {
-//        XBlender *nextBlend = new XBlender(layers[index]->getBlend());
-//        XTwoInputFilter *nextOutput = dynamic_cast<XTwoInputFilter*>(nextBlend->get());
-//        nextOutput->setViewRect(screen);
-//        nextOutput->setSecondInputFrameBuffer(layers[index]->get());
-//        lastOutput->addTarget(nextOutput);
-//        lastOutput = nextOutput;
-//        blenders.push_back(nextBlend);
-//        if (index == size - 2) {
-//            nextOutput->setOutputBuffer(toResult);
-//        }
-//    }
-//    blendChain->submit();
-
-//    for (XBlender *blender : blenders) {
-//        SAFE_DELETE(blender);
-//    }
+    SAFE_DELETE(blender1);
+    SAFE_DELETE(blender2);
+    SAFE_DELETE(blender3);
 }
 
 NS_X_IMAGE_END

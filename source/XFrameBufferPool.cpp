@@ -48,6 +48,7 @@ XFrameBuffer * XFrameBufferPool::get(std::string path, int width, int height) {
 XFrameBuffer* XFrameBufferPool::getFromPool(int width, int height) {
     for (XFrameBuffer* buffer : sBuffers) {
         if (!buffer->isOccupied() && buffer->isSameSize(width, height)) {
+            buffer->setOccupied(true);
             return buffer;
         }
     }
