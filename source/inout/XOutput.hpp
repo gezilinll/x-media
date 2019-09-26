@@ -45,7 +45,7 @@ public:
 
     /**
      * @brief 设置输出存储的帧数据对象
-     * @param outputBuffer 输出存储对象
+     * @param outputBuffer 输出存储对象，当为nullptr时则重置会原始状态，在处理前的初始化操作中重新使用自身原始的输出存储对象
      * @attention 该接口将不会再在XOutput析构时自动回收输出帧对象，由外部自行控制，并且后续的输出都直接输出到该Buffer上
      */
     void setOutputBuffer(XFrameBuffer* outputBuffer);

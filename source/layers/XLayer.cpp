@@ -75,8 +75,10 @@ void XLayer::submit() {
             next->clearTargets();
             current->addTarget(next);
 
+            current->setOutputBuffer(nullptr);
             current->setViewRect(rect);
             current->setOutputSize(mViewRect.width, mViewRect.height);
+            next->setOutputBuffer(nullptr);
             next->setViewRect(rect);
             next->setOutputSize(mViewRect.width, mViewRect.height);
         }

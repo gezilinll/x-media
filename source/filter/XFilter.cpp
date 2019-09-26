@@ -118,8 +118,7 @@ void XFilter::submit() {
 
     int renderIndex = XImage::nextRenderIndex();
     bgfx::setViewRect(renderIndex, mRect.x, mRect.y, mRect.width, mRect.height);
-    bgfx::setPaletteColor(renderIndex, 0.0f, 0.0f, 0.0f, 0.0f);
-    bgfx::setViewClear(renderIndex, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 1.0f, 0, 0);
+    bgfx::setViewClear(renderIndex, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 0x00000000, 1.0f, 0);
     bgfx::touch(renderIndex);
     if (mOutputFrameBuffer != nullptr) {
         bgfx::setViewFrameBuffer(renderIndex, mOutputFrameBuffer->get());
