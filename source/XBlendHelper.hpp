@@ -11,7 +11,7 @@
 NS_X_IMAGE_BEGIN
 class XBlendHelper {
 public:
-    static void blend(std::vector<XLayer *> layers, XFrameBuffer* result);
+    static void blend(std::vector<XLayer *> layers, XFrameBuffer* toResult);
 };
 NS_X_IMAGE_END
 

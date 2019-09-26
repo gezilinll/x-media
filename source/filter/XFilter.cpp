@@ -75,7 +75,7 @@ void XFilter::init() {
         width = mOutputWidth;
         height = mOutputHeight;
     }
-    if ((!mTargets.empty() || mToBuffer)
+    if (!mTargets.empty() && !mOuterBuffer
             && (mOutputFrameBuffer == nullptr || !mOutputFrameBuffer->isSameSize(width, height))) {
         XFrameBufferPool::recycle(mOutputFrameBuffer);
         mOutputFrameBuffer = XFrameBufferPool::get(width, height);
@@ -95,7 +95,6 @@ void XFilter::submit() {
 
     if (!bgfx::isValid(mProgram)) {
         mProgram = loadProgram(mVertexShaderPath.data(), mFragmentShaderPath.data());
-        LOGE("lbh  vertex=%s, fragment=%s", mVertexShaderPath.data(), mFragmentShaderPath.data());
         mTexture = bgfx::createUniform("s_texColor", bgfx::UniformType::Sampler);
         // Create vertex stream declaration.
         PosTexVertex::init();
@@ -122,7 +121,7 @@ void XFilter::submit() {
     bgfx::setPaletteColor(renderIndex, 0.0f, 0.0f, 0.0f, 0.0f);
     bgfx::setViewClear(renderIndex, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH, 1.0f, 0, 0);
     bgfx::touch(renderIndex);
-    if (!mTargets.empty() || mToBuffer) {
+    if (mOutputFrameBuffer != nullptr) {
         bgfx::setViewFrameBuffer(renderIndex, mOutputFrameBuffer->get());
     } else {
         bgfx::setViewFrameBuffer(renderIndex, BGFX_INVALID_HANDLE);

@@ -36,13 +36,24 @@ void XImage::addLayer(XLayer *layer) {
 }
 
 void XImage::submit() {
+    if (sFrame == nullptr) {
+        sFrame = XFrameBufferPool::get(XImage::getCanvasWidth(), XImage::getCanvasHeight());
+    }
     for (XLayer *layer : sLayers) {
         layer->submit();
     }
 }
 
 void XImage::frame() {
-    XBlendHelper::blend(sLayers, nullptr);
+    XRect screen = {0, 0, static_cast<unsigned int>(XImage::getCanvasWidth()),
+                    static_cast<unsigned int>(XImage::getCanvasHeight())};
+    XBlendHelper::blend(sLayers, sFrame);
+    XFilterEffect *filterEffect = new XFilterEffect();
+    XFilter *filter = dynamic_cast<XFilter*>(filterEffect->get());
+    filter->setInputFrameBuffer(sFrame);
+    filter->setViewRect(screen);
+    filter->submit();
+    SAFE_DELETE(filter);
     // Advance to next frame. Rendering thread will be kicked to
     // process submitted rendering primitives.
     bgfx::frame();

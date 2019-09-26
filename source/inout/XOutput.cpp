@@ -8,11 +8,13 @@
 NS_X_IMAGE_BEGIN
 XOutput::XOutput() {
     mOutputFrameBuffer = nullptr;
-    mToBuffer = false;
+    mOuterBuffer = false;
 }
 
 XOutput::~XOutput() {
-    XFrameBufferPool::recycle(mOutputFrameBuffer);
+    if (!mOuterBuffer) {
+        XFrameBufferPool::recycle(mOutputFrameBuffer);
+    }
     mTargets.clear();
 }
 
@@ -27,8 +29,10 @@ void XOutput::clearTargets() {
     mTargets.clear();
 }
 
-void XOutput::setToBuffer(bool toBuffer) {
-    mToBuffer = toBuffer;
+void XOutput::setOutputBuffer(XFrameBuffer *outputBuffer) {
+    XFrameBufferPool::recycle(mOutputFrameBuffer);
+    mOutputFrameBuffer = outputBuffer;
+    mOuterBuffer = true;
 }
 
 void XOutput::setOutputSize(int width, int height) {

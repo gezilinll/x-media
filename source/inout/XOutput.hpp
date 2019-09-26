@@ -44,11 +44,11 @@ public:
     void setOutputSize(int width, int height);
 
     /**
-     * @brief 设置是否将结果强制存到帧对象中
-     * @param toBuffer 是否存到帧对象中
-     * @note 当Output具有target或者 toBuffer 为 TRUE 时都会将结果存到帧对象中
+     * @brief 设置输出存储的帧数据对象
+     * @param outputBuffer 输出存储对象
+     * @attention 该接口将不会再在XOutput析构时自动回收输出帧对象，由外部自行控制，并且后续的输出都直接输出到该Buffer上
      */
-    void setToBuffer(bool toBuffer);
+    void setOutputBuffer(XFrameBuffer* outputBuffer);
 
     /**
      * @brief 获取输出帧数据
@@ -70,7 +70,7 @@ protected:
 protected:
     XFrameBuffer* mOutputFrameBuffer; /// 输出数据Buffer
     std::vector<XInput *> mTargets; /// 接收输出数据的目标列表
-    bool mToBuffer; /// 是否强制将结果存到帧数据中
+    bool mOuterBuffer; /// 是否为外部设置的输出帧数据
     int mOutputWidth; /// 输出宽度
     int mOutputHeight; /// 输出高度
 };

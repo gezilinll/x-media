@@ -5,6 +5,7 @@
 #include "XLayer.hpp"
 #include "XImage.hpp"
 #include "XLog.hpp"
+#include "XFrameBufferPool.hpp"
 
 NS_X_IMAGE_BEGIN
 XLayer::XLayer() {
@@ -16,6 +17,7 @@ XLayer::XLayer(int id) {
     mViewRect = {0, 0, 0, 0};
     mLayerSource = nullptr;
     mBlend = {XBlend::Type::Normal};
+    mLayerResult = nullptr;
 }
 
 XLayer::~XLayer() {
@@ -55,6 +57,9 @@ void XLayer::submit() {
         LOGE("[XLayer::submit] layer source is nullptr. id=%d", mID);
         return;
     }
+    if (mLayerResult == nullptr) {
+        mLayerResult = XFrameBufferPool::get(XImage::getCanvasWidth(), XImage::getCanvasHeight());
+    }
 
     mLayerSource->clearTargets();
     int size = mEffects.size();
@@ -62,7 +67,6 @@ void XLayer::submit() {
         XRect rect = {0, 0, mViewRect.width, mViewRect.height};
         XInputOutput *target = mEffects[0]->get();
         target->setViewRect(rect);
-        target->setToBuffer(true);
         mLayerSource->addTarget(target);
         for (int i = 0; i < size - 1; i++) {
             XInputOutput *current = mEffects[i]->get();
@@ -73,11 +77,10 @@ void XLayer::submit() {
 
             current->setViewRect(rect);
             current->setOutputSize(mViewRect.width, mViewRect.height);
-            current->setToBuffer(true);
             next->setViewRect(rect);
-            next->setToBuffer(true);
             next->setOutputSize(mViewRect.width, mViewRect.height);
         }
+        mEffects[size - 1]->get()->setOutputBuffer(mLayerResult);
         mEffects[size - 1]->get()->setOutputSize(XImage::getCanvasWidth(), XImage::getCanvasHeight());
         mEffects[size - 1]->get()->setViewRect(mViewRect);
     }
@@ -86,8 +89,7 @@ void XLayer::submit() {
 }
 
 XFrameBuffer* XLayer::get() {
-    int size = mEffects.size();
-    return mEffects[size - 1]->get()->get();
+    return mLayerResult;
 }
 
 NS_X_IMAGE_END

@@ -98,6 +98,7 @@ private:
 
 protected:
     XOutput *mLayerSource; /// 存储图层初始内容，并作为效果链的开头
+    XFrameBuffer* mLayerResult; /// 存储图层渲染结果的帧对象
     XRect mViewRect; /// 图层区域
 
 private:
