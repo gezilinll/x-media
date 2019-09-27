@@ -3,6 +3,7 @@
 #include "XImage.hpp"
 #include "XFrameLayer.hpp"
 #include "XFilterEffectListUI.hpp"
+#include "XBlendUI.hpp"
 
 USING_NS_X_IMAGE
 class ExampleLayers : public entry::AppI {
@@ -47,6 +48,12 @@ public:
         mFilterEffectListUIs.push_back(new XFilterEffectListUI());
         mFilterEffectListUIs.push_back(new XFilterEffectListUI());
         mFilterEffectListUIs.push_back(new XFilterEffectListUI());
+        mFilterEffectListUIs.push_back(new XFilterEffectListUI());
+        mBlendUIs.push_back(new XBlendUI());
+        mBlendUIs.push_back(new XBlendUI());
+        mBlendUIs.push_back(new XBlendUI());
+        mBlendUIs.push_back(new XBlendUI());
+        mBlendUIs.push_back(new XBlendUI());
 
         mFrameLayers.push_back(new XFrameLayer(0));
         XRect leftTop = {static_cast<int>(mHorizontalMargin), static_cast<int>(mVerticalMargin),
@@ -72,10 +79,19 @@ public:
                              static_cast<unsigned int>(mLayerWidth), static_cast<unsigned int>(mLayerHeight)};
         mFrameLayers[3]->setViewRect(rightBottom);
         mFrameLayers[3]->setPath("images/winter.jpg");
+
+        mFrameLayers.push_back(new XFrameLayer(4));
+        XRect center = {static_cast<int>((mWidth - mMenuWidth) / 2 - mLayerWidth / 2),
+                             static_cast<int>(mHeight / 2 - mLayerHeight / 2),
+                             static_cast<unsigned int>(mLayerWidth), static_cast<unsigned int>(mLayerHeight)};
+        mFrameLayers[4]->setViewRect(center);
+        mFrameLayers[4]->setPath("images/leaves.jpg");
+
         XImage::addLayer(mFrameLayers[0]);
         XImage::addLayer(mFrameLayers[1]);
         XImage::addLayer(mFrameLayers[2]);
         XImage::addLayer(mFrameLayers[3]);
+        XImage::addLayer(mFrameLayers[4]);
     }
 
     virtual int shutdown() override {
@@ -111,7 +127,6 @@ public:
             );
 
             ImGui::Text("Layer:");
-            static int currentEmitter = 0;
             for (uint32_t ii = 0; ii < mFrameLayers.size(); ++ii) {
                 ImGui::SameLine();
                 char name[16];
@@ -119,12 +134,14 @@ public:
                 ImGui::RadioButton(name, &mCurrentLayer, ii);
             }
             mFilterEffectListUIs[mCurrentLayer]->imgui(mFrameLayers[mCurrentLayer]);
+            mBlendUIs[mCurrentLayer]->imgui(mFrameLayers[mCurrentLayer]);
             if (mIsFirstRenderCall) {
                 mIsFirstRenderCall = false;
                 mFilterEffectListUIs[0]->imgui(mFrameLayers[0]);
                 mFilterEffectListUIs[1]->imgui(mFrameLayers[1]);
                 mFilterEffectListUIs[2]->imgui(mFrameLayers[2]);
                 mFilterEffectListUIs[3]->imgui(mFrameLayers[3]);
+                mFilterEffectListUIs[4]->imgui(mFrameLayers[4]);
             }
 
             ImGui::End();
@@ -156,6 +173,7 @@ private:
 
     std::vector<XFrameLayer *> mFrameLayers;
     std::vector<XFilterEffectListUI *> mFilterEffectListUIs;
+    std::vector<XBlendUI *> mBlendUIs;
     int mCurrentLayer = 0;
 
     bool mIsFirstRenderCall = true;

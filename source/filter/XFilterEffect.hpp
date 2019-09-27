@@ -72,7 +72,7 @@ private:
 class XSaturation : public XFilterEffect {
 public:
     XSaturation() : XFilterEffect() {
-        setFragmentShaderName("fs_filter_saturation");
+        setFragmentShaderName("fs_saturation");
         addParam("saturation", 0.0f, 2.0f, 1.0f, 1.0f, 1);
     }
 
@@ -87,7 +87,7 @@ public:
 class XContrast : public XFilterEffect {
 public:
     XContrast() : XFilterEffect() {
-        setFragmentShaderName("fs_filter_contrast");
+        setFragmentShaderName("fs_contrast");
         addParam("contrast", 0.0f, 4.0f, 1.0f, 1.0f, 1);
     }
 
@@ -102,7 +102,7 @@ public:
 class XBrightness : public XFilterEffect {
 public:
     XBrightness() : XFilterEffect() {
-        setFragmentShaderName("fs_filter_brightness");
+        setFragmentShaderName("fs_brightness");
         addParam("brightness", -1.0f, 1.0f, 0.0f, 0.0f, 1);
     }
 
@@ -117,7 +117,7 @@ public:
 class XHUE : public XFilterEffect {
 public:
     XHUE() : XFilterEffect() {
-        setFragmentShaderName("fs_filter_hue");
+        setFragmentShaderName("fs_hue");
         addParam("hueAdjust", 0.0f, 2 * M_PI, 0.0f, 0.0f, 1);
     }
 

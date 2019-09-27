@@ -8,8 +8,8 @@
 NS_X_IMAGE_BEGIN
 XFilterEffect::XFilterEffect() : XEffect() {
     mFilter = nullptr;
-    mVertexShaderName = "vs_filter_normal";
-    mFragmentShaderName = "fs_filter_normal";
+    mVertexShaderName = "vs_default";
+    mFragmentShaderName = "fs_default";
 }
 
 XFilterEffect::~XFilterEffect() {

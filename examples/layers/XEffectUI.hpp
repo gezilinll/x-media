@@ -11,8 +11,6 @@ class XEffectUI {
 public:
     XEffectUI(XEffect *effect);
 
-    void setIndex(int index);
-
     XEffect *getEffect();
 
     virtual void imgui();
@@ -21,7 +19,6 @@ public:
 
 protected:
     XEffect *mEffect;
-    int mIndex;
 };
 NS_X_IMAGE_END
 

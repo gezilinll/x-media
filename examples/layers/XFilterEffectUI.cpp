@@ -15,13 +15,13 @@ XFilterEffectUI::XFilterEffectUI(XImageNS::XFilterEffect *effect) : XEffectUI(ef
 
 void XFilterEffectUI::imgui() {
     ImGui::Separator();
-    ImGui::Text((mEffect->getName() + ":" + std::to_string(mIndex)).data());
+    ImGui::Text(mEffect->getName().data());
     for (std::pair<std::string, XFilterParam> value : mParams) {
         std::string &paramName = value.first;
         XFilterParam &param = value.second;
         for (int i = 0; i < value.second.valueNum; i++) {
             ImGui::SliderFloat(
-                    (value.first + ":" + std::to_string(mIndex) + ":" + getLocationName(i)).data()
+                    (value.first + ":" + getLocationName(i)).data()
                     , &param.value[i]
                     , param.valueMin[i]
                     , param.valueMax[i]

@@ -12,8 +12,9 @@
 NS_X_IMAGE_BEGIN
 struct XBlend {
     enum Type {
-        Normal,
-        Multiply
+        NORMAL,
+        MULTIPLY,
+        ADD
     };
     XBlend::Type type;
     std::unordered_map<std::string, glm::vec4> params;
@@ -23,12 +24,19 @@ class XBlender : public XFilterEffect {
 public:
     XBlender(XBlend blend) : XFilterEffect() {
         mBlend = blend;
-        setFragmentShaderName("fs_blend_multiply");
+        if (blend.type == XBlend::Type::NORMAL) {
+            setFragmentShaderName("fs_blend_normal");
+        } else if (blend.type == XBlend::Type::MULTIPLY) {
+            setFragmentShaderName("fs_blend_multiply");
+        } else if (blend.type == XBlend::Type::ADD) {
+            setFragmentShaderName("fs_blend_add");
+        }
     }
 
 protected:
     void init() override {
         if (mFilter == nullptr) {
+            LOGE("lbh vs=%s, fs=%s", mVertexShaderName.data(), mFragmentShaderName.data());
             mFilter = new XTwoInputFilter(mVertexShaderName, mFragmentShaderName);
         }
     }

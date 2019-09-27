@@ -16,7 +16,7 @@ XLayer::XLayer(int id) {
     mID = id;
     mViewRect = {0, 0, 0, 0};
     mLayerSource = nullptr;
-    mBlend = {XBlend::Type::Normal};
+    mBlend = {XBlend::Type::NORMAL};
     mLayerResult = nullptr;
 }
 

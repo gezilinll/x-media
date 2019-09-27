@@ -1,7 +1,7 @@
 $input v_texcoord0
 
 #include "../thirdparty/bgfx.cmake/bgfx/examples/common/common.sh"
-SAMPLER2D(s_texColor, 0);
+SAMPLER2D(s_texColor0, 0);
 
 vec4 temperature;
 vec4 tint;
@@ -13,7 +13,7 @@ const mediump mat3 YIQtoRGB = mat3(1.0, 0.956, 0.621, 1.0, -0.272, -0.647, 1.0, 
 
 void main()
 {
-     lowp vec4 source = texture2D(s_texColor, v_texcoord0);
+     lowp vec4 source = texture2D(s_texColor0, v_texcoord0);
 	
 	mediump vec3 yiq = RGBtoYIQ * source.rgb; //adjusting tint.x
 	yiq.b = clamp(yiq.b + tint.x*0.5226*0.1, -0.5226, 0.5226);

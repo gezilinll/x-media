@@ -1,7 +1,7 @@
 $input v_texcoord0
 
 #include "../thirdparty/bgfx.cmake/bgfx/examples/common/common.sh"
-SAMPLER2D(s_texColor, 0);
+SAMPLER2D(s_texColor0, 0);
 
 vec4 hueAdjust;
 
@@ -15,7 +15,7 @@ const highp  vec4  kYIQToB   = vec4 (1.0, -1.1070, 1.7046, 0.0);
 void main()
 {
      // Sample the input pixel
-     highp vec4 color   = texture2D(s_texColor, v_texcoord0);
+     highp vec4 color   = texture2D(s_texColor0, v_texcoord0);
      
      // Convert to YIQ
      highp float   YPrime  = dot (color, kRGBToYPrime);

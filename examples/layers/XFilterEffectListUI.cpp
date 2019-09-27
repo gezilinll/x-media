@@ -18,12 +18,11 @@ XFilterEffectListUI::XFilterEffectListUI() {
 
 void XFilterEffectListUI::imgui(XLayer *layer) {
     ImGui::Separator();
-    ImGui::Text("Effects:");
-    int size = IM_ARRAYSIZE(EFFECT_ITEMS);
+    ImGui::Text("Filter Effects:");
     ImGui::Checkbox("Saturation", &mSaturation);
-    ImGui::Checkbox("mContrast", &mContrast);
-    ImGui::Checkbox("mBrightness", &mBrightness);
-    ImGui::Checkbox("mHUE", &mHUE);
+    ImGui::Checkbox("Contrast", &mContrast);
+    ImGui::Checkbox("Brightness", &mBrightness);
+    ImGui::Checkbox("HUE", &mHUE);
 
     std::vector<XEffect*> effects;
     std::vector<char *> effectNames;
@@ -50,10 +49,10 @@ void XFilterEffectListUI::imgui(XLayer *layer) {
     layer->setEffects(effects);
     const char *names[effectNames.size()];
     std::copy(effectNames.begin(), effectNames.end(), names);
-    ImGui::Combo("", &mCurrentIndex, names, effectNames.size(), 5);
+    ImGui::Combo("Filter Params", &mCurrentIndex, names, effectNames.size(), 5);
     if (mCurrentIndex != 0) {
-        getEffectUI(EFFECT_ITEMS[mCurrentIndex])->imgui();
-        getEffectUI(EFFECT_ITEMS[mCurrentIndex])->update();
+        getEffectUI(names[mCurrentIndex])->imgui();
+        getEffectUI(names[mCurrentIndex])->update();
     }
 }
 

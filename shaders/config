@@ -1,11 +1,13 @@
-FS_NORMAL:fs_filter_normal.sc,filter.varying.def.sc
-FS_SATURATION:fs_filter_saturation.sc,filter.varying.def.sc
-FS_BRIGHTNESS:fs_filter_brightness.sc,filter.varying.def.sc
-FS_CONTRAST:fs_filter_contrast.sc,filter.varying.def.sc
-FS_EXPOSURE:fs_filter_exposure.sc,filter.varying.def.sc
-FS_HUE:fs_filter_hue.sc,filter.varying.def.sc
-FS_LEVELS:fs_filter_levels.sc,filter.varying.def.sc
-FS_WHITE_BALANCE:fs_filter_white_balance.sc,filter.varying.def.sc
-FS_MONOCHROME:fs_filter_monochrome.sc,filter.varying.def.sc
-VS_NORMAL:vs_filter_normal.sc,filter.varying.def.sc
-FS_BLEND_MULTIPLY:fs_blend_multiply.sc,filter.varying.def.sc
+FS_DEFAULT:fs_default.sc,default.varying.def.sc
+FS_SATURATION:fs_saturation.sc, default.varying.def.sc
+FS_BRIGHTNESS:fs_brightness.sc, default.varying.def.sc
+FS_CONTRAST:fs_contrast.sc,default.varying.def.sc
+FS_EXPOSURE:fs_exposure.sc,default.varying.def.sc
+FS_HUE:fs_hue.sc,default.varying.def.sc
+FS_LEVELS:fs_levels.sc,default.varying.def.sc
+FS_WHITE_BALANCE:fs_white_balance.sc,default.varying.def.sc
+FS_MONOCHROME:fs_monochrome.sc,default.varying.def.sc
+VS_DEFAULT:vs_default.sc,default.varying.def.sc
+FS_BLEND_MULTIPLY:fs_blend_multiply.sc,default.varying.def.sc
+FS_BLEND_NORMAL:fs_blend_normal.sc,default.varying.def.sc
+FS_BLEND_ADD:fs_blend_add.sc,default.varying.def.sc

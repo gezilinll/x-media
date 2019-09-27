@@ -95,7 +95,7 @@ void XFilter::submit() {
 
     if (!bgfx::isValid(mProgram)) {
         mProgram = loadProgram(mVertexShaderPath.data(), mFragmentShaderPath.data());
-        mTexture = bgfx::createUniform("s_texColor", bgfx::UniformType::Sampler);
+        mTexture = bgfx::createUniform("s_texColor0", bgfx::UniformType::Sampler);
         // Create vertex stream declaration.
         PosTexVertex::init();
 
