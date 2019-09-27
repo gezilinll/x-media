@@ -81,9 +81,11 @@ public:
         mFrameLayers[3]->setPath("images/winter.jpg");
 
         mFrameLayers.push_back(new XFrameLayer(4));
-        XRect center = {static_cast<int>((mWidth - mMenuWidth) / 2 - mLayerWidth / 2),
-                             static_cast<int>(mHeight / 2 - mLayerHeight / 2),
-                             static_cast<unsigned int>(mLayerWidth), static_cast<unsigned int>(mLayerHeight)};
+        float centerWidth = mLayerWidth * 1.3f;
+        float centerHeight = centerWidth / ratio;
+        XRect center = {static_cast<int>((mWidth - mMenuWidth) / 2 - centerWidth / 2),
+                             static_cast<int>(mHeight / 2 - centerHeight / 2),
+                             static_cast<unsigned int>(centerWidth), static_cast<unsigned int>(centerHeight)};
         mFrameLayers[4]->setViewRect(center);
         mFrameLayers[4]->setPath("images/leaves.jpg");
 

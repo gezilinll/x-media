@@ -14,8 +14,6 @@ XFilterEffectUI::XFilterEffectUI(XImageNS::XFilterEffect *effect) : XEffectUI(ef
 }
 
 void XFilterEffectUI::imgui() {
-    ImGui::Separator();
-    ImGui::Text(mEffect->getName().data());
     for (std::pair<std::string, XFilterParam> value : mParams) {
         std::string &paramName = value.first;
         XFilterParam &param = value.second;
