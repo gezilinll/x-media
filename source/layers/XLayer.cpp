@@ -32,6 +32,15 @@ void XLayer::addEffect(XEffect *effect) {
     mEffects.push_back(effect);
 }
 
+void XLayer::setEffects(std::vector<XImageNS::XEffect *> effects) {
+    mEffects.clear();
+    mEffects = effects;
+}
+
+std::vector<XEffect *> XLayer::getEffects() {
+    return mEffects;
+}
+
 void XLayer::setBlend(XBlend blend) {
     mBlend = blend;
 }

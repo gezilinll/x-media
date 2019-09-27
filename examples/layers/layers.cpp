@@ -2,7 +2,7 @@
 #include "imgui/imgui.h"
 #include "XImage.hpp"
 #include "XFrameLayer.hpp"
-#include "XEffectListUI.hpp"
+#include "XFilterEffectListUI.hpp"
 
 USING_NS_X_IMAGE
 class ExampleLayers : public entry::AppI {
@@ -43,32 +43,28 @@ public:
         imguiCreate();
 
         // 初始化图层与默认滤镜
-        mEffectListUI = new XEffectListUI();
-        mDefaultFilters.push_back(new XFilterEffect());
-        mDefaultFilters.push_back(new XFilterEffect());
-        mDefaultFilters.push_back(new XFilterEffect());
-        mDefaultFilters.push_back(new XFilterEffect());
+        mFilterEffectListUIs.push_back(new XFilterEffectListUI());
+        mFilterEffectListUIs.push_back(new XFilterEffectListUI());
+        mFilterEffectListUIs.push_back(new XFilterEffectListUI());
+        mFilterEffectListUIs.push_back(new XFilterEffectListUI());
 
         mFrameLayers.push_back(new XFrameLayer(0));
         XRect leftTop = {static_cast<int>(mHorizontalMargin), static_cast<int>(mVerticalMargin),
                          static_cast<unsigned int>(mLayerWidth), static_cast<unsigned int>(mLayerHeight)};
         mFrameLayers[0]->setViewRect(leftTop);
         mFrameLayers[0]->setPath("images/spring.jpg");
-        mFrameLayers[0]->addEffect(mDefaultFilters[0]);
 
         mFrameLayers.push_back(new XFrameLayer(1));
         XRect rightTop = {static_cast<int>(mLayerWidth + mHorizontalMargin * 2), static_cast<int>(mVerticalMargin),
                           static_cast<unsigned int>(mLayerWidth), static_cast<unsigned int>(mLayerHeight)};
         mFrameLayers[1]->setViewRect(rightTop);
         mFrameLayers[1]->setPath("images/summer.jpg");
-        mFrameLayers[1]->addEffect(mDefaultFilters[1]);
 
         mFrameLayers.push_back(new XFrameLayer(2));
         XRect leftBottom = {static_cast<int>(mHorizontalMargin), static_cast<int>(mLayerHeight + mVerticalMargin * 2),
                             static_cast<unsigned int>(mLayerWidth), static_cast<unsigned int>(mLayerHeight)};
         mFrameLayers[2]->setViewRect(leftBottom);
         mFrameLayers[2]->setPath("images/autumn.jpg");
-        mFrameLayers[2]->addEffect(mDefaultFilters[2]);
 
         mFrameLayers.push_back(new XFrameLayer(3));
         XRect rightBottom = {static_cast<int>(mLayerWidth + mHorizontalMargin * 2),
@@ -76,7 +72,6 @@ public:
                              static_cast<unsigned int>(mLayerWidth), static_cast<unsigned int>(mLayerHeight)};
         mFrameLayers[3]->setViewRect(rightBottom);
         mFrameLayers[3]->setPath("images/winter.jpg");
-        mFrameLayers[3]->addEffect(mDefaultFilters[3]);
         XImage::addLayer(mFrameLayers[0]);
         XImage::addLayer(mFrameLayers[1]);
         XImage::addLayer(mFrameLayers[2]);
@@ -123,19 +118,13 @@ public:
                 bx::snprintf(name, BX_COUNTOF(name), "%d", ii);
                 ImGui::RadioButton(name, &mCurrentLayer, ii);
             }
-            mEffectListUI->imgui();
-            XEffectUI *newEffectUI = mEffectListUI->newEffectUI();
-            if (newEffectUI != nullptr) {
-                mEffectUIs[mFrameLayers[mCurrentLayer]->getID()].push_back(newEffectUI);
-                mFrameLayers[mCurrentLayer]->addEffect(newEffectUI->getEffect());
-            }
-            std::vector<XEffectUI *> effectUIs = mEffectUIs[mFrameLayers[mCurrentLayer]->getID()];
-            int effectIndex = 0;
-            for (XEffectUI *effectUI : effectUIs) {
-                effectUI->setIndex(effectIndex);
-                effectUI->imgui();
-                effectUI->update();
-                effectIndex++;
+            mFilterEffectListUIs[mCurrentLayer]->imgui(mFrameLayers[mCurrentLayer]);
+            if (mIsFirstRenderCall) {
+                mIsFirstRenderCall = false;
+                mFilterEffectListUIs[0]->imgui(mFrameLayers[0]);
+                mFilterEffectListUIs[1]->imgui(mFrameLayers[1]);
+                mFilterEffectListUIs[2]->imgui(mFrameLayers[2]);
+                mFilterEffectListUIs[3]->imgui(mFrameLayers[3]);
             }
 
             ImGui::End();
@@ -165,11 +154,11 @@ private:
     uint32_t mDebug;
     uint32_t mReset;
 
-    XEffectListUI *mEffectListUI;
-    std::vector<XFilterEffect *> mDefaultFilters;
     std::vector<XFrameLayer *> mFrameLayers;
-    std::unordered_map<int, std::vector<XEffectUI *>> mEffectUIs;
+    std::vector<XFilterEffectListUI *> mFilterEffectListUIs;
     int mCurrentLayer = 0;
+
+    bool mIsFirstRenderCall = true;
 };
 
 

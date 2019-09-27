@@ -72,6 +72,19 @@ public:
     void addEffect(XEffect *effect);
 
     /**
+     * @brief 设置效果链
+     * @param effects 效果链
+     * @attention 效果链的内存空间由外部控制释放
+     */
+    void setEffects(std::vector<XEffect *> effects);
+
+    /**
+     * @brief 获取图层所有的效果列表
+     * @return 效果列表
+     */
+    std::vector<XEffect *> getEffects();
+
+    /**
      * @brief 提交该图层数据进行渲染
      * @note
      * 1. 因为图层区域不一定是整个屏幕，因此在绘制时会将效果链的渲染区域设置成 {0,0,rect.width,rect.height} ，
