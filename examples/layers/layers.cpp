@@ -25,6 +25,20 @@ public:
         init.resolution.reset  = BGFX_RESET_VSYNC;
         XImage::init(init);
 
+        mHorizontalMargin = 10;
+        mVerticalMargin = 10;
+        mMenuWidth = mWidth / 4;
+        float ratio = 1920.0f / 1080.0f;
+        mLayerWidth = (mWidth - mMenuWidth - 3 * mHorizontalMargin) / 2;
+        mLayerHeight = (mHeight - 3 * mVerticalMargin) / 2;
+        if (mLayerWidth / mLayerHeight > ratio) {
+            mLayerWidth = mLayerHeight * ratio;
+        } else if (mLayerWidth / mLayerHeight < ratio) {
+            mLayerHeight = mLayerWidth / ratio;
+        }
+        mHorizontalMargin = (mWidth - 2 * mLayerWidth - mMenuWidth) / 3;
+        mVerticalMargin = (mHeight - 2 * mLayerHeight) / 3;
+
         // 创建调试ui
         imguiCreate();
 
@@ -36,25 +50,30 @@ public:
         mDefaultFilters.push_back(new XFilterEffect());
 
         mFrameLayers.push_back(new XFrameLayer(0));
-        XRect leftTop = {0, 0, mWidth / 2, mHeight / 2};
+        XRect leftTop = {static_cast<int>(mHorizontalMargin), static_cast<int>(mVerticalMargin),
+                         static_cast<unsigned int>(mLayerWidth), static_cast<unsigned int>(mLayerHeight)};
         mFrameLayers[0]->setViewRect(leftTop);
         mFrameLayers[0]->setPath("images/spring.jpg");
         mFrameLayers[0]->addEffect(mDefaultFilters[0]);
 
         mFrameLayers.push_back(new XFrameLayer(1));
-        XRect rightTop = {static_cast<int>(mWidth / 2), 0, mWidth / 2, mHeight / 2};
+        XRect rightTop = {static_cast<int>(mLayerWidth + mHorizontalMargin * 2), static_cast<int>(mVerticalMargin),
+                          static_cast<unsigned int>(mLayerWidth), static_cast<unsigned int>(mLayerHeight)};
         mFrameLayers[1]->setViewRect(rightTop);
         mFrameLayers[1]->setPath("images/summer.jpg");
         mFrameLayers[1]->addEffect(mDefaultFilters[1]);
 
         mFrameLayers.push_back(new XFrameLayer(2));
-        XRect leftBottom = {0, static_cast<int>(mHeight / 2), mWidth / 2, mHeight / 2};
+        XRect leftBottom = {static_cast<int>(mHorizontalMargin), static_cast<int>(mLayerHeight + mVerticalMargin * 2),
+                            static_cast<unsigned int>(mLayerWidth), static_cast<unsigned int>(mLayerHeight)};
         mFrameLayers[2]->setViewRect(leftBottom);
         mFrameLayers[2]->setPath("images/autumn.jpg");
         mFrameLayers[2]->addEffect(mDefaultFilters[2]);
 
         mFrameLayers.push_back(new XFrameLayer(3));
-        XRect rightBottom = {static_cast<int>(mWidth / 2), static_cast<int>(mHeight / 2), mWidth / 2, mHeight / 2};
+        XRect rightBottom = {static_cast<int>(mLayerWidth + mHorizontalMargin * 2),
+                             static_cast<int>(mLayerHeight + mVerticalMargin * 2),
+                             static_cast<unsigned int>(mLayerWidth), static_cast<unsigned int>(mLayerHeight)};
         mFrameLayers[3]->setViewRect(rightBottom);
         mFrameLayers[3]->setPath("images/winter.jpg");
         mFrameLayers[3]->addEffect(mDefaultFilters[3]);
@@ -85,11 +104,11 @@ public:
                             , uint16_t(mHeight)
                             );
             ImGui::SetNextWindowPos(
-                    ImVec2(mWidth - mWidth / 3.3f - 10.0f, 10.0f)
+                    ImVec2(mHorizontalMargin * 3 + mLayerWidth * 2, 0)
                     , ImGuiCond_FirstUseEver
             );
             ImGui::SetNextWindowSize(
-                    ImVec2(mWidth / 3.3f, mWidth / 3.5f)
+                    ImVec2(mMenuWidth, mHeight)
                     , ImGuiCond_FirstUseEver
             );
             ImGui::Begin("Settings"
@@ -138,6 +157,11 @@ private:
     entry::MouseState mMouseState;
     uint32_t mWidth;
     uint32_t mHeight;
+    uint32_t mLayerWidth;
+    uint32_t mLayerHeight;
+    uint32_t mMenuWidth;
+    uint32_t mHorizontalMargin;
+    uint32_t mVerticalMargin;
     uint32_t mDebug;
     uint32_t mReset;
 
