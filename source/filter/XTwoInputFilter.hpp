@@ -12,6 +12,8 @@ class XTwoInputFilter : public XFilter {
 public:
     XTwoInputFilter(const std::string vertex, const std::string fragment);
 
+    ~XTwoInputFilter();
+
     /**
      * @brief 设置二号输入
      * @param secondFrame 二号输入

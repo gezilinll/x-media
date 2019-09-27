@@ -59,6 +59,7 @@ XFilter::~XFilter() {
     XImage::destroy(mProgram);
     XImage::destroy(mVertexBuffer);
     XImage::destroy(mIndexBuffer);
+    XImage::destroy(mTexture);
 
     auto iter = mParamHandles.begin();
     while (iter != mParamHandles.end()) {

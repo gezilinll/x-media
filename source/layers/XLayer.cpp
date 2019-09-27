@@ -22,6 +22,8 @@ XLayer::XLayer(int id) {
 
 XLayer::~XLayer() {
     mEffects.clear();
+    SAFE_DELETE(mLayerSource);
+    XFrameBufferPool::recycle(mLayerResult);
 }
 
 int XLayer::getID() {

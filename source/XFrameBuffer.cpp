@@ -15,6 +15,8 @@ XFrameBuffer::XFrameBuffer(bgfx::FrameBufferHandle handle, int width, int height
 }
 
 XFrameBuffer::~XFrameBuffer() {
+    bgfx::TextureHandle textureHandle = bgfx::getTexture(mHandle);
+    XImage::destroy(textureHandle);
     XImage::destroy(mHandle);
 }
 

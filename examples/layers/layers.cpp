@@ -97,6 +97,19 @@ public:
     }
 
     virtual int shutdown() override {
+        for (XLayer *layer : mFrameLayers) {
+            SAFE_DELETE(layer);
+        }
+        mFrameLayers.clear();
+        for (XFilterEffectListUI *filterUi : mFilterEffectListUIs) {
+            SAFE_DELETE(filterUi);
+        }
+        mFilterEffectListUIs.clear();
+        for (XBlendUI *blendUi : mBlendUIs) {
+            SAFE_DELETE(blendUi);
+        }
+        mBlendUIs.clear();
+
         imguiDestroy();
 
         XImage::destroy();

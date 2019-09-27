@@ -36,7 +36,6 @@ public:
 protected:
     void init() override {
         if (mFilter == nullptr) {
-            LOGE("lbh vs=%s, fs=%s", mVertexShaderName.data(), mFragmentShaderName.data());
             mFilter = new XTwoInputFilter(mVertexShaderName, mFragmentShaderName);
         }
     }

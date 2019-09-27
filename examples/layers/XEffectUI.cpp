@@ -8,6 +8,10 @@ XEffectUI::XEffectUI(XEffect *effect) {
     mEffect = effect;
 }
 
+XEffectUI::~XEffectUI() {
+    SAFE_DELETE(mEffect);
+}
+
 XEffect* XEffectUI::getEffect() {
     return mEffect;
 }

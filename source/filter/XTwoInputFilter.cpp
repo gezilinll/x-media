@@ -4,11 +4,16 @@
 
 #include "XTwoInputFilter.hpp"
 #include "XLog.hpp"
+#include "XImage.hpp"
 
 NS_X_IMAGE_BEGIN
 XTwoInputFilter::XTwoInputFilter(const std::string vertex, const std::string fragment) : XFilter(vertex, fragment) {
     mSecondInputFrameBuffer = nullptr;
     mTexture2 = BGFX_INVALID_HANDLE;
+}
+
+XTwoInputFilter::~XTwoInputFilter() {
+    XImage::destroy(mTexture2);
 }
 
 void XTwoInputFilter::setSecondInputFrameBuffer(XFrameBuffer *secondFrame) {

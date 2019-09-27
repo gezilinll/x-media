@@ -14,6 +14,8 @@ class XFilterEffectListUI {
 public:
     XFilterEffectListUI();
 
+    ~XFilterEffectListUI();
+
     void imgui(XLayer* layer);
 
 private:

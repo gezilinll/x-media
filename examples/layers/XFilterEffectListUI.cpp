@@ -16,6 +16,13 @@ XFilterEffectListUI::XFilterEffectListUI() {
     mHUE = false;
 }
 
+XFilterEffectListUI::~XFilterEffectListUI() {
+    for (auto entry : mEffectUIs) {
+        SAFE_DELETE(entry.second);
+    }
+     mEffectUIs.clear();
+}
+
 void XFilterEffectListUI::imgui(XLayer *layer) {
     ImGui::Separator();
     ImGui::Text("Filter Effects:");

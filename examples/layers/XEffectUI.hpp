@@ -11,6 +11,8 @@ class XEffectUI {
 public:
     XEffectUI(XEffect *effect);
 
+    virtual ~XEffectUI();
+
     XEffect *getEffect();
 
     virtual void imgui();
