@@ -35,6 +35,13 @@ public:
      */
     void setVec4(std::string paramName, glm::vec4 &value);
 
+    /**
+     * @brief 设置变换矩阵
+     * @param view 相机变换矩阵
+     * @param projection 投影矩阵
+     */
+    void setTransform(float view[], float projection[]);
+
 protected:
     void init() override ;
 
@@ -62,6 +69,9 @@ protected:
     bgfx::VertexBufferHandle mVertexBuffer; /// 滤镜顶点缓冲
     bgfx::IndexBufferHandle mIndexBuffer; /// 滤镜顶点次序缓冲
     XFrameBuffer* mFirstInputFrameBuffer; /// 滤镜一号输入纹理
+private:
+    float *mViewMatrix;
+    float *mProjectionMatrix;
 };
 NS_X_IMAGE_END
 
