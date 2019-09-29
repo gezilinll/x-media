@@ -26,10 +26,10 @@ struct PosTexVertex
                 .end();
     };
 
-    static bgfx::VertexDecl ms_decl;
+    static bgfx::VertexLayout ms_decl;
 };
 
-bgfx::VertexDecl PosTexVertex::ms_decl;
+bgfx::VertexLayout PosTexVertex::ms_decl;
 //顶点坐标数据
 static PosTexVertex s_vertices[] =
         {
@@ -95,11 +95,8 @@ void XFilter::setInputFrameBuffer(XFrameBuffer *input) {
 }
 
 void XFilter::setTransform(const float *view, const float *projection) {
-    LOGE("lbh setTransform view=%p", view);
     bx::memCopy(mViewMatrix, view, sizeof(float) * 16);
     bx::memCopy(mProjectionMatrix, projection, sizeof(float) * 16);
-    LOGE("lbh view[] 0=%f, 1=%f, 2=%f", view[0], view[1], view[2]);
-    LOGE("lbh mViewMatrix 0=%f, 1=%f, 2=%f", mViewMatrix[0], mViewMatrix[1], mViewMatrix[2]);
 }
 
 void XFilter::submit() {
@@ -141,7 +138,7 @@ void XFilter::submit() {
     } else {
         bgfx::setViewFrameBuffer(renderIndex, BGFX_INVALID_HANDLE);
     }
-    bgfx::setState(0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A);
+    bgfx::setState(0 | BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A | BGFX_STATE_BLEND_ALPHA);
     bgfx::setVertexBuffer(0, mVertexBuffer);
     bgfx::setIndexBuffer(mIndexBuffer);
     bgfx::setTexture(0, mTexture, mFirstInputFrameBuffer->getTexture());

@@ -6,7 +6,7 @@
 #include "ps/fs_particle.bin.h"
 
 NS_X_IMAGE_BEGIN
-bgfx::VertexDecl PosColorTexCoord0Vertex::ms_decl;
+bgfx::VertexLayout PosColorTexCoord0Vertex::ms_decl;
 
 static const bgfx::EmbeddedShader s_embeddedShaders[] =
         {

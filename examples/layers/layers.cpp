@@ -100,7 +100,7 @@ public:
         XImage::addLayer(mFrameLayers[4]);
 
         mTransformEffect = new XTransform();
-        XImage::addGlobalEffect(mTransformEffect);
+//        XImage::addGlobalEffect(mTransformEffect);
 
         cameraCreate();
         cameraSetPosition({ 0.0f, 2.0f, -12.0f });
@@ -186,9 +186,6 @@ public:
             cameraUpdate(deltaTime, mMouseState);
             cameraGetViewMtx(mViewMatrix);
             bx::mtxProj(mProjectionMatrix, 60.0f, float(mWidth) / float(mHeight), 0.1f, 100.0f, bgfx::getCaps()->homogeneousDepth);
-            LOGE("lbh view add=%p 0=%f, 1=%f, 2=%f, 3=%f, 4=%f, 5=%f, 6=%f, 7=%f, 8=%f, 9=%f, 10=%f, 11=%f, 12=%f, 13=%f, 14=%f, 15=%f", mViewMatrix,
-                    mViewMatrix[0], mViewMatrix[1], mViewMatrix[2], mViewMatrix[3], mViewMatrix[4], mViewMatrix[5],
-                 mViewMatrix[6], mViewMatrix[7], mViewMatrix[8], mViewMatrix[9], mViewMatrix[10], mViewMatrix[11], mViewMatrix[12], mViewMatrix[13], mViewMatrix[14], mViewMatrix[15]);
             (dynamic_cast<XFilter *>(mTransformEffect->get()))->setTransform(mViewMatrix, mProjectionMatrix);
 
 

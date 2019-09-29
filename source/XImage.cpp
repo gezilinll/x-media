@@ -67,7 +67,7 @@ void XImage::frame() {
     filter->setInputFrameBuffer(sFrame);
     filter->setViewRect(screen);
     filter->submit();
-    SAFE_DELETE(filter);
+    SAFE_DELETE(filterEffect);
     if (cache != sFrame) {
         XFrameBufferPool::recycle(cache);
     }

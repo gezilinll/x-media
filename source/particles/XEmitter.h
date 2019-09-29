@@ -110,7 +110,7 @@ struct PosColorTexCoord0Vertex
                 .end();
     }
 
-    static bgfx::VertexDecl ms_decl;
+    static bgfx::VertexLayout ms_decl;
 };
 
 class XEmitter {

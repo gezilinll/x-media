@@ -21,11 +21,11 @@ XInputOutput* XTransform::get() {
     if (mFilter == nullptr) {
         mFilter = new XFilter("vs_default", "fs_default");
     }
-    float view[16];
-    bx::mtxLookAt(view, bx::load<bx::Vec3>(&mCameraEye.x), bx::load<bx::Vec3>(&mCameraAt.x), bx::load<bx::Vec3>(&mCameraUp.x));
-    float projection[16];
-    bx::mtxProj(projection, mFovy, mAspect, mNear, mFar, bgfx::getCaps()->homogeneousDepth, mHandness);
-    mFilter->setTransform(view, projection);
+//    float view[16];
+//    bx::mtxLookAt(view, bx::load<bx::Vec3>(&mCameraEye.x), bx::load<bx::Vec3>(&mCameraAt.x), bx::load<bx::Vec3>(&mCameraUp.x));
+//    float projection[16];
+//    bx::mtxProj(projection, mFovy, mAspect, mNear, mFar, bgfx::getCaps()->homogeneousDepth, mHandness);
+//    mFilter->setTransform(view, projection);
     return mFilter;
 }
 
