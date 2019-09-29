@@ -6,13 +6,14 @@
 #include "XFrameBufferPool.hpp"
 #include "XFilter.hpp"
 #include "XFilterEffect.hpp"
-#include "XBlendHelper.hpp"
+#include "XRenderFrameHelper.hpp"
 
 NS_X_IMAGE_BEGIN
 
 int XImage::sRenderIndex = -1;
 XFrameBuffer* XImage::sFrame = nullptr;
 std::vector<XLayer *> XImage::sLayers;
+std::vector<XEffect *> XImage::sGlobalEffects;
 bgfx::Init XImage::sInit;
 
 void XImage::init(bgfx::Init &init) {
@@ -35,6 +36,10 @@ void XImage::addLayer(XLayer *layer) {
     sLayers.push_back(layer);
 }
 
+void XImage::addGlobalEffect(XImageNS::XEffect *globalEffect) {
+    sGlobalEffects.push_back(globalEffect);
+}
+
 void XImage::submit() {
     if (sFrame == nullptr) {
         sFrame = XFrameBufferPool::get(XImage::getCanvasWidth(), XImage::getCanvasHeight());
@@ -47,13 +52,25 @@ void XImage::submit() {
 void XImage::frame() {
     XRect screen = {0, 0, static_cast<unsigned int>(XImage::getCanvasWidth()),
                     static_cast<unsigned int>(XImage::getCanvasHeight())};
-    XBlendHelper::blend(sLayers, sFrame);
+    XFrameBuffer *cache = nullptr;
+    if (!sGlobalEffects.empty()) {
+        cache = XFrameBufferPool::get(screen.width, screen.height);
+    } else {
+        cache = sFrame;
+    }
+    XRenderFrameHelper::blend(sLayers, cache);
+    if (!sGlobalEffects.empty()) {
+        XRenderFrameHelper::overlayEffects(cache, sGlobalEffects, sFrame);
+    }
     XFilterEffect *filterEffect = new XFilterEffect();
     XFilter *filter = dynamic_cast<XFilter*>(filterEffect->get());
     filter->setInputFrameBuffer(sFrame);
     filter->setViewRect(screen);
     filter->submit();
     SAFE_DELETE(filter);
+    if (cache != sFrame) {
+        XFrameBufferPool::recycle(cache);
+    }
     // Advance to next frame. Rendering thread will be kicked to
     // process submitted rendering primitives.
     bgfx::frame();

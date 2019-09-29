@@ -2,12 +2,12 @@
 // Created by 林炳河 on 2019-09-26.
 //
 
-#include "XBlendHelper.hpp"
+#include "XRenderFrameHelper.hpp"
 #include "XImage.hpp"
 
 NS_X_IMAGE_BEGIN
 
-void XBlendHelper::blend(std::vector<XLayer *> layers, XFrameBuffer* toResult) {
+void XRenderFrameHelper::blend(std::vector<XLayer *> layers, XFrameBuffer* toResult) {
     XRect screen = {0, 0, static_cast<unsigned int>(XImage::getCanvasWidth()),
                     static_cast<unsigned int>(XImage::getCanvasHeight())};
 
@@ -37,6 +37,17 @@ void XBlendHelper::blend(std::vector<XLayer *> layers, XFrameBuffer* toResult) {
     SAFE_DELETE(blender2);
     SAFE_DELETE(blender3);
     SAFE_DELETE(blender4);
+}
+
+void XRenderFrameHelper::overlayEffects(XFrameBuffer *blendResult, std::vector<XEffect *> effects, XFrameBuffer *toResult) {
+    XRect screen = {0, 0, static_cast<unsigned int>(XImage::getCanvasWidth()),
+                    static_cast<unsigned int>(XImage::getCanvasHeight())};
+
+    XFilter *result = dynamic_cast<XFilter *>(effects[0]->get());
+    result->setInputFrameBuffer(blendResult);
+    result->setViewRect(screen);
+    result->setOutputBuffer(toResult);
+    result->submit();
 }
 
 NS_X_IMAGE_END

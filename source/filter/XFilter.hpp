@@ -40,7 +40,7 @@ public:
      * @param view 相机变换矩阵
      * @param projection 投影矩阵
      */
-    void setTransform(float view[], float projection[]);
+    void setTransform(const float *view, const float *projection);
 
 protected:
     void init() override ;

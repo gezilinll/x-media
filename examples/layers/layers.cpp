@@ -4,6 +4,9 @@
 #include "XFrameLayer.hpp"
 #include "XFilterEffectListUI.hpp"
 #include "XBlendUI.hpp"
+#include "XTransform.hpp"
+#include "camera.h"
+#include "bx/timer.h"
 
 USING_NS_X_IMAGE
 class ExampleLayers : public entry::AppI {
@@ -89,11 +92,26 @@ public:
         mFrameLayers[4]->setViewRect(center);
         mFrameLayers[4]->setPath("images/leaves.jpg");
 
+        LOGE("lbh layer[0]=%p", mFrameLayers[0]);
         XImage::addLayer(mFrameLayers[0]);
         XImage::addLayer(mFrameLayers[1]);
         XImage::addLayer(mFrameLayers[2]);
         XImage::addLayer(mFrameLayers[3]);
         XImage::addLayer(mFrameLayers[4]);
+
+        mTransformEffect = new XTransform();
+        XImage::addGlobalEffect(mTransformEffect);
+
+        cameraCreate();
+        cameraSetPosition({ 0.0f, 2.0f, -12.0f });
+        cameraSetVerticalAngle(0.0f);
+
+        m_timeOffset = bx::getHPCounter();
+
+        mViewMatrix = new float[16];
+        bx::mtxIdentity(mViewMatrix);
+        mProjectionMatrix = new float[16];
+        bx::mtxIdentity(mProjectionMatrix);
     }
 
     virtual int shutdown() override {
@@ -159,6 +177,21 @@ public:
                 mFilterEffectListUIs[4]->imgui(mFrameLayers[4]);
             }
 
+            int64_t now = bx::getHPCounter() - m_timeOffset;
+            static int64_t last = now;
+            const int64_t frameTime = now - last;
+            last = now;
+            const double freq = double(bx::getHPFrequency());
+            const float deltaTime = float(frameTime / freq);
+            cameraUpdate(deltaTime, mMouseState);
+            cameraGetViewMtx(mViewMatrix);
+            bx::mtxProj(mProjectionMatrix, 60.0f, float(mWidth) / float(mHeight), 0.1f, 100.0f, bgfx::getCaps()->homogeneousDepth);
+            LOGE("lbh view add=%p 0=%f, 1=%f, 2=%f, 3=%f, 4=%f, 5=%f, 6=%f, 7=%f, 8=%f, 9=%f, 10=%f, 11=%f, 12=%f, 13=%f, 14=%f, 15=%f", mViewMatrix,
+                    mViewMatrix[0], mViewMatrix[1], mViewMatrix[2], mViewMatrix[3], mViewMatrix[4], mViewMatrix[5],
+                 mViewMatrix[6], mViewMatrix[7], mViewMatrix[8], mViewMatrix[9], mViewMatrix[10], mViewMatrix[11], mViewMatrix[12], mViewMatrix[13], mViewMatrix[14], mViewMatrix[15]);
+            (dynamic_cast<XFilter *>(mTransformEffect->get()))->setTransform(mViewMatrix, mProjectionMatrix);
+
+
             ImGui::End();
             imguiEndFrame();
 
@@ -189,9 +222,14 @@ private:
     std::vector<XFrameLayer *> mFrameLayers;
     std::vector<XFilterEffectListUI *> mFilterEffectListUIs;
     std::vector<XBlendUI *> mBlendUIs;
+    XTransform *mTransformEffect;
     int mCurrentLayer = 0;
 
+    float *mViewMatrix;
+    float *mProjectionMatrix;
+
     bool mIsFirstRenderCall = true;
+    int64_t m_timeOffset;
 };
 
 

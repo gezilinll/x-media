@@ -38,6 +38,12 @@ public:
     static void addLayer(XLayer *layer);
 
     /**
+     * @brief 添加全局性的效果，该效果会叠加在所有图层之上
+     * @param globalEffect 效果
+     */
+    static void addGlobalEffect(XEffect *globalEffect);
+
+    /**
      * @brief 获取画布宽度
      * @return 画布宽度
      * @attention 需要先调用 #init
@@ -106,6 +112,7 @@ private:
     static int sRenderIndex; /// 渲染次序ID
     static XFrameBuffer *sFrame; /// 离屏渲染帧数据
     static std::vector<XLayer *> sLayers; /// 图层列表
+    static std::vector<XEffect *> sGlobalEffects; /// 全局效果列表
     static bgfx::Init sInit;
 };
 NS_X_IMAGE_END

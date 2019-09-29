@@ -53,8 +53,10 @@ XFilter::XFilter(std::string vertex, std::string fragment) {
     mIndexBuffer = BGFX_INVALID_HANDLE;
     mOutputWidth = 0;
     mOutputHeight = 0;
-    mViewMatrix = nullptr;
-    mProjectionMatrix = nullptr;
+    mViewMatrix = new float[16];
+    bx::mtxIdentity(mViewMatrix);
+    mProjectionMatrix = new float[16];
+    bx::mtxIdentity(mProjectionMatrix);
 }
 
 XFilter::~XFilter() {
@@ -69,6 +71,9 @@ XFilter::~XFilter() {
         iter++;
     }
     mParamHandles.clear();
+
+    SAFE_DELETE_ARRAY(mViewMatrix);
+    SAFE_DELETE_ARRAY(mProjectionMatrix);
 }
 
 void XFilter::init() {
@@ -89,46 +94,12 @@ void XFilter::setInputFrameBuffer(XFrameBuffer *input) {
     mFirstInputFrameBuffer = input;
 }
 
-void XFilter::setTransform(float view[], float projection[]) {
-    if (mViewMatrix = nullptr) {
-        mViewMatrix = new float[16]{0};
-    }
-    if (mProjectionMatrix == nullptr) {
-        mProjectionMatrix = new float[16]{0};
-    }
-    mViewMatrix[0] = view[0];
-    mViewMatrix[1] = view[1];
-    mViewMatrix[2] = view[2];
-    mViewMatrix[3] = view[3];
-    mViewMatrix[4] = view[4];
-    mViewMatrix[5] = view[5];
-    mViewMatrix[6] = view[6];
-    mViewMatrix[7] = view[7];
-    mViewMatrix[8] = view[8];
-    mViewMatrix[9] = view[9];
-    mViewMatrix[10] = view[10];
-    mViewMatrix[11] = view[11];
-    mViewMatrix[12] = view[12];
-    mViewMatrix[13] = view[13];
-    mViewMatrix[14] = view[14];
-    mViewMatrix[15] = view[15];
-
-    mProjectionMatrix[0] = projection[0];
-    mProjectionMatrix[1] = projection[1];
-    mProjectionMatrix[2] = projection[2];
-    mProjectionMatrix[3] = projection[3];
-    mProjectionMatrix[4] = projection[4];
-    mProjectionMatrix[5] = projection[5];
-    mProjectionMatrix[6] = projection[6];
-    mProjectionMatrix[7] = projection[7];
-    mProjectionMatrix[8] = projection[8];
-    mProjectionMatrix[9] = projection[9];
-    mProjectionMatrix[10] = projection[10];
-    mProjectionMatrix[11] = projection[11];
-    mProjectionMatrix[12] = projection[12];
-    mProjectionMatrix[13] = projection[13];
-    mProjectionMatrix[14] = projection[14];
-    mProjectionMatrix[15] = projection[15];
+void XFilter::setTransform(const float *view, const float *projection) {
+    LOGE("lbh setTransform view=%p", view);
+    bx::memCopy(mViewMatrix, view, sizeof(float) * 16);
+    bx::memCopy(mProjectionMatrix, projection, sizeof(float) * 16);
+    LOGE("lbh view[] 0=%f, 1=%f, 2=%f", view[0], view[1], view[2]);
+    LOGE("lbh mViewMatrix 0=%f, 1=%f, 2=%f", mViewMatrix[0], mViewMatrix[1], mViewMatrix[2]);
 }
 
 void XFilter::submit() {
@@ -174,9 +145,8 @@ void XFilter::submit() {
     bgfx::setVertexBuffer(0, mVertexBuffer);
     bgfx::setIndexBuffer(mIndexBuffer);
     bgfx::setTexture(0, mTexture, mFirstInputFrameBuffer->getTexture());
-    if (mViewMatrix != nullptr && mProjectionMatrix != nullptr) {
-        bgfx::setViewTransform(renderIndex, mViewMatrix, mProjectionMatrix);
-    }
+    bgfx::setViewTransform(renderIndex, mViewMatrix, mProjectionMatrix);
+
     updateParams();
     bgfx::submit(renderIndex, mProgram);
     XOutput::submit();
