@@ -35,6 +35,7 @@ XFrameBuffer * XFrameBufferPool::get(std::string path, int width, int height) {
         LOGE("[XFrameBufferPool::get] path=%s, width=%d, height=%d",
              path.data(), width, height);
         result = new XFrameBuffer(BGFX_INVALID_HANDLE, width, height);
+        sBuffers.push_back(result);
     }
     bgfx::TextureHandle textureHandle = loadTexture(path.data());
     if (!bgfx::isValid(textureHandle)) {

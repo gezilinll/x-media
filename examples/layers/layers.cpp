@@ -124,7 +124,11 @@ public:
         }
         mBlendUIs.clear();
 
+        SAFE_DELETE(mTransformEffect);
+
         imguiDestroy();
+
+        cameraDestroy();
 
         XImage::destroy();
 
@@ -225,7 +229,7 @@ public:
         if (PROJECTION_TYPE[mCurrentProjection] == "Orthogonal") {
             mTransformEffect->setOrthogonal(-1.0f, 1.0f, -1.0f, 1.0f, 0.0f, 100.0f);
         } else if (PROJECTION_TYPE[mCurrentProjection] == "Perspective") {
-            mTransformEffect->setPerspective(60.0f, static_cast<float>(width) / static_cast<float>(height), 0.1f, 1000.0f);
+            mTransformEffect->setPerspective(60.0f, static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
         }
 
         mLastProjection = mCurrentProjection;

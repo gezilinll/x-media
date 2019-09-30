@@ -16,6 +16,8 @@ class XTransform : public XEffect {
 public:
     XTransform();
 
+    ~XTransform();
+
     XInputOutput *get() override ;
 
     /**

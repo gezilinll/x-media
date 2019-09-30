@@ -25,6 +25,13 @@ XTransform::XTransform() {
     bx::mtxIdentity(mProjectionMatrix);
 }
 
+XTransform::~XTransform() {
+    SAFE_DELETE(mFilter);
+
+    SAFE_DELETE_ARRAY(mViewMatrix);
+    SAFE_DELETE_ARRAY(mProjectionMatrix);
+}
+
 XInputOutput* XTransform::get() {
     if (mFilter == nullptr) {
         mFilter = new XFilter("vs_default", "fs_default");
