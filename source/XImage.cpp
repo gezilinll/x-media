@@ -4,8 +4,8 @@
 
 #include "XImage.hpp"
 #include "XFrameBufferPool.hpp"
-#include "XFilter.hpp"
-#include "XFilterEffect.hpp"
+#include "effects/XFilter.hpp"
+#include "effects/XFilterEffect.hpp"
 #include "XFrameHelper.hpp"
 
 NS_X_IMAGE_BEGIN

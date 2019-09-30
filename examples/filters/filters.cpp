@@ -9,7 +9,7 @@
 
 #include <bx/string.h>
 #include "inout/XFrameOutput.hpp"
-#include "filter/XFilter.hpp"
+#include "effects/XFilter.hpp"
 #include "XLog.hpp"
 #include "XImage.hpp"
 #include "XImageShaderInfo.hpp"

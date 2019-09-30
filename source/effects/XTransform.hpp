@@ -5,7 +5,7 @@
 #ifndef GPUIMAGE_X_XTRANSFORM_HPP
 #define GPUIMAGE_X_XTRANSFORM_HPP
 
-#include "XFilterEffect.hpp"
+#include "effects/XFilterEffect.hpp"
 #include "bx/math.h"
 
 NS_X_IMAGE_BEGIN

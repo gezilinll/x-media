@@ -5,8 +5,8 @@
 #ifndef GPUIMAGE_X_XBLEND_HPP
 #define GPUIMAGE_X_XBLEND_HPP
 
-#include "XFilterEffect.hpp"
-#include "XTwoInputFilter.hpp"
+#include "effects/XFilterEffect.hpp"
+#include "effects/XTwoInputFilter.hpp"
 #include <unordered_map>
 
 NS_X_IMAGE_BEGIN

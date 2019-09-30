@@ -7,9 +7,9 @@
 
 #include "XMacros.hpp"
 #include "XModels.hpp"
-#include "XEffect.hpp"
+#include "effects/XEffect.hpp"
 #include "XFrameBuffer.hpp"
-#include "XBlend.hpp"
+#include "effects/XBlend.hpp"
 #include "bgfx/bgfx.h"
 #include <vector>
 

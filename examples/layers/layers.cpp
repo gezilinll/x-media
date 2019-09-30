@@ -4,7 +4,7 @@
 #include "XFrameLayer.hpp"
 #include "XFilterEffectListUI.hpp"
 #include "XBlendUI.hpp"
-#include "XTransform.hpp"
+#include "effects/XTransform.hpp"
 #include "camera.h"
 #include "bx/timer.h"
 

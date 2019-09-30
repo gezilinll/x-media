@@ -4,7 +4,7 @@
 
 #ifndef GPUIMAGE_X_XEFFECTUI_HPP
 #define GPUIMAGE_X_XEFFECTUI_HPP
-#include "XEffect.hpp"
+#include "effects/XEffect.hpp"
 
 NS_X_IMAGE_BEGIN
 class XEffectUI {

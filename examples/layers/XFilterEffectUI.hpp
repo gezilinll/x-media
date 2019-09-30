@@ -6,7 +6,7 @@
 #define GPUIMAGE_X_XFILTEREFFECTUI_HPP
 
 #include "XEffectUI.hpp"
-#include "XFilterEffect.hpp"
+#include "effects/XFilterEffect.hpp"
 
 NS_X_IMAGE_BEGIN
 class XFilterEffectUI : public XEffectUI {
