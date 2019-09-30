@@ -4,14 +4,14 @@
 #include "XFrameLayer.hpp"
 #include "XFilterEffectListUI.hpp"
 #include "XBlendUI.hpp"
-#include "effects/XTransform.hpp"
+#include "XTransform.hpp"
 #include "camera.h"
 #include "bx/timer.h"
 
 USING_NS_X_IMAGE
-class ExampleLayers : public entry::AppI {
+class XImageExample : public entry::AppI {
 public:
-    ExampleLayers(const char* _name, const char* _description)
+    XImageExample(const char* _name, const char* _description)
             : entry::AppI(_name, _description) {}
 
     void init(int32_t _argc, const char* const* _argv, uint32_t _width, uint32_t _height) override {
@@ -259,4 +259,4 @@ private:
 };
 
 
-ENTRY_IMPLEMENT_MAIN(ExampleLayers, "layers", "layers xiuxiuxiu.");
+ENTRY_IMPLEMENT_MAIN(XImageExample, "X-Image", "X-Image's default example");
