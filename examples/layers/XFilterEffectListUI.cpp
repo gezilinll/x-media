@@ -6,7 +6,8 @@
 #include "imgui/imgui.h"
 
 NS_X_IMAGE_BEGIN
-const char *EFFECT_ITEMS[] = {"None", "Saturation", "Contrast", "Brightness", "HUE"};
+const char *EFFECT_ITEMS[] = {"None", "Saturation", "Contrast", "Brightness", "HUE", "Exposure", "RGB", "WhiteBalance",
+                              "Levels", "Monochrome"};
 
 XFilterEffectListUI::XFilterEffectListUI() {
     mCurrentIndex = 0;
@@ -14,6 +15,11 @@ XFilterEffectListUI::XFilterEffectListUI() {
     mContrast = false;
     mBrightness = false;
     mHUE = false;
+    mExposure = false;
+    mRGB = false;
+    mLevels = false;
+    mWhiteBalance = false;
+    mMonochrome = false;
 }
 
 XFilterEffectListUI::~XFilterEffectListUI() {
@@ -30,6 +36,11 @@ void XFilterEffectListUI::imgui(XLayer *layer) {
     ImGui::Checkbox("Contrast", &mContrast);
     ImGui::Checkbox("Brightness", &mBrightness);
     ImGui::Checkbox("HUE", &mHUE);
+    ImGui::Checkbox("Exposure", &mExposure);
+    ImGui::Checkbox("RGB", &mRGB);
+    ImGui::Checkbox("WhiteBalance", &mWhiteBalance);
+    ImGui::Checkbox("Levels", &mLevels);
+    ImGui::Checkbox("Monochrome", &mMonochrome);
 
     std::vector<XEffect*> effects;
     std::vector<char *> effectNames;
@@ -50,8 +61,32 @@ void XFilterEffectListUI::imgui(XLayer *layer) {
         effects.push_back(getEffectUI("HUE")->getEffect());
         effectNames.push_back("HUE");
     }
+    if (mExposure) {
+        effects.push_back(getEffectUI("Exposure")->getEffect());
+        effectNames.push_back("Exposure");
+    }
+    if (mRGB) {
+        effects.push_back(getEffectUI("RGB")->getEffect());
+        effectNames.push_back("RGB");
+    }
+    if (mWhiteBalance) {
+        effects.push_back(getEffectUI("WhiteBalance")->getEffect());
+        effectNames.push_back("WhiteBalance");
+    }
+    if (mLevels) {
+        effects.push_back(getEffectUI("Levels")->getEffect());
+        effectNames.push_back("Levels");
+    }
+    if (mMonochrome) {
+        effects.push_back(getEffectUI("Monochrome")->getEffect());
+        effectNames.push_back("Monochrome");
+    }
     if (effects.size() == 0) {
+        mCurrentIndex = 0;
         effects.push_back(getEffectUI("None")->getEffect());
+    }
+    if (effectNames.size() <= mCurrentIndex) {
+        mCurrentIndex = 0;
     }
     layer->setEffects(effects);
     const char *names[effectNames.size()];
@@ -77,6 +112,16 @@ XEffectUI* XFilterEffectListUI::getEffectUI(std::string name) {
             effectUi = new XFilterEffectUI(new XBrightness());
         } else if (name == "HUE") {
             effectUi = new XFilterEffectUI(new XHUE());
+        } else if (name == "Exposure") {
+            effectUi = new XFilterEffectUI(new XExposure());
+        } else if (name == "RGB") {
+            effectUi = new XFilterEffectUI(new XRGB());
+        } else if (name == "WhiteBalance") {
+            effectUi = new XFilterEffectUI(new XWhiteBalance());
+        } else if (name == "Levels") {
+            effectUi = new XFilterEffectUI(new XLevels());
+        } else if (name == "Monochrome") {
+            effectUi = new XFilterEffectUI(new XMonochrome());
         }
         mEffectUIs.insert(std::make_pair(name, effectUi));
     } else {

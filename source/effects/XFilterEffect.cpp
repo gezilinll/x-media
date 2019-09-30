@@ -63,4 +63,10 @@ void XFilterEffect::addParam(std::string name,float valueMin, float valueMax,
     mParams[name] = param;
 }
 
+void XFilterEffect::addParam(std::string name, glm::vec4 valueMin, glm::vec4 valueMax, glm::vec4 valueDefault,
+                             glm::vec4 value, int valueNum) {
+    XFilterParam param = {name, valueMin, valueMax, valueDefault, value, valueNum};
+    mParams[name] = param;
+}
+
 NS_X_IMAGE_END

@@ -28,6 +28,11 @@ private:
     bool mContrast;
     bool mBrightness;
     bool mHUE;
+    bool mExposure;
+    bool mRGB;
+    bool mWhiteBalance;
+    bool mLevels;
+    bool mMonochrome;
 };
 NS_X_IMAGE_END
 

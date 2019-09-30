@@ -1,4 +1,5 @@
 FS_DEFAULT:fs_default.sc,default.varying.def.sc
+FS_RGB:fs_rgb.sc,default.varying.def.sc
 FS_SATURATION:fs_saturation.sc, default.varying.def.sc
 FS_BRIGHTNESS:fs_brightness.sc, default.varying.def.sc
 FS_CONTRAST:fs_contrast.sc,default.varying.def.sc
