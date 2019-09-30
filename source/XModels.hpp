@@ -9,6 +9,9 @@
 #include <cstdio>
 
 NS_X_IMAGE_BEGIN
+/**
+ * @brief 用于将enum calss作为map等容器的key值时使用
+ */
 struct EnumClassHash
 {
     template <typename T>

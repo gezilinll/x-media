@@ -20,6 +20,13 @@ NS_X_IMAGE_BEGIN
  * @brief 负责对外提供统一接口、逻辑控制、部分工具能力等内容的门面类，使用者应通过该类来实现主要的渲染数据设置和逻辑控制等
  *
  * 主要使用流程如下：
+ * 1. #init 初始化必要参数
+ * 3. #begin 开始新一轮渲染流程
+ * 4. 添加/更新图层等数据
+ * 5. #submit 提交数据进行离屏渲染
+ * 6. #frame 将离屏渲染结果渲染至屏幕
+ * 7. #end 结束当前轮渲染
+ * 8. #shutdown 关闭渲染引擎，只在不再进行渲染时调用
  */
 class XImage {
 public:
@@ -88,9 +95,10 @@ public:
     static void end();
 
     /**
-     * @brief 销毁所有资源
+     * @brief 关闭渲染引擎并销毁所有资源
+     * @warning 该接口必须在使用方将图层等外部创建、管理的资源释放后调用，并需要确保在最后一帧渲染结束后
      */
-    static void destroy();
+    static void shutdown();
 
     /***** 安全释放bgfx中数据的接口列表 *****/
     static void destroy(bgfx::ProgramHandle &handle);
@@ -100,20 +108,19 @@ public:
     static void destroy(bgfx::IndexBufferHandle &handle);
     static void destroy(bgfx::UniformHandle &handle);
 
+    /**
+     * @brief 将float参数转为四位向量
+     * @param value 参数
+     * @return 向量
+     */
     static glm::vec4 wrapFloat(float value);
-
-    static float* wrapFloatToVec4(float value);
-
-    static float* wrapVec3ToVec4(float x, float y, float z);
-
-    static float* wrapVec3ToVec4(float* xyz);
 
 private:
     static int sRenderIndex; /// 渲染次序ID
     static XFrameBuffer *sFrame; /// 离屏渲染帧数据
     static std::vector<XLayer *> sLayers; /// 图层列表
     static std::vector<XEffect *> sGlobalEffects; /// 全局效果列表
-    static bgfx::Init sInit;
+    static bgfx::Init sInit; /// 初始化数据
 };
 NS_X_IMAGE_END
 

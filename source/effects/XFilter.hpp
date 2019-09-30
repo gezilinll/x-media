@@ -70,8 +70,8 @@ protected:
     bgfx::IndexBufferHandle mIndexBuffer; /// 滤镜顶点次序缓冲
     XFrameBuffer* mFirstInputFrameBuffer; /// 滤镜一号输入纹理
 private:
-    float *mViewMatrix;
-    float *mProjectionMatrix;
+    float *mViewMatrix; /// 相机变换矩阵
+    float *mProjectionMatrix; /// 投影变换矩阵
 };
 NS_X_IMAGE_END
 

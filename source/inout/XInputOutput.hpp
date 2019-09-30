@@ -13,7 +13,8 @@ NS_X_IMAGE_BEGIN
  * @brief 同时具备处理输入数据与产生输出数据能力的基类
  *
  * 注意：
- * 1. 输出结果的帧对象尺寸和绘制区域都会受 XInput::setViewRect 影响
+ * 1. 当未 #setOutputSize 设置输出尺寸时，则会使用 #setViewRect 的宽高来代替输出尺寸
+ * 2. 因为该类继承自 #XInput 以及 #XOutput ，两个类都有 #submit 接口，因此当使用该类时无法直接调用，需要选择使用哪个基类的该接口
  */
 class XInputOutput: public XInput, public XOutput {
 

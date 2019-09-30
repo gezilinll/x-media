@@ -56,10 +56,9 @@ void XFilterEffect::addParam(XImageNS::XFilterParam param) {
     mParams[param.name] = param;
 }
 
-void XFilterEffect::addParam(std::string name,float valueMin, float valueMax,
-        float valueDefault, float value, int valueNum) {
+void XFilterEffect::addParam(std::string name,float valueMin, float valueMax, float valueDefault, float value) {
     XFilterParam param = {name, XImage::wrapFloat(valueMin), XImage::wrapFloat(valueMax),
-                          XImage::wrapFloat(valueDefault), XImage::wrapFloat(value), valueNum};
+                          XImage::wrapFloat(valueDefault), XImage::wrapFloat(value), 1};
     mParams[name] = param;
 }
 

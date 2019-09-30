@@ -22,6 +22,7 @@ public:
      */
     void setPath(std::string framePath);
 
+protected:
     void updateSource() override ;
 
 private:

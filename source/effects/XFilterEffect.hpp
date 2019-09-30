@@ -37,11 +37,25 @@ public:
 
     XInputOutput *get() override;
 
+    /**
+     * @brief 获取指定的参数数据
+     * @param name 参数名
+     * @return 参数数据
+     */
     XFilterParam getParam(std::string name);
 
-    std::unordered_map<std::string, XFilterParam> getParams();
-
+    /**
+     * @brief 更新指定参数值
+     * @param name 参数名
+     * @param value 参数值
+     */
     void updateValue(std::string name, glm::vec4 value);
+
+    /**
+     * @brief 获取参数集合
+     * @return 参数集合
+     */
+    std::unordered_map<std::string, XFilterParam> getParams();
 
 protected:
     /**
@@ -49,23 +63,55 @@ protected:
      */
     virtual void init();
 
-    void addParam(std::string name, float valueMin, float valueMax, float valueDefault, float value, int valueNum);
+    /**
+     * @brief 添加参数信息到参数列表中
+     * @param name 参数名
+     * @param valueMin 最小值
+     * @param valueMax 最大值
+     * @param valueDefault 默认值
+     * @param value 当前值
+     * @attention 参数如果已存在那么会直接替换掉已有参数
+     */
+    void addParam(std::string name, float valueMin, float valueMax, float valueDefault, float value);
 
+    /**
+     * @brief 添加参数信息到参数列表中
+     * @param name
+     * @param valueMin 最小值
+     * @param valueMax 最大值
+     * @param valueDefault 默认值
+     * @param value 当前值
+     * @param valueNum 四位向量中有效值的位数
+     * @attention 参数如果已存在那么会直接替换掉已有参数
+     */
     void addParam(std::string name, glm::vec4 valueMin, glm::vec4 valueMax, glm::vec4 valueDefault, glm::vec4 value, int valueNum);
 
+    /**
+     * @brief 添加参数信息到参数列表中
+     * @param param 参数信息
+     * @attention 参数如果已存在那么会直接替换掉已有参数
+     */
     void addParam(XFilterParam param);
 
+    /**
+     * @brief 设置顶点着色器名
+     * @param name 顶点着色器名
+     */
     void setVertexShaderName(std::string name);
 
+    /**
+     * @brief 设置片段着色器名
+     * @param name 片段着色器名
+     */
     void setFragmentShaderName(std::string name);
 
 protected:
     XFilter *mFilter; /// 滤镜处理类
-    std::string mVertexShaderName;
-    std::string mFragmentShaderName;
+    std::string mVertexShaderName; /// 顶点着色器名
+    std::string mFragmentShaderName; /// 片段着色器名
 
 private:
-    std::unordered_map<std::string, XFilterParam> mParams;
+    std::unordered_map<std::string, XFilterParam> mParams; /// 参数集合
 };
 
 /**
@@ -75,7 +121,7 @@ class XSaturation : public XFilterEffect {
 public:
     XSaturation() : XFilterEffect() {
         setFragmentShaderName("fs_saturation");
-        addParam("saturation", 0.0f, 2.0f, 1.0f, 1.0f, 1);
+        addParam("saturation", 0.0f, 2.0f, 1.0f, 1.0f);
     }
 
     std::string getName() override {
@@ -90,7 +136,7 @@ class XContrast : public XFilterEffect {
 public:
     XContrast() : XFilterEffect() {
         setFragmentShaderName("fs_contrast");
-        addParam("contrast", 0.0f, 4.0f, 1.0f, 1.0f, 1);
+        addParam("contrast", 0.0f, 4.0f, 1.0f, 1.0f);
     }
 
     std::string getName() override {
@@ -105,7 +151,7 @@ class XBrightness : public XFilterEffect {
 public:
     XBrightness() : XFilterEffect() {
         setFragmentShaderName("fs_brightness");
-        addParam("brightness", -1.0f, 1.0f, 0.0f, 0.0f, 1);
+        addParam("brightness", -1.0f, 1.0f, 0.0f, 0.0f);
     }
 
     std::string getName() override {
@@ -120,7 +166,7 @@ class XExposure : public XFilterEffect {
 public:
     XExposure() : XFilterEffect() {
         setFragmentShaderName("fs_exposure");
-        addParam("exposure", -10.0f, 10.0f, 0.0f, 0.0f, 1);
+        addParam("exposure", -10.0f, 10.0f, 0.0f, 0.0f);
     }
 
     std::string getName() override {
@@ -135,7 +181,7 @@ class XHUE : public XFilterEffect {
 public:
     XHUE() : XFilterEffect() {
         setFragmentShaderName("fs_hue");
-        addParam("hueAdjust", 0.0f, 2 * M_PI, 0.0f, 0.0f, 1);
+        addParam("hueAdjust", 0.0f, 2 * M_PI, 0.0f, 0.0f);
     }
 
     std::string getName() override {
@@ -150,9 +196,9 @@ class XRGB : public XFilterEffect {
 public:
     XRGB() : XFilterEffect() {
         setFragmentShaderName("fs_rgb");
-        addParam("redAdjustment", 0.0f, 10.0f, 1.0f, 1.0f, 1);
-        addParam("greenAdjustment", 0.0f, 10.0f, 1.0f, 1.0f, 1);
-        addParam("blueAdjustment", 0.0f, 10.0f, 1.0f, 1.0f, 1);
+        addParam("redAdjustment", 0.0f, 10.0f, 1.0f, 1.0f);
+        addParam("greenAdjustment", 0.0f, 10.0f, 1.0f, 1.0f);
+        addParam("blueAdjustment", 0.0f, 10.0f, 1.0f, 1.0f);
     }
 
     std::string getName() override {
@@ -167,8 +213,8 @@ class XWhiteBalance : public XFilterEffect {
 public:
     XWhiteBalance() : XFilterEffect() {
         setFragmentShaderName("fs_white_balance");
-        addParam("temperature", -50.0f, 50.0f, 0.0f, 0.0f, 1);
-        addParam("tint", -10.0f, 10.0f, 0.0f, 0.0f, 1);
+        addParam("temperature", -50.0f, 50.0f, 0.0f, 0.0f);
+        addParam("tint", -10.0f, 10.0f, 0.0f, 0.0f);
     }
 
     std::string getName() override {
@@ -205,7 +251,7 @@ class XMonochrome : public XFilterEffect {
 public:
     XMonochrome() : XFilterEffect() {
         setFragmentShaderName("fs_monochrome");
-        addParam("intensity", 0.0f, 1.0f, 0.0f, 0.0f, 1);
+        addParam("intensity", 0.0f, 1.0f, 0.0f, 0.0f);
         glm::vec4 valueMin = {0.0f, 0.0f, 0.0f, 0.0f};
         glm::vec4 valueMax = {1.0f, 1.0f, 1.0f, 1.0f};
         glm::vec4 valueDefault = {0.5f, 0.5f, 0.5f, 0.5f};

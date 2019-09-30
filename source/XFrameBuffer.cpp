@@ -16,6 +16,7 @@ XFrameBuffer::XFrameBuffer(bgfx::FrameBufferHandle handle, int width, int height
 
 XFrameBuffer::~XFrameBuffer() {
     bgfx::TextureHandle textureHandle = bgfx::getTexture(mHandle);
+    // 该操作用于避免textureHandle的内存泄漏
     XImage::destroy(textureHandle);
     XImage::destroy(mHandle);
 }

@@ -10,6 +10,9 @@
 #include <unordered_map>
 
 NS_X_IMAGE_BEGIN
+/**
+ * @brief 混合类型
+ */
 struct XBlend {
     enum Type {
         NORMAL,
@@ -20,6 +23,9 @@ struct XBlend {
     std::unordered_map<std::string, glm::vec4> params;
 };
 
+/**
+ * @brief 混合器，用于生成混合用的处理类
+ */
 class XBlender : public XFilterEffect {
 public:
     XBlender(XBlend blend) : XFilterEffect() {

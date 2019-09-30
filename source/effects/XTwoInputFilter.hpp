@@ -8,6 +8,12 @@
 #include "XFilter.hpp"
 
 NS_X_IMAGE_BEGIN
+/**
+ * @brief 控制双输入类型滤镜渲染逻辑的基类，例如混合、抠图等效果
+ *
+ * 该类继承自 #XFilter ，使用方式、逻辑、能力等基本一致，同样支持形成链式效果
+ * 需要通过 #setSecondInputFrameBuffer 来设置二号纹理输入
+ */
 class XTwoInputFilter : public XFilter {
 public:
     XTwoInputFilter(const std::string vertex, const std::string fragment);
@@ -15,8 +21,8 @@ public:
     ~XTwoInputFilter();
 
     /**
-     * @brief 设置二号输入
-     * @param secondFrame 二号输入
+     * @brief 设置二号纹理输入
+     * @param secondFrame 二号纹理输入
      */
     void setSecondInputFrameBuffer(XFrameBuffer *secondFrame);
 
@@ -26,8 +32,8 @@ protected:
     bool isValid() override ;
 
 private:
-    XFrameBuffer* mSecondInputFrameBuffer;
-    bgfx::UniformHandle mTexture2; /// 二号纹理
+    XFrameBuffer* mSecondInputFrameBuffer; /// 二号纹理
+    bgfx::UniformHandle mTexture2; /// 二号纹理标识
 };
 NS_X_IMAGE_END
 

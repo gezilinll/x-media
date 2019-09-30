@@ -39,7 +39,6 @@ public:
      * @brief 设置输出尺寸
      * @param width 宽度
      * @param height 高度
-     * @note 宽高 <= 0 时使用帧数据的狂傲
      */
     void setOutputSize(int width, int height);
 

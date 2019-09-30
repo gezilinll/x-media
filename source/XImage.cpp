@@ -75,9 +75,16 @@ void XImage::end() {
     sRenderIndex = -1;
 }
 
-void XImage::destroy() {
+void XImage::shutdown() {
     sLayers.clear();
+    sGlobalEffects.clear();
+    XFrameBufferPool::recycle(sFrame);
     XFrameBufferPool::destroy();
+
+    sInit = {};
+    sRenderIndex = -1;
+    sFrame = nullptr;
+
     bgfx::shutdown();
 }
 
