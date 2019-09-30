@@ -100,18 +100,14 @@ public:
         XImage::addLayer(mFrameLayers[4]);
 
         mTransformEffect = new XTransform();
-//        XImage::addGlobalEffect(mTransformEffect);
+        XImage::addGlobalEffect(mTransformEffect);
 
         cameraCreate();
-        cameraSetPosition({ 0.0f, 2.0f, -12.0f });
+        cameraSetPosition({ 0.0f, 0.0f, -1.0f });
         cameraSetVerticalAngle(0.0f);
+        cameraSetHorizontalAngle(0.0f);
 
         m_timeOffset = bx::getHPCounter();
-
-        mViewMatrix = new float[16];
-        bx::mtxIdentity(mViewMatrix);
-        mProjectionMatrix = new float[16];
-        bx::mtxIdentity(mProjectionMatrix);
     }
 
     virtual int shutdown() override {
@@ -177,17 +173,10 @@ public:
                 mFilterEffectListUIs[4]->imgui(mFrameLayers[4]);
             }
 
-            int64_t now = bx::getHPCounter() - m_timeOffset;
-            static int64_t last = now;
-            const int64_t frameTime = now - last;
-            last = now;
-            const double freq = double(bx::getHPFrequency());
-            const float deltaTime = float(frameTime / freq);
-            cameraUpdate(deltaTime, mMouseState);
-            cameraGetViewMtx(mViewMatrix);
-            bx::mtxProj(mProjectionMatrix, 60.0f, float(mWidth) / float(mHeight), 0.1f, 100.0f, bgfx::getCaps()->homogeneousDepth);
-            (dynamic_cast<XFilter *>(mTransformEffect->get()))->setTransform(mViewMatrix, mProjectionMatrix);
+            ImGui::Separator();
+            ImGui::Text("Global Effects:");
 
+            transform();
 
             ImGui::End();
             imguiEndFrame();
@@ -202,6 +191,44 @@ public:
         }
         
         return false;
+    }
+
+    void cameraReset() {
+        cameraDestroy();
+        cameraCreate();
+        cameraSetPosition({ 0.0f, 0.0f, -1.0f });
+        cameraSetVerticalAngle(0.0f);
+        cameraSetHorizontalAngle(0.0f);
+    }
+
+    void transform() {
+        ImGui::Separator();
+        ImGui::Text("Transform:");
+        const char *PROJECTION_TYPE[] = {"Orthogonal", "Perspective"};
+        int size = BX_COUNTOF(PROJECTION_TYPE);
+        ImGui::Combo("Projection Type", &mCurrentProjection, PROJECTION_TYPE, size, size);
+        if (mLastProjection != mCurrentProjection || ImGui::Button("Reset")) {
+            cameraReset();
+        }
+
+        int64_t now = bx::getHPCounter() - m_timeOffset;
+        static int64_t last = now;
+        const int64_t frameTime = now - last;
+        last = now;
+        const double freq = double(bx::getHPFrequency());
+        const float deltaTime = float(frameTime / freq);
+        cameraUpdate(deltaTime, mMouseState);
+        mTransformEffect->setCamera(cameraGetPosition(), cameraGetAt(), {0.0f, 1.0f, 0.0f});
+        XFilter *transform = dynamic_cast<XFilter *>(mTransformEffect->get());
+        int width = transform->getViewRect().width;
+        int height = transform->getViewRect().height;
+        if (PROJECTION_TYPE[mCurrentProjection] == "Orthogonal") {
+            mTransformEffect->setOrthogonal(-1.0f, 1.0f, -1.0f, 1.0f, 0.0f, 100.0f);
+        } else if (PROJECTION_TYPE[mCurrentProjection] == "Perspective") {
+            mTransformEffect->setPerspective(60.0f, static_cast<float>(width) / static_cast<float>(height), 0.1f, 1000.0f);
+        }
+
+        mLastProjection = mCurrentProjection;
     }
 
 private:
@@ -219,12 +246,12 @@ private:
     std::vector<XFrameLayer *> mFrameLayers;
     std::vector<XFilterEffectListUI *> mFilterEffectListUIs;
     std::vector<XBlendUI *> mBlendUIs;
+
     XTransform *mTransformEffect;
+    int mCurrentProjection = 0;
+    int mLastProjection = 0;
+
     int mCurrentLayer = 0;
-
-    float *mViewMatrix;
-    float *mProjectionMatrix;
-
     bool mIsFirstRenderCall = true;
     int64_t m_timeOffset;
 };
