@@ -63,6 +63,9 @@ void XImage::frame() {
 }
 
 int XImage::nextRenderIndex() {
+    if (sRenderIndex > 150) {
+
+    }
     return ++sRenderIndex;
 }
 
@@ -90,18 +93,6 @@ void XImage::shutdown() {
 
 glm::vec4 XImage::wrapFloat(float value) {
     return {value, value, value, value};
-}
-
-float* XImage::wrapFloatToVec4(float value) {
-    return new float[4]{value, 1.0f, 1.0f, 1.0f};
-}
-
-float* XImage::wrapVec3ToVec4(float x, float y, float z) {
-    return new float[4]{x, y, z, 1.0f};
-}
-
-float* XImage::wrapVec3ToVec4(float *xyz) {
-    return new float[4]{xyz[0], xyz[1], xyz[2], 1.0f};
 }
 
 void XImage::destroy(bgfx::ProgramHandle &handle) {

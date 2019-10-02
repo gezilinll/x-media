@@ -52,6 +52,12 @@ public:
     void updateValue(std::string name, glm::vec4 value);
 
     /**
+     * @brief 更新参数值
+     * @param params 参数列表
+     */
+    void updateValue(std::unordered_map<std::string, glm::vec4> params);
+
+    /**
      * @brief 获取参数集合
      * @return 参数集合
      */

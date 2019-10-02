@@ -11,9 +11,9 @@ const char *BLEND_MODES[] = {"Normal", "Multiply", "Add"};
 
 XBlendUI::XBlendUI() {
     mCurrentIndex = 0;
-    XBlend normal = {XBlend::Type::NORMAL};
-    XBlend multiply = {XBlend::Type::MULTIPLY};
-    XBlend add = {XBlend::Type::ADD};
+    XMixture normal = XMixture::BLEND_NORMAL;
+    XMixture multiply = XMixture::BLEND_MULTIPLY;
+    XMixture add = XMixture::BLEND_ADD;
     mBlends.push_back(normal);
     mBlends.push_back(multiply);
     mBlends.push_back(add);
@@ -23,6 +23,6 @@ void XBlendUI::imgui(XImageNS::XLayer *layer) {
     ImGui::Separator();
     int size = BX_COUNTOF(BLEND_MODES);
     ImGui::Combo("Blend Modes", &mCurrentIndex, BLEND_MODES, size, 5);
-    layer->setBlend(mBlends[mCurrentIndex]);
+    layer->setMixer(new XMixer(mBlends[mCurrentIndex]));
 }
 NS_X_IMAGE_END

@@ -92,7 +92,6 @@ public:
         mFrameLayers[4]->setViewRect(center);
         mFrameLayers[4]->setPath("images/leaves.jpg");
 
-        LOGE("lbh layer[0]=%p", mFrameLayers[0]);
         XImage::addLayer(mFrameLayers[0]);
         XImage::addLayer(mFrameLayers[1]);
         XImage::addLayer(mFrameLayers[2]);
@@ -130,7 +129,7 @@ public:
 
         cameraDestroy();
 
-        XImage::destroy();
+        XImage::shutdown();
 
         return 0;
     }

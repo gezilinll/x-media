@@ -37,35 +37,31 @@ void XFrameHelper::blend(std::vector<XLayer *> layers, XFrameBuffer *toResult) {
     // 图层混合
     int layerSize = layers.size();
     if (layerSize > 1) {
-        std::vector<XBlender*> blenders;
-        XBlender *blender = new XBlender(layers[0]->getBlend());
-        XTwoInputFilter *processor = dynamic_cast<XTwoInputFilter*>(blender->get());
+        XMixer *mixer = layers[0]->getMixer();
+        XTwoInputFilter *processor = dynamic_cast<XTwoInputFilter*>(mixer->get());
         XTwoInputFilter *blendChain = processor;
+        // 此处必须清空Targets否则在复用时会出现无限叠加Target的情况
+        blendChain->clearTargets();
         blendChain->setInputFrameBuffer(layers[0]->get());
         blendChain->setSecondInputFrameBuffer(layers[1]->get());
         blendChain->setViewRect(screen);
-        blenders.push_back(blender);
         if (layerSize == 2) {
             processor->setOutputBuffer(toResult);
         } else {
             for (int i = 1; i < layerSize - 1; i++) {
-                blender = new XBlender(layers[i]->getBlend());
-                XTwoInputFilter *blend = dynamic_cast<XTwoInputFilter*>(blender->get());
+                mixer = layers[i]->getMixer();
+                XTwoInputFilter *blend = dynamic_cast<XTwoInputFilter*>(mixer->get());
                 blend->setSecondInputFrameBuffer(layers[i + 1]->get());
                 blend->setViewRect(screen);
+                blend->clearTargets();
                 blendChain->addTarget(blend);
                 blendChain = blend;
                 if (i == layerSize - 2) {
                     blend->setOutputBuffer(toResult);
                 }
-                blenders.push_back(blender);
             }
         }
         processor->submit();
-        for (XBlender *xBlender : blenders) {
-            SAFE_DELETE(xBlender);
-        }
-        blenders.clear();
     } else {
         XFilterEffect *filterEffect = new XFilterEffect();
         XFilter *filter = dynamic_cast<XFilter*>(filterEffect->get());

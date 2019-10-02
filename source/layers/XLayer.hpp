@@ -9,7 +9,7 @@
 #include "XModels.hpp"
 #include "effects/XEffect.hpp"
 #include "XFrameBuffer.hpp"
-#include "effects/XBlend.hpp"
+#include "XMixer.hpp"
 #include "bgfx/bgfx.h"
 #include <vector>
 
@@ -46,17 +46,18 @@ public:
     void setViewRect(XRect &rect);
 
     /**
-     * @brief 设置混合模式
-     * @param blend 混合对象
-     * @note 该图层的混合模式会作用于当前图层（在下）以及它的下一个图层（在上）
+     * @brief 设置混合器
+     * @param mixture 混合器
+     * @note 该图层的混合器会作用于当前图层（在下）以及它的下一个图层（在上）
+     * @attention 该混合器的内存管理由XLayer负责
      */
-    void setBlend(XBlend blend);
+    void setMixer(XMixer *mixer);
 
     /**
-     * @brief 获取混合数据
-     * @return 混合数据
+     * @brief 获取混合器
+     * @return 混合器
      */
-    XBlend getBlend();
+    XMixer* getMixer();
 
     /**
      * @brief 获取图层渲染区域
@@ -117,7 +118,7 @@ protected:
 private:
     int mID; /// 图层ID
     std::vector<XEffect *> mEffects; /// 叠加效果链
-    XBlend mBlend; /// 混合数据
+    XMixer *mMixer; /// 混合器
 };
 NS_X_IMAGE_END
 

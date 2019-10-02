@@ -44,6 +44,12 @@ void XFilterEffect::updateValue(std::string name, glm::vec4 value) {
     mParams[name].value = value;
 }
 
+void XFilterEffect::updateValue(std::unordered_map<std::string, glm::vec4> params) {
+    for (auto iter : params) {
+        mParams[iter.first].value = iter.second;
+    }
+}
+
 XFilterParam XFilterEffect::getParam(std::string name) {
     return mParams.find(name)->second;
 }

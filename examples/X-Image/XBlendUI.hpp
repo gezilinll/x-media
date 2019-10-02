@@ -16,7 +16,7 @@ public:
 
 private:
     int mCurrentIndex;
-    std::vector<XBlend> mBlends;
+    std::vector<XMixture> mBlends;
 };
 NS_X_IMAGE_END
 

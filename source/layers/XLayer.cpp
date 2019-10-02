@@ -16,13 +16,14 @@ XLayer::XLayer(int id) {
     mID = id;
     mViewRect = {0, 0, 0, 0};
     mLayerSource = nullptr;
-    mBlend = {XBlend::Type::NORMAL};
+    mMixer = new XMixer(XMixture::BLEND_NORMAL);
     mLayerResult = nullptr;
 }
 
 XLayer::~XLayer() {
     mEffects.clear();
     SAFE_DELETE(mLayerSource);
+    SAFE_DELETE(mMixer);
     XFrameBufferPool::recycle(mLayerResult);
 }
 
@@ -43,12 +44,15 @@ std::vector<XEffect *> XLayer::getEffects() {
     return mEffects;
 }
 
-void XLayer::setBlend(XBlend blend) {
-    mBlend = blend;
+void XLayer::setMixer(XMixer *mixer) {
+    if (mixer != mMixer) {
+        SAFE_DELETE(mMixer);
+    }
+    mMixer = mixer;
 }
 
-XBlend XLayer::getBlend() {
-    return mBlend;
+XMixer* XLayer::getMixer() {
+    return mMixer;
 }
 void XLayer::setViewRect(XRect &rect) {
     mViewRect = rect;
