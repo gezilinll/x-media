@@ -44,11 +44,12 @@ void XImage::submit() {
     if (sFrame == nullptr) {
         sFrame = XFrameBufferPool::get(XImage::getCanvasWidth(), XImage::getCanvasHeight());
     }
-    for (XLayer *layer : sLayers) {
+    std::vector<XLayer *> result = filterSortLayers();
+    for (XLayer *layer : result) {
         layer->submit();
     }
 
-    XFrameHelper::blendAndEffects(sLayers, sGlobalEffects, sFrame);
+    XFrameHelper::blendAndEffects(result, sGlobalEffects, sFrame);
 }
 
 void XImage::frame() {
@@ -135,6 +136,21 @@ void XImage::destroy(bgfx::UniformHandle &handle) {
         bgfx::destroy(handle);
         handle = BGFX_INVALID_HANDLE;
     }
+}
+
+std::vector<XLayer *> XImage::filterSortLayers() {
+    std::vector<XLayer *> result;
+    for (XLayer *layer : sLayers) {
+        if (layer->isVisible()) {
+            result.push_back(layer);
+        }
+    }
+    std::sort(result.begin(), result.end(), layerZOrderCompare);
+    return result;
+}
+
+bool XImage::layerZOrderCompare(XLayer *a, XLayer *b) {
+    return a->getZOrder() < b->getZOrder();
 }
 
 NS_X_IMAGE_END

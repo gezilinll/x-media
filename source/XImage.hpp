@@ -116,6 +116,22 @@ public:
     static glm::vec4 wrapFloat(float value);
 
 private:
+    /**
+     * @brief 过滤并将符合过滤条件的图层进行排序，返回最终的图层列表
+     * @return 符合渲染条件的排序后的图层列表
+     * @note 图层必须可见并且非图层内遮罩以及作为图层间遮罩的同时需要参与最后全局图层混合的遮罩图层
+     */
+    static std::vector<XLayer *> filterSortLayers();
+
+    /**
+     * @brief 按照图层的渲染层级进行排序
+     * @param a 图层a
+     * @param b 图层b
+     * @return a图层是否必b图层层级低
+     */
+    static bool layerZOrderCompare(XLayer *a, XLayer *b);
+
+private:
     static int sRenderIndex; /// 渲染次序ID
     static XFrameBuffer *sFrame; /// 离屏渲染帧数据
     static std::vector<XLayer *> sLayers; /// 图层列表

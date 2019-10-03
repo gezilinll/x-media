@@ -18,6 +18,8 @@ XLayer::XLayer(int id) {
     mLayerSource = nullptr;
     mMixer = new XMixer(XMixture::BLEND_NORMAL);
     mLayerResult = nullptr;
+    mIsVisible = true;
+    mZOrder = 0;
 }
 
 XLayer::~XLayer() {
@@ -61,6 +63,26 @@ void XLayer::addMatte(XLayer *matte) {
 
 void XLayer::clearMattes() {
     mMattes.clear();
+}
+
+void XLayer::setMask(XLayer *mask) {
+
+}
+
+void XLayer::setVisibility(bool isVisible) {
+    mIsVisible = isVisible;
+}
+
+bool XLayer::isVisible() {
+    return mIsVisible;
+}
+
+void XLayer::setZOrder(int zOrder) {
+    mZOrder = zOrder;
+}
+
+int XLayer::getZOrder() {
+    return mZOrder;
 }
 
 XMixer* XLayer::getMixer() {
@@ -164,5 +186,4 @@ XFrameBuffer* XLayer::get() {
     }
     return mLayerResult;
 }
-
 NS_X_IMAGE_END

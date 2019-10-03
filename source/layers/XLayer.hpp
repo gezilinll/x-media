@@ -56,7 +56,7 @@ public:
     /**
      * @brief 添加图层内遮罩
      * @param matte 遮罩层
-     * @note 混合效果规整为，使用当前要混合的遮罩层的遮罩器将遮罩层（在上）被混合的帧（当前图层或上一次遮罩混合结果，在下）进行混合
+     * @note 混合效果规则为，使用当前要混合的遮罩层的遮罩器将遮罩层（在上）被混合的帧（当前图层或上一次遮罩混合结果，在下）进行混合
      * @attention 用作图层内遮罩的图层将只用作遮罩混合，不再与其他图层叠加
      * @attention 用于图层内遮罩的图层暂不支持进行叠加特效，在渲染时会将其特效列表进行清空
      * @attention 用于图层内遮罩的图层暂不支持再该遮罩图层上添加遮罩图层，在渲染时会将其遮罩图层列表进行清空
@@ -67,6 +67,38 @@ public:
      * @brief 清空遮罩图层列表
      */
     void clearMattes();
+
+    /**
+     * @brief 设置图层间遮罩
+     * @param mask 遮罩图层
+     * @todo 该功能具体逻辑待补充
+     */
+    void setMask(XLayer *mask);
+
+    /**
+     * @brief 设置该图层是否可见
+     * @param isVisible 是否可见
+     */
+    void setVisibility(bool isVisible);
+
+    /**
+     * @brief 设置渲染层级
+     * @param zOrder 渲染层级
+     * @note 在渲染层级相同时按照图层插入顺序为准，否则层级越高的图层在越上面
+     */
+    void setZOrder(int zOrder);
+
+    /**
+     * @brief 获取图层渲染层级
+     * @return 渲染层级
+     */
+    int getZOrder();
+
+    /**
+     * @brief 该图层是否可见
+     * @return 是否可见
+     */
+    bool isVisible();
 
     /**
      * @brief 获取混合器
@@ -120,6 +152,7 @@ public:
      * @return 渲染结果
      */
     XFrameBuffer* get();
+
 protected:
     /**
      * @brief 更新图层初始输出内容
@@ -140,6 +173,8 @@ private:
     std::vector<XEffect *> mEffects; /// 叠加效果链
     XMixer *mMixer; /// 混合器
     std::vector<XLayer *> mMattes; /// 图层件遮罩列表
+    bool mIsVisible; /// 图层是否可见
+    int mZOrder; /// 图层渲染层级
 };
 NS_X_IMAGE_END
 
