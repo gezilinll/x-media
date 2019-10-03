@@ -7,8 +7,8 @@
 #include "XImage.hpp"
 
 NS_X_IMAGE_BEGIN
-XFilterEffectUI::XFilterEffectUI(XFilterEffect *effect) : XEffectUI(effect) {
-    XFilterEffect *filter = dynamic_cast<XFilterEffect *>(mEffect);
+XFilterEffectUI::XFilterEffectUI(XFilter *effect) : XEffectUI(effect) {
+    XFilter *filter = dynamic_cast<XFilter *>(mEffect);
 
     mParams = filter->getParams();
 }
@@ -30,7 +30,7 @@ void XFilterEffectUI::imgui() {
 }
 
 void XFilterEffectUI::update() {
-    XFilterEffect *filter = dynamic_cast<XFilterEffect *>(mEffect);
+    XFilter *filter = dynamic_cast<XFilter *>(mEffect);
     for (std::pair<std::string, XFilterParam> value : mParams) {
         std::string &paramName = value.first;
         XFilterParam &param = value.second;

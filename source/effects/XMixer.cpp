@@ -5,7 +5,7 @@
 #include "XMixer.hpp"
 
 NS_X_IMAGE_BEGIN
-XMixer::XMixer(XMixerType type) : XFilterEffect() {
+XMixer::XMixer(XMixerType type) : XFilter() {
     mType = type;
 
     init();
@@ -19,7 +19,7 @@ void XMixer::init() {
         }
 
         if (mFilter == nullptr) {
-            mFilter = new XTwoInputFilter(mVertexShaderName, mFragmentShaderName);
+            mFilter = new XTwoInputShaderProcessor(mVertexShaderName, mFragmentShaderName);
         }
     }
 

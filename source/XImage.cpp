@@ -4,8 +4,8 @@
 
 #include "XImage.hpp"
 #include "XFrameBufferPool.hpp"
-#include "effects/XFilter.hpp"
-#include "effects/XFilterEffect.hpp"
+#include "XShaderProcessor.hpp"
+#include "XFilter.hpp"
 #include "XFrameHelper.hpp"
 
 NS_X_IMAGE_BEGIN
@@ -55,8 +55,8 @@ void XImage::submit() {
 void XImage::frame() {
     XRect screen = {0, 0, static_cast<unsigned int>(XImage::getCanvasWidth()),
                     static_cast<unsigned int>(XImage::getCanvasHeight())};
-    XFilterEffect *filterEffect = new XFilterEffect(XFilterType::NORMAL);
-    XFilter *filter = dynamic_cast<XFilter*>(filterEffect->get());
+    XFilter *filterEffect = new XFilter(XFilterType::NORMAL);
+    XShaderProcessor *filter = dynamic_cast<XShaderProcessor*>(filterEffect->get());
     filter->setInputFrameBuffer(sFrame);
     filter->setViewRect(screen);
     filter->submit();

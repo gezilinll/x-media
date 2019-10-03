@@ -6,12 +6,12 @@
 #define GPUIMAGE_X_XFILTEREFFECTUI_HPP
 
 #include "XEffectUI.hpp"
-#include "effects/XFilterEffect.hpp"
+#include "effects/XFilter.hpp"
 
 NS_X_IMAGE_BEGIN
 class XFilterEffectUI : public XEffectUI {
 public:
-    XFilterEffectUI(XFilterEffect *effect);
+    XFilterEffectUI(XFilter *effect);
 
     void imgui() override ;
 

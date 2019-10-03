@@ -103,25 +103,25 @@ XEffectUI* XFilterEffectListUI::getEffectUI(std::string name) {
     XEffectUI *effectUi = nullptr;
     if (iter == mEffectUIs.end()) {
         if (name == "None") {
-            effectUi = new XFilterEffectUI(new XFilterEffect(XFilterType::NORMAL));
+            effectUi = new XFilterEffectUI(new XFilter(XFilterType::NORMAL));
         } else if (name == "Saturation") {
-            effectUi = new XFilterEffectUI(new XFilterEffect(XFilterType::SATURATION));
+            effectUi = new XFilterEffectUI(new XFilter(XFilterType::SATURATION));
         } else if (name == "Contrast") {
-            effectUi = new XFilterEffectUI(new XFilterEffect(XFilterType::CONTRAST));
+            effectUi = new XFilterEffectUI(new XFilter(XFilterType::CONTRAST));
         } else if (name == "Brightness") {
-            effectUi = new XFilterEffectUI(new XFilterEffect(XFilterType::BRIGHTNESS));
+            effectUi = new XFilterEffectUI(new XFilter(XFilterType::BRIGHTNESS));
         } else if (name == "HUE") {
-            effectUi = new XFilterEffectUI(new XFilterEffect(XFilterType::HUE));
+            effectUi = new XFilterEffectUI(new XFilter(XFilterType::HUE));
         } else if (name == "Exposure") {
-            effectUi = new XFilterEffectUI(new XFilterEffect(XFilterType::EXPOSURE));
+            effectUi = new XFilterEffectUI(new XFilter(XFilterType::EXPOSURE));
         } else if (name == "RGB") {
-            effectUi = new XFilterEffectUI(new XFilterEffect(XFilterType::RGB));
+            effectUi = new XFilterEffectUI(new XFilter(XFilterType::RGB));
         } else if (name == "WhiteBalance") {
-            effectUi = new XFilterEffectUI(new XFilterEffect(XFilterType::WHITE_BALANCE));
+            effectUi = new XFilterEffectUI(new XFilter(XFilterType::WHITE_BALANCE));
         } else if (name == "Levels") {
-            effectUi = new XFilterEffectUI(new XFilterEffect(XFilterType::LEVELS));
+            effectUi = new XFilterEffectUI(new XFilter(XFilterType::LEVELS));
         } else if (name == "Monochrome") {
-            effectUi = new XFilterEffectUI(new XFilterEffect(XFilterType::MONOCHROME));
+            effectUi = new XFilterEffectUI(new XFilter(XFilterType::MONOCHROME));
         }
         mEffectUIs.insert(std::make_pair(name, effectUi));
     } else {

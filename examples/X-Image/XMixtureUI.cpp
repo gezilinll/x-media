@@ -69,7 +69,7 @@ XEffectUI * XMixtureUI::getEffectUI(std::string name, XMixer *mixer) {
     XEffectUI *effectUi = nullptr;
     if (iter == mEffectUIs.end()) {
         if (name == "T-Fade") {
-            XFilterEffect *filterEffect = dynamic_cast<XFilterEffect *>(mixer);
+            XFilter *filterEffect = dynamic_cast<XFilter *>(mixer);
             effectUi = new XFilterEffectUI(filterEffect);
         }
         mEffectUIs.insert(std::make_pair(name, effectUi));

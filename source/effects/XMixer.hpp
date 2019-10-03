@@ -5,8 +5,8 @@
 #ifndef GPUIMAGE_X_XMIXER_HPP
 #define GPUIMAGE_X_XMIXER_HPP
 
-#include "XFilterEffect.hpp"
-#include "XTwoInputFilter.hpp"
+#include "XFilter.hpp"
+#include "XTwoInputShaderProcessor.hpp"
 
 NS_X_IMAGE_BEGIN
 enum XMixerType {
@@ -19,7 +19,7 @@ enum XMixerType {
     TRANSITION_FADE
 };
 
-class XMixer : public XFilterEffect  {
+class XMixer : public XFilter  {
 public:
     XMixer(XMixerType type);
 

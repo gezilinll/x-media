@@ -2,26 +2,26 @@
 // Created by 林炳河 on 2019-09-25.
 //
 
-#include "XTwoInputFilter.hpp"
+#include "XTwoInputShaderProcessor.hpp"
 #include "XLog.hpp"
 #include "XImage.hpp"
 
 NS_X_IMAGE_BEGIN
-XTwoInputFilter::XTwoInputFilter(const std::string vertex, const std::string fragment) : XFilter(vertex, fragment) {
+XTwoInputShaderProcessor::XTwoInputShaderProcessor(const std::string vertex, const std::string fragment) : XShaderProcessor(vertex, fragment) {
     mSecondInputFrameBuffer = nullptr;
     mTexture2 = BGFX_INVALID_HANDLE;
 }
 
-XTwoInputFilter::~XTwoInputFilter() {
+XTwoInputShaderProcessor::~XTwoInputShaderProcessor() {
     XImage::destroy(mTexture2);
 }
 
-void XTwoInputFilter::setSecondInputFrameBuffer(XFrameBuffer *secondFrame) {
+void XTwoInputShaderProcessor::setSecondInputFrameBuffer(XFrameBuffer *secondFrame) {
     mSecondInputFrameBuffer = secondFrame;
 }
 
-void XTwoInputFilter::updateParams() {
-    XFilter::updateParams();
+void XTwoInputShaderProcessor::updateParams() {
+    XShaderProcessor::updateParams();
     if (!bgfx::isValid(mTexture2)) {
         mTexture2 = bgfx::createUniform("s_texColor1", bgfx::UniformType::Sampler);
     }
@@ -29,11 +29,11 @@ void XTwoInputFilter::updateParams() {
     bgfx::setTexture(1, mTexture2, mSecondInputFrameBuffer->getTexture());
 }
 
-bool XTwoInputFilter::isValid() {
+bool XTwoInputShaderProcessor::isValid() {
     if (mSecondInputFrameBuffer == nullptr || !bgfx::isValid(mSecondInputFrameBuffer->getTexture())) {
-        LOGE("[XTwoInputFilter::submit] second input frame is invalid.");
+        LOGE("[XTwoInputShaderProcessor::submit] second input frame is invalid.");
         return false;
     }
-    return XFilter::isValid();
+    return XShaderProcessor::isValid();
 }
 NS_X_IMAGE_END

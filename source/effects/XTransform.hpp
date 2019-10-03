@@ -5,7 +5,7 @@
 #ifndef GPUIMAGE_X_XTRANSFORM_HPP
 #define GPUIMAGE_X_XTRANSFORM_HPP
 
-#include "effects/XFilterEffect.hpp"
+#include "XFilter.hpp"
 #include "bx/math.h"
 
 NS_X_IMAGE_BEGIN
@@ -91,7 +91,7 @@ private:
     };
 
 private:
-    XFilter *mFilter; /// 变换效果滤镜
+    XShaderProcessor *mFilter; /// 变换效果滤镜
     XCameraInfo mCameraInfo; /// 相机信息
     XPerspectiveInfo mPerspectiveInfo; /// 透视信息
     XOrthogonalInfo mOrthogonalInfo; /// 正交信息
