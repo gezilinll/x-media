@@ -23,7 +23,7 @@ private:
 private:
     int mCurrentBlendIndex;
     int mLastBlendIndex;
-    std::vector<XMixture> mBlends;
+    std::vector<XMixerType> mBlends;
 
     int mCurrentMatteIndex;
     int mLastMatteIndex;

@@ -9,7 +9,7 @@
 #include "XTwoInputFilter.hpp"
 
 NS_X_IMAGE_BEGIN
-enum XMixture {
+enum XMixerType {
     BLEND_NORMAL,
     BLEND_MULTIPLY,
     BLEND_ADD,
@@ -21,20 +21,19 @@ enum XMixture {
 
 class XMixer : public XFilterEffect  {
 public:
-    XMixer(XMixture mixture);
-
-protected:
-    void init() override;
+    XMixer(XMixerType type);
 
 private:
-    bool setBlendFragment();
+    void init();
 
-    bool setMatteFragment();
+    bool initBlend();
 
-    bool setTransitionFragment();
+    bool initMatte();
+
+    bool initTransition();
 
 private:
-    XMixture mMixture;
+    XMixerType mType;
 };
 NS_X_IMAGE_END
 

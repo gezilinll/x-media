@@ -32,6 +32,12 @@ public:
      * @return 效果名
      */
     virtual std::string getName();
+
+protected:
+    void setName(std::string name);
+
+private:
+    std::string mEffectName;
 };
 NS_X_IMAGE_END
 

@@ -96,7 +96,7 @@ public:
 //        XFrameLayer *matte = new XFrameLayer(6);
 //        matte->setPath("images/winter.jpg");
 //        matte->setViewRect(center);
-//        matte->setMixer(new XMixer(XMixture::BLEND_ADD));
+//        matte->setMixer(new XMixer(XMixerType::BLEND_ADD));
 //        mFrameLayers[4]->addMatte(matte);
 
         XImage::addLayer(mFrameLayers[0]);

@@ -5,7 +5,7 @@
 #include "XEffect.hpp"
 NS_X_IMAGE_BEGIN
 XEffect::XEffect() {
-
+    mEffectName = "None";
 }
 
 XEffect::~XEffect() {
@@ -18,6 +18,10 @@ XInputOutput* XEffect::get() {
 }
 
 std::string XEffect::getName() {
-    return "None";
+    return mEffectName;
+}
+
+void XEffect::setName(std::string name) {
+    mEffectName = name;
 }
 NS_X_IMAGE_END

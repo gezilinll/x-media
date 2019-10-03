@@ -62,7 +62,7 @@ void XFrameHelper::blend(std::vector<XLayer *> layers, XFrameBuffer *toResult) {
         }
         processor->submit();
     } else {
-        XFilterEffect *filterEffect = new XFilterEffect();
+        XFilterEffect *filterEffect = new XFilterEffect(XFilterType::NORMAL);
         XFilter *filter = dynamic_cast<XFilter*>(filterEffect->get());
         filter->setInputFrameBuffer(layers[0]->get());
         filter->setOutputBuffer(toResult);

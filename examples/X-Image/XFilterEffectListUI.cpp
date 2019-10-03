@@ -103,25 +103,25 @@ XEffectUI* XFilterEffectListUI::getEffectUI(std::string name) {
     XEffectUI *effectUi = nullptr;
     if (iter == mEffectUIs.end()) {
         if (name == "None") {
-            effectUi = new XFilterEffectUI(new XFilterEffect());
+            effectUi = new XFilterEffectUI(new XFilterEffect(XFilterType::NORMAL));
         } else if (name == "Saturation") {
-            effectUi = new XFilterEffectUI(new XSaturation());
+            effectUi = new XFilterEffectUI(new XFilterEffect(XFilterType::SATURATION));
         } else if (name == "Contrast") {
-            effectUi = new XFilterEffectUI(new XContrast());
+            effectUi = new XFilterEffectUI(new XFilterEffect(XFilterType::CONTRAST));
         } else if (name == "Brightness") {
-            effectUi = new XFilterEffectUI(new XBrightness());
+            effectUi = new XFilterEffectUI(new XFilterEffect(XFilterType::BRIGHTNESS));
         } else if (name == "HUE") {
-            effectUi = new XFilterEffectUI(new XHUE());
+            effectUi = new XFilterEffectUI(new XFilterEffect(XFilterType::HUE));
         } else if (name == "Exposure") {
-            effectUi = new XFilterEffectUI(new XExposure());
+            effectUi = new XFilterEffectUI(new XFilterEffect(XFilterType::EXPOSURE));
         } else if (name == "RGB") {
-            effectUi = new XFilterEffectUI(new XRGB());
+            effectUi = new XFilterEffectUI(new XFilterEffect(XFilterType::RGB));
         } else if (name == "WhiteBalance") {
-            effectUi = new XFilterEffectUI(new XWhiteBalance());
+            effectUi = new XFilterEffectUI(new XFilterEffect(XFilterType::WHITE_BALANCE));
         } else if (name == "Levels") {
-            effectUi = new XFilterEffectUI(new XLevels());
+            effectUi = new XFilterEffectUI(new XFilterEffect(XFilterType::LEVELS));
         } else if (name == "Monochrome") {
-            effectUi = new XFilterEffectUI(new XMonochrome());
+            effectUi = new XFilterEffectUI(new XFilterEffect(XFilterType::MONOCHROME));
         }
         mEffectUIs.insert(std::make_pair(name, effectUi));
     } else {

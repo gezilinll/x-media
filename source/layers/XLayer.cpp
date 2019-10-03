@@ -16,7 +16,7 @@ XLayer::XLayer(int id) {
     mID = id;
     mViewRect = {0, 0, 0, 0};
     mLayerSource = nullptr;
-    mMixer = new XMixer(XMixture::BLEND_NORMAL);
+    mMixer = new XMixer(XMixerType::BLEND_NORMAL);
     mLayerResult = nullptr;
     mIsVisible = true;
     mZOrder = 0;

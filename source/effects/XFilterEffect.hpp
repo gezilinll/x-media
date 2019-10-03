@@ -20,6 +20,19 @@ struct XFilterParam {
     int valueNum;
 };
 
+enum XFilterType {
+    NORMAL,
+    SATURATION,
+    CONTRAST,
+    BRIGHTNESS,
+    HUE,
+    EXPOSURE,
+    RGB,
+    WHITE_BALANCE,
+    LEVELS,
+    MONOCHROME
+};
+
 /**
  * @brief 滤镜效果基类，负责控制滤镜通用逻辑
  *
@@ -31,7 +44,7 @@ struct XFilterParam {
  */
 class XFilterEffect: public XEffect {
 public:
-    XFilterEffect();
+    XFilterEffect(XFilterType type);
 
     virtual ~XFilterEffect();
 
@@ -64,10 +77,7 @@ public:
     std::unordered_map<std::string, XFilterParam> getParams();
 
 protected:
-    /**
-     * @brief 初始化接口，子类可继承该接口实现自身的初始化
-     */
-    virtual void init();
+    XFilterEffect();
 
     /**
      * @brief 添加参数信息到参数列表中
@@ -99,17 +109,11 @@ protected:
      */
     void addParam(XFilterParam param);
 
+private:
     /**
-     * @brief 设置顶点着色器名
-     * @param name 顶点着色器名
+     * @brief 初始化接口，初始化各项参数和滤镜
      */
-    void setVertexShaderName(std::string name);
-
-    /**
-     * @brief 设置片段着色器名
-     * @param name 片段着色器名
-     */
-    void setFragmentShaderName(std::string name);
+    void init();
 
 protected:
     XFilter *mFilter; /// 滤镜处理类
@@ -118,156 +122,7 @@ protected:
 
 private:
     std::unordered_map<std::string, XFilterParam> mParams; /// 参数集合
-};
-
-/**
- * @brief 饱和度调节滤镜
- */
-class XSaturation : public XFilterEffect {
-public:
-    XSaturation() : XFilterEffect() {
-        setFragmentShaderName("fs_saturation");
-        addParam("saturation", 0.0f, 2.0f, 1.0f, 1.0f);
-    }
-
-    std::string getName() override {
-        return "Saturation";
-    }
-};
-
-/**
- * @brief 对比度调节滤镜
- */
-class XContrast : public XFilterEffect {
-public:
-    XContrast() : XFilterEffect() {
-        setFragmentShaderName("fs_contrast");
-        addParam("contrast", 0.0f, 4.0f, 1.0f, 1.0f);
-    }
-
-    std::string getName() override {
-        return "Contrast";
-    }
-};
-
-/**
- * @brief 亮度调节滤镜
- */
-class XBrightness : public XFilterEffect {
-public:
-    XBrightness() : XFilterEffect() {
-        setFragmentShaderName("fs_brightness");
-        addParam("brightness", -1.0f, 1.0f, 0.0f, 0.0f);
-    }
-
-    std::string getName() override {
-        return "Brightness";
-    }
-};
-
-/**
- * @brief 曝光度调节滤镜
- */
-class XExposure : public XFilterEffect {
-public:
-    XExposure() : XFilterEffect() {
-        setFragmentShaderName("fs_exposure");
-        addParam("exposure", -10.0f, 10.0f, 0.0f, 0.0f);
-    }
-
-    std::string getName() override {
-        return "Exposure";
-    }
-};
-
-/**
- * @brief HUE调节滤镜
- */
-class XHUE : public XFilterEffect {
-public:
-    XHUE() : XFilterEffect() {
-        setFragmentShaderName("fs_hue");
-        addParam("hueAdjust", 0.0f, 2 * M_PI, 0.0f, 0.0f);
-    }
-
-    std::string getName() override {
-        return "HUE";
-    }
-};
-
-/**
- * @brief RGB 通道调节滤镜
- */
-class XRGB : public XFilterEffect {
-public:
-    XRGB() : XFilterEffect() {
-        setFragmentShaderName("fs_rgb");
-        addParam("redAdjustment", 0.0f, 10.0f, 1.0f, 1.0f);
-        addParam("greenAdjustment", 0.0f, 10.0f, 1.0f, 1.0f);
-        addParam("blueAdjustment", 0.0f, 10.0f, 1.0f, 1.0f);
-    }
-
-    std::string getName() override {
-        return "RGB";
-    }
-};
-
-/**
- * @brief 白平衡调节滤镜
- */
-class XWhiteBalance : public XFilterEffect {
-public:
-    XWhiteBalance() : XFilterEffect() {
-        setFragmentShaderName("fs_white_balance");
-        addParam("temperature", -50.0f, 50.0f, 0.0f, 0.0f);
-        addParam("tint", -10.0f, 10.0f, 0.0f, 0.0f);
-    }
-
-    std::string getName() override {
-        return "WhiteBalance";
-    }
-};
-
-/**
- * @brief 待补充
- */
-class XLevels : public XFilterEffect {
-public:
-    XLevels() : XFilterEffect() {
-        setFragmentShaderName("fs_levels");
-        glm::vec4 valueZero = {0.0f, 0.0f, 0.0f, 0.0f};
-        glm::vec4 valueOne = {1.0f, 1.0f, 1.0f, 1.0f};
-        glm::vec4 valueHundred = {100.0f, 100.0f, 100.0f, 100.0f};
-        addParam("levelMinimum", valueZero, valueOne, valueZero, valueZero, 3);
-        addParam("levelMaximum", valueZero, valueOne, valueOne, valueOne, 3);
-        addParam("levelMiddle", valueZero, valueHundred, valueOne, valueOne, 3);
-        addParam("minOutput", valueZero, valueOne, valueZero, valueZero, 3);
-        addParam("maxOutput", valueZero, valueOne, valueOne, valueOne, 3);
-    }
-
-    std::string getName() override {
-        return "Levels";
-    }
-};
-
-/**
- * @brief 待补充
- */
-class XMonochrome : public XFilterEffect {
-public:
-    XMonochrome() : XFilterEffect() {
-        setFragmentShaderName("fs_monochrome");
-        addParam("intensity", 0.0f, 1.0f, 0.0f, 0.0f);
-        glm::vec4 valueMin = {0.0f, 0.0f, 0.0f, 0.0f};
-        glm::vec4 valueMax = {1.0f, 1.0f, 1.0f, 1.0f};
-        glm::vec4 valueDefault = {0.5f, 0.5f, 0.5f, 0.5f};
-        glm::vec4 value = valueDefault;
-        addParam("filterColor", valueMin, valueMax, valueDefault, value, 3);
-    }
-
-    std::string getName() override {
-        return "Monochrome";
-    }
+    XFilterType mType;
 };
 NS_X_IMAGE_END
 
