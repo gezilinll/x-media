@@ -92,6 +92,13 @@ public:
         mFrameLayers[4]->setViewRect(center);
         mFrameLayers[4]->setPath("images/leaves.jpg");
 
+        // 图层内遮罩临时Demo代码
+//        XFrameLayer *matte = new XFrameLayer(6);
+//        matte->setPath("images/winter.jpg");
+//        matte->setViewRect(center);
+//        matte->setMixer(new XMixer(XMixture::BLEND_ADD));
+//        mFrameLayers[4]->addMatte(matte);
+
         XImage::addLayer(mFrameLayers[0]);
         XImage::addLayer(mFrameLayers[1]);
         XImage::addLayer(mFrameLayers[2]);

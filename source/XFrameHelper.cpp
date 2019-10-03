@@ -56,10 +56,9 @@ void XFrameHelper::blend(std::vector<XLayer *> layers, XFrameBuffer *toResult) {
                 blend->clearTargets();
                 blendChain->addTarget(blend);
                 blendChain = blend;
-                if (i == layerSize - 2) {
-                    blend->setOutputBuffer(toResult);
-                }
             }
+            // 将最后一次混合输出到结果缓存上
+            blendChain->setOutputBuffer(toResult);
         }
         processor->submit();
     } else {
@@ -92,10 +91,9 @@ void XFrameHelper::effect(XFrameBuffer *blendResult, std::vector<XEffect *> effe
                 effect->setViewRect(screen);
                 preEffect->addTarget(effect);
                 preEffect = effect;
-                if (i == effectSize - 1) {
-                    effect->setOutputBuffer(toResult);
-                }
             }
+            // 将最后一次特效叠加输出到结果缓存上
+            preEffect->setOutputBuffer(toResult);
         }
         dynamic_cast<XInput *>(processor)->submit();
     }

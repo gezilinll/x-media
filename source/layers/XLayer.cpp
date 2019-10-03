@@ -40,6 +40,10 @@ void XLayer::setEffects(std::vector<XImageNS::XEffect *> effects) {
     mEffects = effects;
 }
 
+void XLayer::clearEffects() {
+    mEffects.clear();
+}
+
 std::vector<XEffect *> XLayer::getEffects() {
     return mEffects;
 }
@@ -49,6 +53,14 @@ void XLayer::setMixer(XMixer *mixer) {
         SAFE_DELETE(mMixer);
     }
     mMixer = mixer;
+}
+
+void XLayer::addMatte(XLayer *matte) {
+    mMattes.push_back(matte);
+}
+
+void XLayer::clearMattes() {
+    mMattes.clear();
 }
 
 XMixer* XLayer::getMixer() {
@@ -72,18 +84,58 @@ void XLayer::submit() {
         LOGE("[XLayer::submit] layer source is nullptr. id=%d", mID);
         return;
     }
+
+    mLayerSource->clearTargets();
+    int effectSize = mEffects.size();
+    int matteSize = mMattes.size();
+    if (effectSize == 0 && matteSize == 0) {
+        mLayerSource->submit();
+        return;
+    }
+
     if (mLayerResult == nullptr) {
         mLayerResult = XFrameBufferPool::get(XImage::getCanvasWidth(), XImage::getCanvasHeight());
     }
 
-    mLayerSource->clearTargets();
-    int size = mEffects.size();
-    if (size > 0) {
-        XRect rect = {0, 0, mViewRect.width, mViewRect.height};
+    XRect rect = {0, 0, mViewRect.width, mViewRect.height};
+    XOutput *chain = mLayerSource;
+    // 先进行抠图处理
+    if (matteSize > 0) {
+        // 先进行遮罩图层的资源初始化和渲染
+        for (XLayer *matte: mMattes) {
+            matte->clearEffects();
+            matte->clearMattes();
+            matte->submit();
+        }
+        XMixer *mixer = mMattes[0]->getMixer();
+        XTwoInputFilter *matteChain = dynamic_cast<XTwoInputFilter*>(mixer->get());
+        // 此处必须清空Targets否则在复用时会出现无限叠加Target的情况
+        matteChain->clearTargets();
+        matteChain->setSecondInputFrameBuffer(mMattes[0]->get());
+        matteChain->setViewRect(rect);
+        chain->addTarget(matteChain);
+        chain = matteChain;
+        for (int i = 1; i < matteSize - 1; i++) {
+            mixer =  mMattes[i]->getMixer();
+            matteChain = dynamic_cast<XTwoInputFilter*>(mixer->get());
+            matteChain->setSecondInputFrameBuffer(mMattes[i]->get());
+            matteChain->setViewRect(rect);
+            matteChain->clearTargets();
+            chain->addTarget(matteChain);
+            chain = matteChain;
+        }
+        if (effectSize == 0) { // 特效为空时直接将遮罩混合结果输出到图层缓存结果帧上
+            chain->setOutputBuffer(mLayerResult);
+            chain->setOutputSize(XImage::getCanvasWidth(), XImage::getCanvasHeight());
+            dynamic_cast<XTwoInputFilter *>(chain)->setViewRect(mViewRect);
+        }
+    }
+    // 特效叠加处理
+    if (effectSize > 0) {
         XInputOutput *target = mEffects[0]->get();
         target->setViewRect(rect);
-        mLayerSource->addTarget(target);
-        for (int i = 0; i < size - 1; i++) {
+        chain->addTarget(target);
+        for (int i = 0; i < effectSize - 1; i++) {
             XInputOutput *current = mEffects[i]->get();
             XInputOutput *next = mEffects[i + 1]->get();
             current->clearTargets();
@@ -97,15 +149,19 @@ void XLayer::submit() {
             next->setViewRect(rect);
             next->setOutputSize(mViewRect.width, mViewRect.height);
         }
-        mEffects[size - 1]->get()->setOutputBuffer(mLayerResult);
-        mEffects[size - 1]->get()->setOutputSize(XImage::getCanvasWidth(), XImage::getCanvasHeight());
-        mEffects[size - 1]->get()->setViewRect(mViewRect);
+        // 最后一次特效叠加结果需要全屏渲染
+        mEffects[effectSize - 1]->get()->setOutputBuffer(mLayerResult);
+        mEffects[effectSize - 1]->get()->setOutputSize(XImage::getCanvasWidth(), XImage::getCanvasHeight());
+        mEffects[effectSize - 1]->get()->setViewRect(mViewRect);
     }
 
     mLayerSource->submit();
 }
 
 XFrameBuffer* XLayer::get() {
+    if (mEffects.empty() && mMattes.empty()) {
+        return mLayerSource->get();
+    }
     return mLayerResult;
 }
 

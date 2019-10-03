@@ -54,6 +54,21 @@ public:
     void setMixer(XMixer *mixer);
 
     /**
+     * @brief 添加图层内遮罩
+     * @param matte 遮罩层
+     * @note 混合效果规整为，使用当前要混合的遮罩层的遮罩器将遮罩层（在上）被混合的帧（当前图层或上一次遮罩混合结果，在下）进行混合
+     * @attention 用作图层内遮罩的图层将只用作遮罩混合，不再与其他图层叠加
+     * @attention 用于图层内遮罩的图层暂不支持进行叠加特效，在渲染时会将其特效列表进行清空
+     * @attention 用于图层内遮罩的图层暂不支持再该遮罩图层上添加遮罩图层，在渲染时会将其遮罩图层列表进行清空
+     */
+    void addMatte(XLayer* matte);
+
+    /**
+     * @brief 清空遮罩图层列表
+     */
+    void clearMattes();
+
+    /**
      * @brief 获取混合器
      * @return 混合器
      */
@@ -78,6 +93,11 @@ public:
      * @attention 效果链的内存空间由外部控制释放
      */
     void setEffects(std::vector<XEffect *> effects);
+
+    /**
+     * @brief 清空特效列表
+     */
+    void clearEffects();
 
     /**
      * @brief 获取图层所有的效果列表
@@ -119,6 +139,7 @@ private:
     int mID; /// 图层ID
     std::vector<XEffect *> mEffects; /// 叠加效果链
     XMixer *mMixer; /// 混合器
+    std::vector<XLayer *> mMattes; /// 图层件遮罩列表
 };
 NS_X_IMAGE_END
 
