@@ -28,11 +28,24 @@ bool XMixer::setBlendFragment() {
 }
 
 bool XMixer::setMatteFragment() {
-    return false;
+    bool result = true;
+    if (mMixture == XMixture::MATTE_ALPHA) {
+        setFragmentShaderName("fs_matte_alpha");
+    } else {
+        result = false;
+    }
+    return result;
 }
 
 bool XMixer::setTransitionFragment() {
-    return false;
+    bool result = true;
+    if (mMixture == XMixture::TRANSITION_FADE) {
+        setFragmentShaderName("fs_transition_fade");
+        addParam("fadeOutOpacity", 0.0f, 1.0f, 0.5f, 0.5f);
+    } else {
+        result = false;
+    }
+    return result;
 }
 
 void XMixer::init() {

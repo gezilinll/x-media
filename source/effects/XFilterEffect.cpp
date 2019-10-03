@@ -58,7 +58,7 @@ std::unordered_map<std::string, XFilterParam> XFilterEffect::getParams() {
     return mParams;
 }
 
-void XFilterEffect::addParam(XImageNS::XFilterParam param) {
+void XFilterEffect::addParam(XFilterParam param) {
     mParams[param.name] = param;
 }
 

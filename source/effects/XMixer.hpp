@@ -12,7 +12,11 @@ NS_X_IMAGE_BEGIN
 enum XMixture {
     BLEND_NORMAL,
     BLEND_MULTIPLY,
-    BLEND_ADD
+    BLEND_ADD,
+
+    MATTE_ALPHA,
+
+    TRANSITION_FADE
 };
 
 class XMixer : public XFilterEffect  {

@@ -3,7 +3,7 @@
 #include "XImage.hpp"
 #include "XFrameLayer.hpp"
 #include "XFilterEffectListUI.hpp"
-#include "XBlendUI.hpp"
+#include "XMixtureUI.hpp"
 #include "XTransform.hpp"
 #include "camera.h"
 #include "bx/timer.h"
@@ -52,11 +52,11 @@ public:
         mFilterEffectListUIs.push_back(new XFilterEffectListUI());
         mFilterEffectListUIs.push_back(new XFilterEffectListUI());
         mFilterEffectListUIs.push_back(new XFilterEffectListUI());
-        mBlendUIs.push_back(new XBlendUI());
-        mBlendUIs.push_back(new XBlendUI());
-        mBlendUIs.push_back(new XBlendUI());
-        mBlendUIs.push_back(new XBlendUI());
-        mBlendUIs.push_back(new XBlendUI());
+        mBlendUIs.push_back(new XMixtureUI());
+        mBlendUIs.push_back(new XMixtureUI());
+        mBlendUIs.push_back(new XMixtureUI());
+        mBlendUIs.push_back(new XMixtureUI());
+        mBlendUIs.push_back(new XMixtureUI());
 
         mFrameLayers.push_back(new XFrameLayer(0));
         XRect leftTop = {static_cast<int>(mHorizontalMargin), static_cast<int>(mVerticalMargin),
@@ -125,7 +125,7 @@ public:
             SAFE_DELETE(filterUi);
         }
         mFilterEffectListUIs.clear();
-        for (XBlendUI *blendUi : mBlendUIs) {
+        for (XMixtureUI *blendUi : mBlendUIs) {
             SAFE_DELETE(blendUi);
         }
         mBlendUIs.clear();
@@ -227,7 +227,7 @@ public:
         last = now;
         const double freq = double(bx::getHPFrequency());
         const float deltaTime = float(frameTime / freq);
-        cameraUpdate(deltaTime, mMouseState);
+        cameraUpdate(deltaTime / 15.0f, mMouseState);
         mTransformEffect->setCamera(cameraGetPosition(), cameraGetAt(), {0.0f, 1.0f, 0.0f});
         XFilter *transform = dynamic_cast<XFilter *>(mTransformEffect->get());
         if (PROJECTION_TYPE[mCurrentProjection] == "Orthogonal") {
@@ -253,7 +253,7 @@ private:
 
     std::vector<XFrameLayer *> mFrameLayers;
     std::vector<XFilterEffectListUI *> mFilterEffectListUIs;
-    std::vector<XBlendUI *> mBlendUIs;
+    std::vector<XMixtureUI *> mBlendUIs;
 
     XTransform *mTransformEffect;
     int mCurrentProjection = 0;

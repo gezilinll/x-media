@@ -49,7 +49,7 @@ public:
      * @brief 设置混合器
      * @param mixture 混合器
      * @note 该图层的混合器会作用于当前图层（在下）以及它的下一个图层（在上）
-     * @attention 该混合器的内存管理由XLayer负责
+     * @attention 该混合器的内存管理由XLayer内部负责
      */
     void setMixer(XMixer *mixer);
 
