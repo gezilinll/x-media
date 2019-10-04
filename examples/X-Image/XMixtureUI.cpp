@@ -39,8 +39,7 @@ void XMixtureUI::imgui(XLayer *layer) {
     int blendSize = BX_COUNTOF(BLEND_TRANSITION_MODES);
     ImGui::Combo("Blend/Transition Modes", &mCurrentBlendIndex, BLEND_TRANSITION_MODES, blendSize, 3);
     if (mLastBlendIndex != mCurrentBlendIndex) {
-        XMixer *mixer = new XMixer(mBlends[mCurrentBlendIndex]);
-        layer->setMixer(mixer);
+        layer->setMixer(mBlends[mCurrentBlendIndex]);
         mLastBlendIndex = mCurrentBlendIndex;
     }
     if (std::string(BLEND_TRANSITION_MODES[mCurrentBlendIndex]).find("T-") == 0) {
@@ -56,7 +55,7 @@ void XMixtureUI::imgui(XLayer *layer) {
         SAFE_DELETE(mMatteLayer);
         if (MATTE_MODES[mCurrentMatteIndex] == "Alpha") {
             mMatteLayer = new XFrameLayer(999);
-            mMatteLayer->setMixer(new XMixer(XMixerType::MATTE_ALPHA));
+            mMatteLayer->setMixer(XMixerType::MATTE_ALPHA);
             mMatteLayer->setPath("images/mask_alpha.png");
             layer->addMatte(mMatteLayer);
         }
@@ -70,7 +69,7 @@ XEffectUI * XMixtureUI::getEffectUI(std::string name, XMixer *mixer) {
     if (iter == mEffectUIs.end()) {
         if (name == "T-Fade") {
             XFilter *filterEffect = dynamic_cast<XFilter *>(mixer);
-            effectUi = new XFilterEffectUI(filterEffect);
+            effectUi = new XFilterEffectUI(filterEffect, false);
         }
         mEffectUIs.insert(std::make_pair(name, effectUi));
     } else {

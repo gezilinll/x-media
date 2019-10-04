@@ -47,11 +47,25 @@ public:
 
     /**
      * @brief 设置混合器
-     * @param mixture 混合器
+     * @param mixture 混合类型
      * @note 该图层的混合器会作用于当前图层（在下）以及它的下一个图层（在上）
      * @attention 该混合器的内存管理由XLayer内部负责
      */
-    void setMixer(XMixer *mixer);
+    void setMixer(XMixerType type);
+
+    /**
+     * @brief 更新混合器参数值
+     * @param name 参数名
+     * @param value 更新值
+     * @note 在更新参数前确保调用 #setMixer 设置过对应的混合器类型
+     */
+    void updateMixerValue(std::string name, glm::vec4 value);
+
+    /**
+    * @brief 获取混合器
+    * @return 混合器
+    */
+    XMixer* getMixer();
 
     /**
      * @brief 添加图层内遮罩
@@ -99,12 +113,6 @@ public:
      * @return 是否可见
      */
     bool isVisible();
-
-    /**
-     * @brief 获取混合器
-     * @return 混合器
-     */
-    XMixer* getMixer();
 
     /**
      * @brief 获取图层渲染区域

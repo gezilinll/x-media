@@ -7,7 +7,7 @@
 #include "XImage.hpp"
 
 NS_X_IMAGE_BEGIN
-XFilterEffectUI::XFilterEffectUI(XFilter *effect) : XEffectUI(effect) {
+XFilterEffectUI::XFilterEffectUI(XFilter *effect, bool recycle) : XEffectUI(effect, recycle) {
     XFilter *filter = dynamic_cast<XFilter *>(mEffect);
 
     mParams = filter->getParams();

@@ -9,7 +9,7 @@
 NS_X_IMAGE_BEGIN
 class XEffectUI {
 public:
-    XEffectUI(XEffect *effect);
+    XEffectUI(XEffect *effect, bool recycle = true);
 
     virtual ~XEffectUI();
 
@@ -21,6 +21,7 @@ public:
 
 protected:
     XEffect *mEffect;
+    bool mAutoRecycle;
 };
 NS_X_IMAGE_END
 

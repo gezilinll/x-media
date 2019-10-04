@@ -11,6 +11,10 @@ XMixer::XMixer(XMixerType type) : XFilter() {
     init();
 }
 
+bool XMixer::isSame(XMixerType type) {
+    return mType == type;
+}
+
 void XMixer::init() {
     if (mFilter == nullptr) {
         if (!initBlend() && !initMatte() && !initTransition()) {

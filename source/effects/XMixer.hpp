@@ -23,6 +23,8 @@ class XMixer : public XFilter  {
 public:
     XMixer(XMixerType type);
 
+    bool isSame(XMixerType type);
+
 private:
     void init();
 

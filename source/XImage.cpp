@@ -97,44 +97,44 @@ glm::vec4 XImage::wrapFloat(float value) {
 }
 
 void XImage::destroy(bgfx::ProgramHandle &handle) {
-    if (bgfx::isValid(handle)) {
+    if (handle.idx != bgfx::kInvalidHandle) {
         bgfx::destroy(handle);
-        handle = BGFX_INVALID_HANDLE;
+        handle.idx = bgfx::kInvalidHandle;
     }
 }
 
 void XImage::destroy(bgfx::TextureHandle &handle) {
-    if (bgfx::isValid(handle)) {
+    if (handle.idx != bgfx::kInvalidHandle) {
         bgfx::destroy(handle);
-        handle = BGFX_INVALID_HANDLE;
+        handle.idx = bgfx::kInvalidHandle;
     }
 }
 
 void XImage::destroy(bgfx::FrameBufferHandle &handle) {
-    if (bgfx::isValid(handle)) {
+    if (handle.idx != bgfx::kInvalidHandle) {
         bgfx::destroy(handle);
-        handle = BGFX_INVALID_HANDLE;
+        handle.idx = bgfx::kInvalidHandle;
     }
 }
 
 void XImage::destroy(bgfx::VertexBufferHandle &handle) {
-    if (bgfx::isValid(handle)) {
+    if (handle.idx != bgfx::kInvalidHandle) {
         bgfx::destroy(handle);
-        handle = BGFX_INVALID_HANDLE;
+        handle.idx = bgfx::kInvalidHandle;
     }
 }
 
 void XImage::destroy(bgfx::IndexBufferHandle &handle) {
-    if (bgfx::isValid(handle)) {
+    if (handle.idx != bgfx::kInvalidHandle) {
         bgfx::destroy(handle);
-        handle = BGFX_INVALID_HANDLE;
+        handle.idx = bgfx::kInvalidHandle;
     }
 }
 
 void XImage::destroy(bgfx::UniformHandle &handle) {
-    if (bgfx::isValid(handle)) {
+    if (handle.idx != bgfx::kInvalidHandle) {
         bgfx::destroy(handle);
-        handle = BGFX_INVALID_HANDLE;
+        handle.idx = bgfx::kInvalidHandle;
     }
 }
 

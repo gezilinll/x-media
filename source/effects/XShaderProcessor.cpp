@@ -51,6 +51,7 @@ XShaderProcessor::XShaderProcessor(std::string vertex, std::string fragment) {
     mProgram = BGFX_INVALID_HANDLE;
     mVertexBuffer = BGFX_INVALID_HANDLE;
     mIndexBuffer = BGFX_INVALID_HANDLE;
+    mTexture = BGFX_INVALID_HANDLE;
     mOutputWidth = 0;
     mOutputHeight = 0;
     mViewMatrix = new float[16];

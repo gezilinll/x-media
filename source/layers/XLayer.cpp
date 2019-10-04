@@ -50,11 +50,20 @@ std::vector<XEffect *> XLayer::getEffects() {
     return mEffects;
 }
 
-void XLayer::setMixer(XMixer *mixer) {
-    if (mixer != mMixer) {
-        SAFE_DELETE(mMixer);
+void XLayer::setMixer(XMixerType type) {
+    if (mMixer->isSame(type)) {
+        return;
     }
-    mMixer = mixer;
+    SAFE_DELETE(mMixer);
+    mMixer = new XMixer(type);
+}
+
+void XLayer::updateMixerValue(std::string name, glm::vec4 value) {
+    mMixer->updateValue(name, value);
+}
+
+XMixer* XLayer::getMixer() {
+    return mMixer;
 }
 
 void XLayer::addMatte(XLayer *matte) {
@@ -85,9 +94,6 @@ int XLayer::getZOrder() {
     return mZOrder;
 }
 
-XMixer* XLayer::getMixer() {
-    return mMixer;
-}
 void XLayer::setViewRect(XRect &rect) {
     mViewRect = rect;
 }

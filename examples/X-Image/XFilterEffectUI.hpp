@@ -11,7 +11,7 @@
 NS_X_IMAGE_BEGIN
 class XFilterEffectUI : public XEffectUI {
 public:
-    XFilterEffectUI(XFilter *effect);
+    XFilterEffectUI(XFilter *effect, bool recycle = true);
 
     void imgui() override ;
 

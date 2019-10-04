@@ -22,7 +22,7 @@ class XShaderProcessor: public XInputOutput {
 public:
     XShaderProcessor(std::string vertex, std::string fragment);
 
-    ~XShaderProcessor();
+    virtual ~XShaderProcessor();
 
     void submit() override;
 

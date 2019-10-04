@@ -4,12 +4,15 @@
 
 #include "XEffectUI.hpp"
 NS_X_IMAGE_BEGIN
-XEffectUI::XEffectUI(XEffect *effect) {
+XEffectUI::XEffectUI(XEffect *effect, bool recycle) {
     mEffect = effect;
+    mAutoRecycle = recycle;
 }
 
 XEffectUI::~XEffectUI() {
-    SAFE_DELETE(mEffect);
+    if (mAutoRecycle) {
+        SAFE_DELETE(mEffect);
+    }
 }
 
 XEffect* XEffectUI::getEffect() {
