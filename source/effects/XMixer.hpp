@@ -6,7 +6,7 @@
 #define GPUIMAGE_X_XMIXER_HPP
 
 #include "XFilter.hpp"
-#include "XTwoInputShaderProcessor.hpp"
+#include "XTwoInputEffectProcessor.hpp"
 
 NS_X_IMAGE_BEGIN
 enum XMixerType {

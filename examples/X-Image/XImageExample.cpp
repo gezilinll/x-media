@@ -229,7 +229,7 @@ public:
         const float deltaTime = float(frameTime / freq);
         cameraUpdate(deltaTime / 15.0f, mMouseState);
         mTransformEffect->setCamera(cameraGetPosition(), cameraGetAt(), {0.0f, 1.0f, 0.0f});
-        XShaderProcessor *transform = dynamic_cast<XShaderProcessor *>(mTransformEffect->get());
+        XEffectProcessor *transform = dynamic_cast<XEffectProcessor *>(mTransformEffect->get());
         if (PROJECTION_TYPE[mCurrentProjection] == "Orthogonal") {
             mTransformEffect->setOrthogonal(-1.0f, 1.0f, -1.0f, 1.0f, 0.0f, 100.0f);
         } else if (PROJECTION_TYPE[mCurrentProjection] == "Perspective") {

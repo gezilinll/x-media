@@ -75,7 +75,7 @@ void XFilter::init() {
             addParam("filterColor", valueMin, valueMax, valueDefault, value, 3);
             setName("Monochrome");
         }
-        mFilter = new XShaderProcessor(mVertexShaderName, mFragmentShaderName);
+        mFilter = new XEffectProcessor(mVertexShaderName, mFragmentShaderName);
     }
 
 }

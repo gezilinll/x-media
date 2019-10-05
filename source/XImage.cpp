@@ -4,7 +4,7 @@
 
 #include "XImage.hpp"
 #include "XFrameBufferPool.hpp"
-#include "XShaderProcessor.hpp"
+#include "XEffectProcessor.hpp"
 #include "XFilter.hpp"
 #include "XFrameHelper.hpp"
 
@@ -56,7 +56,7 @@ void XImage::frame() {
     XRect screen = {0, 0, static_cast<unsigned int>(XImage::getCanvasWidth()),
                     static_cast<unsigned int>(XImage::getCanvasHeight())};
     XFilter *filterEffect = new XFilter(XFilterType::NORMAL);
-    XShaderProcessor *filter = dynamic_cast<XShaderProcessor*>(filterEffect->get());
+    XEffectProcessor *filter = dynamic_cast<XEffectProcessor*>(filterEffect->get());
     filter->setInputFrameBuffer(sFrame);
     filter->setViewRect(screen);
     filter->submit();

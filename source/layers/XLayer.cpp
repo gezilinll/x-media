@@ -34,6 +34,11 @@ int XLayer::getID() {
 }
 
 void XLayer::addEffect(XEffect *effect) {
+    XMixer *mixer = dynamic_cast<XMixer *>(effect);
+    if (mixer) {
+        LOGE("[XLayer::addEffect] XMixer can not be added as effect.");
+        return;
+    }
     mEffects.push_back(effect);
 }
 
@@ -136,7 +141,7 @@ void XLayer::submit() {
             matte->submit();
         }
         XMixer *mixer = mMattes[0]->getMixer();
-        XTwoInputShaderProcessor *matteChain = dynamic_cast<XTwoInputShaderProcessor*>(mixer->get());
+        XTwoInputEffectProcessor *matteChain = dynamic_cast<XTwoInputEffectProcessor*>(mixer->get());
         // 此处必须清空Targets否则在复用时会出现无限叠加Target的情况
         matteChain->clearTargets();
         matteChain->setSecondInputFrameBuffer(mMattes[0]->get());
@@ -145,7 +150,7 @@ void XLayer::submit() {
         chain = matteChain;
         for (int i = 1; i < matteSize - 1; i++) {
             mixer =  mMattes[i]->getMixer();
-            matteChain = dynamic_cast<XTwoInputShaderProcessor*>(mixer->get());
+            matteChain = dynamic_cast<XTwoInputEffectProcessor*>(mixer->get());
             matteChain->setSecondInputFrameBuffer(mMattes[i]->get());
             matteChain->setViewRect(rect);
             matteChain->clearTargets();
@@ -155,7 +160,7 @@ void XLayer::submit() {
         if (effectSize == 0) { // 特效为空时直接将遮罩混合结果输出到图层缓存结果帧上
             chain->setOutputBuffer(mLayerResult);
             chain->setOutputSize(XImage::getCanvasWidth(), XImage::getCanvasHeight());
-            dynamic_cast<XTwoInputShaderProcessor *>(chain)->setViewRect(mViewRect);
+            dynamic_cast<XTwoInputEffectProcessor *>(chain)->setViewRect(mViewRect);
         }
     }
     // 特效叠加处理

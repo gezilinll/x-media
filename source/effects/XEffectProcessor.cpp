@@ -2,7 +2,7 @@
 // Created by 林炳河 on 2019/7/14.
 //
 
-#include "XShaderProcessor.hpp"
+#include "XEffectProcessor.hpp"
 #include "XImage.hpp"
 #include "XLog.hpp"
 #include "XFrameBufferPool.hpp"
@@ -45,7 +45,7 @@ static const uint16_t s_triList[] =
                 1, 3, 2,
         };
 
-XShaderProcessor::XShaderProcessor(std::string vertex, std::string fragment) {
+XEffectProcessor::XEffectProcessor(std::string vertex, std::string fragment) {
     mVertexShaderPath = vertex;
     mFragmentShaderPath = fragment;
     mProgram = BGFX_INVALID_HANDLE;
@@ -60,7 +60,7 @@ XShaderProcessor::XShaderProcessor(std::string vertex, std::string fragment) {
     bx::mtxIdentity(mProjectionMatrix);
 }
 
-XShaderProcessor::~XShaderProcessor() {
+XEffectProcessor::~XEffectProcessor() {
     XImage::destroy(mProgram);
     XImage::destroy(mVertexBuffer);
     XImage::destroy(mIndexBuffer);
@@ -77,7 +77,7 @@ XShaderProcessor::~XShaderProcessor() {
     SAFE_DELETE_ARRAY(mProjectionMatrix);
 }
 
-void XShaderProcessor::init() {
+void XEffectProcessor::init() {
     int width = mRect.width;
     int height = mRect.height;
     if (mOutputWidth > 0 && mOutputHeight > 0) {
@@ -91,16 +91,16 @@ void XShaderProcessor::init() {
     }
 }
 
-void XShaderProcessor::setInputFrameBuffer(XFrameBuffer *input) {
+void XEffectProcessor::setInputFrameBuffer(XFrameBuffer *input) {
     mFirstInputFrameBuffer = input;
 }
 
-void XShaderProcessor::setTransform(const float *view, const float *projection) {
+void XEffectProcessor::setTransform(const float *view, const float *projection) {
     bx::memCopy(mViewMatrix, view, sizeof(float) * 16);
     bx::memCopy(mProjectionMatrix, projection, sizeof(float) * 16);
 }
 
-void XShaderProcessor::submit() {
+void XEffectProcessor::submit() {
     if (!isValid()) {
         return;
     }
@@ -126,7 +126,7 @@ void XShaderProcessor::submit() {
     }
     
     if (!bgfx::isValid(mProgram)) {
-        LOGE("[XShaderProcessor::submit] load program failed. vsPath=%s, fsPath=%s", mVertexShaderPath.data(), mFragmentShaderPath.data());
+        LOGE("[XEffectProcessor::submit] load program failed. vsPath=%s, fsPath=%s", mVertexShaderPath.data(), mFragmentShaderPath.data());
         return;
     }
 
@@ -150,11 +150,11 @@ void XShaderProcessor::submit() {
     XOutput::submit();
 }
 
-void XShaderProcessor::setVec4(std::string paramName, glm::vec4 &value) {
+void XEffectProcessor::setVec4(std::string paramName, glm::vec4 &value) {
     mParams[paramName] = value;
 }
 
-void XShaderProcessor::updateParams() {
+void XEffectProcessor::updateParams() {
     for (std::pair<std::string, glm::vec4> param : mParams) {
         bgfx::UniformHandle handle;
         auto iter = mParamHandles.find(param.first);
@@ -165,7 +165,7 @@ void XShaderProcessor::updateParams() {
             handle = iter->second;
         }
         if (!bgfx::isValid(handle)) {
-            LOGE("XShaderProcessor::setVec4 uniform handle is invalid.");
+            LOGE("XEffectProcessor::setVec4 uniform handle is invalid.");
         }
         float *paramValue = new float[4]{param.second[0], param.second[1], param.second[2], param.second[3]};
         bgfx::setUniform(handle, paramValue);
@@ -173,13 +173,13 @@ void XShaderProcessor::updateParams() {
     }
 }
 
-bool XShaderProcessor::isValid() {
+bool XEffectProcessor::isValid() {
     if (mRect.width <= 0 || mRect.height <= 0) {
-        LOGE("[XShaderProcessor::submit] view size args is invalid.");
+        LOGE("[XEffectProcessor::submit] view size args is invalid.");
         return false;
     }
     if (mFirstInputFrameBuffer == nullptr || !bgfx::isValid(mFirstInputFrameBuffer->getTexture())) {
-        LOGE("[XShaderProcessor::submit] input frame is invalid.");
+        LOGE("[XEffectProcessor::submit] input frame is invalid.");
         return false;
     }
     return true;

@@ -2,23 +2,11 @@
 
 ## Building
 
-目前主要在Mac OS上基于Xcode进行开发，因此可通过以下步骤编译出Xcode工程和运行Demo，其他平台的后续补上
+目前主要在Mac OS上基于Clion进行开发，其他工具及平台暂未进行验证、适配，因此目前效果查看等建议使用CLion直接打开根目录项目。
 
-```
-git submodule update --init --recursive
-mkdir build
-cd build
-cmake -G Xcode ..
-open GPUImage-X.xcodeproj
-```
+## Shader 编译
 
-做完上述操作后你还需要设置一下Demo的scheme：
-
-1. 打开 *“Edit scheme...”* 
-2. 选择 *“Run”* 
-3. 勾选 *“Use custom working directory”* ，然后在下面的框中尾部文件选择中选择以下文件夹：
-
-```
-examples/runtime
-```
-
+1. 在 shaders 目录下添加着色器文件
+2. 在 shaders/config 文件里添加对应文件的配置信息
+3. 在项目根目录下运行python脚本: *python tools/shader_compiler.py*
+4. 按需要删除 .idea 以及 cmake-build-debug 目录重新打开项目

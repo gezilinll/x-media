@@ -6,7 +6,7 @@
 #define GPUIMAGE_X_XFILTEREFFECT_HPP
 
 #include "XEffect.hpp"
-#include "XShaderProcessor.hpp"
+#include "XEffectProcessor.hpp"
 #include <unordered_map>
 #include <glm/vec4.hpp>
 
@@ -116,7 +116,7 @@ private:
     void init();
 
 protected:
-    XShaderProcessor *mFilter; /// 滤镜处理类
+    XEffectProcessor *mFilter; /// 滤镜处理类
     std::string mVertexShaderName; /// 顶点着色器名
     std::string mFragmentShaderName; /// 片段着色器名
 

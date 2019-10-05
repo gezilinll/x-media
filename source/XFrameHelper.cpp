@@ -38,8 +38,8 @@ void XFrameHelper::blend(std::vector<XLayer *> layers, XFrameBuffer *toResult) {
     int layerSize = layers.size();
     if (layerSize > 1) {
         XMixer *mixer = layers[0]->getMixer();
-        XTwoInputShaderProcessor *processor = dynamic_cast<XTwoInputShaderProcessor*>(mixer->get());
-        XTwoInputShaderProcessor *blendChain = processor;
+        XTwoInputEffectProcessor *processor = dynamic_cast<XTwoInputEffectProcessor*>(mixer->get());
+        XTwoInputEffectProcessor *blendChain = processor;
         // 此处必须清空Targets否则在复用时会出现无限叠加Target的情况
         blendChain->clearTargets();
         blendChain->setInputFrameBuffer(layers[0]->get());
@@ -50,7 +50,7 @@ void XFrameHelper::blend(std::vector<XLayer *> layers, XFrameBuffer *toResult) {
         } else {
             for (int i = 1; i < layerSize - 1; i++) {
                 mixer = layers[i]->getMixer();
-                XTwoInputShaderProcessor *blend = dynamic_cast<XTwoInputShaderProcessor*>(mixer->get());
+                XTwoInputEffectProcessor *blend = dynamic_cast<XTwoInputEffectProcessor*>(mixer->get());
                 blend->setSecondInputFrameBuffer(layers[i + 1]->get());
                 blend->setViewRect(screen);
                 blend->clearTargets();
@@ -63,7 +63,7 @@ void XFrameHelper::blend(std::vector<XLayer *> layers, XFrameBuffer *toResult) {
         processor->submit();
     } else {
         XFilter *filterEffect = new XFilter(XFilterType::NORMAL);
-        XShaderProcessor *filter = dynamic_cast<XShaderProcessor*>(filterEffect->get());
+        XEffectProcessor *filter = dynamic_cast<XEffectProcessor*>(filterEffect->get());
         filter->setInputFrameBuffer(layers[0]->get());
         filter->setOutputBuffer(toResult);
         filter->setViewRect(screen);

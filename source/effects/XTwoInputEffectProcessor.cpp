@@ -2,26 +2,26 @@
 // Created by 林炳河 on 2019-09-25.
 //
 
-#include "XTwoInputShaderProcessor.hpp"
+#include "XTwoInputEffectProcessor.hpp"
 #include "XLog.hpp"
 #include "XImage.hpp"
 
 NS_X_IMAGE_BEGIN
-XTwoInputShaderProcessor::XTwoInputShaderProcessor(const std::string vertex, const std::string fragment) : XShaderProcessor(vertex, fragment) {
+XTwoInputEffectProcessor::XTwoInputEffectProcessor(const std::string vertex, const std::string fragment) : XEffectProcessor(vertex, fragment) {
     mSecondInputFrameBuffer = nullptr;
     mTexture2 = BGFX_INVALID_HANDLE;
 }
 
-XTwoInputShaderProcessor::~XTwoInputShaderProcessor() {
+XTwoInputEffectProcessor::~XTwoInputEffectProcessor() {
     XImage::destroy(mTexture2);
 }
 
-void XTwoInputShaderProcessor::setSecondInputFrameBuffer(XFrameBuffer *secondFrame) {
+void XTwoInputEffectProcessor::setSecondInputFrameBuffer(XFrameBuffer *secondFrame) {
     mSecondInputFrameBuffer = secondFrame;
 }
 
-void XTwoInputShaderProcessor::updateParams() {
-    XShaderProcessor::updateParams();
+void XTwoInputEffectProcessor::updateParams() {
+    XEffectProcessor::updateParams();
     if (!bgfx::isValid(mTexture2)) {
         mTexture2 = bgfx::createUniform("s_texColor1", bgfx::UniformType::Sampler);
     }
@@ -29,11 +29,11 @@ void XTwoInputShaderProcessor::updateParams() {
     bgfx::setTexture(1, mTexture2, mSecondInputFrameBuffer->getTexture());
 }
 
-bool XTwoInputShaderProcessor::isValid() {
+bool XTwoInputEffectProcessor::isValid() {
     if (mSecondInputFrameBuffer == nullptr || !bgfx::isValid(mSecondInputFrameBuffer->getTexture())) {
-        LOGE("[XTwoInputShaderProcessor::submit] second input frame is invalid.");
+        LOGE("[XTwoInputEffectProcessor::submit] second input frame is invalid.");
         return false;
     }
-    return XShaderProcessor::isValid();
+    return XEffectProcessor::isValid();
 }
 NS_X_IMAGE_END

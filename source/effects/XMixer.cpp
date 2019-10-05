@@ -23,7 +23,7 @@ void XMixer::init() {
         }
 
         if (mFilter == nullptr) {
-            mFilter = new XTwoInputShaderProcessor(mVertexShaderName, mFragmentShaderName);
+            mFilter = new XTwoInputEffectProcessor(mVertexShaderName, mFragmentShaderName);
         }
     }
 

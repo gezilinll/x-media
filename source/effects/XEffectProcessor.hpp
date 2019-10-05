@@ -18,11 +18,11 @@ NS_X_IMAGE_BEGIN
  * 该类通过设置不同的着色器以及按照不通用逻辑拆分类型（如输入纹理个数），使用时按照自己的类型来使用不同类型的通用对象并传入不同的着色器，
  * 参数设置上统一使用 #glm::vec4 来存放，如果是单float参数，那么会取向量的第一个参数，以此类推
  */
-class XShaderProcessor: public XInputOutput {
+class XEffectProcessor: public XInputOutput {
 public:
-    XShaderProcessor(std::string vertex, std::string fragment);
+    XEffectProcessor(std::string vertex, std::string fragment);
 
-    virtual ~XShaderProcessor();
+    virtual ~XEffectProcessor();
 
     void submit() override;
 

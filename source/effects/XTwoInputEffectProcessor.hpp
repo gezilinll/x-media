@@ -5,7 +5,7 @@
 #ifndef GPUIMAGE_X_XTWOINPUTFILTER_HPP
 #define GPUIMAGE_X_XTWOINPUTFILTER_HPP
 
-#include "XShaderProcessor.hpp"
+#include "XEffectProcessor.hpp"
 
 NS_X_IMAGE_BEGIN
 /**
@@ -14,11 +14,11 @@ NS_X_IMAGE_BEGIN
  * 该类继承自 #XFilter ，使用方式、逻辑、能力等基本一致，同样支持形成链式效果
  * 需要通过 #setSecondInputFrameBuffer 来设置二号纹理输入
  */
-class XTwoInputShaderProcessor : public XShaderProcessor {
+class XTwoInputEffectProcessor : public XEffectProcessor {
 public:
-    XTwoInputShaderProcessor(const std::string vertex, const std::string fragment);
+    XTwoInputEffectProcessor(const std::string vertex, const std::string fragment);
 
-    ~XTwoInputShaderProcessor();
+    ~XTwoInputEffectProcessor();
 
     /**
      * @brief 设置二号纹理输入

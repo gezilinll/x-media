@@ -91,7 +91,7 @@ private:
     };
 
 private:
-    XShaderProcessor *mFilter; /// 变换效果滤镜
+    XEffectProcessor *mFilter; /// 变换效果滤镜
     XCameraInfo mCameraInfo; /// 相机信息
     XPerspectiveInfo mPerspectiveInfo; /// 透视信息
     XOrthogonalInfo mOrthogonalInfo; /// 正交信息

@@ -34,7 +34,7 @@ XTransform::~XTransform() {
 
 XInputOutput* XTransform::get() {
     if (mFilter == nullptr) {
-        mFilter = new XShaderProcessor("vs_default", "fs_default");
+        mFilter = new XEffectProcessor("vs_default", "fs_default");
     }
     if (mMatrixMask & MatrixType::Enum::CAMERA) {
         mMatrixMask = mMatrixMask ^ MatrixType::Enum::CAMERA;
