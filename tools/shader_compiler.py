@@ -29,7 +29,7 @@ for line in config.readlines():
         varying_def = line.split(":")[1].split(",")[1]
 
         # METAL
-        command = "../thirdparty/bgfx.cmake/bgfx/tools/bin/darwin/shaderc -f " + shader_file + " -o " + shader_file_name \
+        command = "../tools/bin/darwin/shaderc -f " + shader_file + " -o " + shader_file_name \
                   + ".bin --depends -i ../thirdparty/bgfx.cmake/bgfx/src --varyingdef " + varying_def \
                   + " --platform osx -p metal --type " + type
         print "【Metal】: " + command
@@ -39,7 +39,7 @@ for line in config.readlines():
         os.system("rm " + shader_file_name + ".bin.d")
 
         # ESSL
-        command = "../thirdparty/bgfx.cmake/bgfx/tools/bin/darwin/shaderc -f " + shader_file + " -o " + shader_file_name \
+        command = "../tools/bin/darwin/shaderc -f " + shader_file + " -o " + shader_file_name \
                   + ".bin --depends -i ../thirdparty/bgfx.cmake/bgfx/src --varyingdef " + varying_def \
                   + " --platform linux -p 120 --type " + type
         print "【ESSL】: " + command
@@ -50,7 +50,7 @@ for line in config.readlines():
 
         # DX9
         p_type = "ps_3_0" if config_type == "FS" else "vs_3_0"
-        command = "../thirdparty/bgfx.cmake/bgfx/tools/bin/darwin/shaderc -f " + shader_file + " -o " + shader_file_name \
+        command = "../tools/bin/darwin/shaderc -f " + shader_file + " -o " + shader_file_name \
                   + ".bin --depends -i ../thirdparty/bgfx.cmake/bgfx/src --varyingdef " + varying_def \
                   + " --platform windows -p " + p_type + " --type " + type
         print "【DX9】: " + command
@@ -61,7 +61,7 @@ for line in config.readlines():
 
         # DX11
         p_type = "ps_5_0" if config_type == "FS" else "vs_5_0"
-        command = "../thirdparty/bgfx.cmake/bgfx/tools/bin/darwin/shaderc -f " + shader_file + " -o " + shader_file_name \
+        command = "../tools/bin/darwin/shaderc -f " + shader_file + " -o " + shader_file_name \
                   + ".bin --depends -i ../thirdparty/bgfx.cmake/bgfx/src --varyingdef " + varying_def \
                   + " --platform linux -p " + p_type + " --type " + type
         print "【DX11】: " + command
@@ -71,7 +71,7 @@ for line in config.readlines():
         os.system("rm " + shader_file_name + ".bin.d")
 
         # PSSL
-        command = "../thirdparty/bgfx.cmake/bgfx/tools/bin/darwin/shaderc -f " + shader_file + " -o " + shader_file_name \
+        command = "../tools/bin/darwin/shaderc -f " + shader_file + " -o " + shader_file_name \
                   + ".bin --depends -i ../thirdparty/bgfx.cmake/bgfx/src --varyingdef " + varying_def \
                   + " --platform orbis -p pssl --type " + type
         print "【PSSL】: " + command
@@ -81,7 +81,7 @@ for line in config.readlines():
         os.system("rm " + shader_file_name + ".bin.d")
 
         # spirv
-        command = "../thirdparty/bgfx.cmake/bgfx/tools/bin/darwin/shaderc -f " + shader_file + " -o " + shader_file_name \
+        command = "../tools/bin/darwin/shaderc -f " + shader_file + " -o " + shader_file_name \
                   + ".bin --depends -i ../thirdparty/bgfx.cmake/bgfx/src --varyingdef " + varying_def \
                   + " --platform linux -p spirv --type " + type
         print "【SPIRV】: " + command
