@@ -80,7 +80,7 @@ void XFilter::init() {
 
 }
 
-XInputOutput* XFilter::get() {
+XEffectProcessor* XFilter::get() {
     for (std::pair<std::string, XFilterParam> value : mParams) {
         std::string &paramName = value.first;
         XFilterParam &param = value.second;

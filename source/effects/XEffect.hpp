@@ -5,7 +5,7 @@
 #ifndef GPUIMAGE_X_XEFFECT_HPP
 #define GPUIMAGE_X_XEFFECT_HPP
 
-#include "inout/XInputOutput.hpp"
+#include "XEffectProcessor.hpp"
 #include "XLog.hpp"
 
 NS_X_IMAGE_BEGIN
@@ -25,7 +25,7 @@ public:
      * @return 效果处理对象
      * @attention 继承自该效果的子类需要重载该接口实现自身效果
      */
-    virtual XInputOutput *get();
+    virtual XEffectProcessor *get();
 
     /**
      * @brief 获取效果名

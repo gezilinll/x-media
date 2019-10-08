@@ -12,7 +12,7 @@ XEffect::~XEffect() {
 
 }
 
-XInputOutput* XEffect::get() {
+XEffectProcessor* XEffect::get() {
     LOGE("[XEffect::process] nothing happened when base class called.");
     return nullptr;
 }

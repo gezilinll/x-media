@@ -32,7 +32,7 @@ XTransform::~XTransform() {
     SAFE_DELETE_ARRAY(mProjectionMatrix);
 }
 
-XInputOutput* XTransform::get() {
+XEffectProcessor* XTransform::get() {
     if (mFilter == nullptr) {
         mFilter = new XEffectProcessor("vs_default", "fs_default");
     }

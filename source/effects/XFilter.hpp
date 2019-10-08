@@ -48,7 +48,7 @@ public:
 
     virtual ~XFilter();
 
-    XInputOutput *get() override;
+    XEffectProcessor *get() override;
 
     /**
      * @brief 获取指定的参数数据

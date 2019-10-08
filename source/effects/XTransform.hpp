@@ -18,7 +18,7 @@ public:
 
     ~XTransform();
 
-    XInputOutput *get() override ;
+    XEffectProcessor *get() override ;
 
     /**
      * @brief 设置相机参数
