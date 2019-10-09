@@ -1,8 +1,9 @@
 #include "entry/entry.h"
 #include "imgui/imgui.h"
 #include "XImage.hpp"
-#include "XFrameLayer.hpp"
+#include "XLayer.hpp"
 #include "XFilterEffectListUI.hpp"
+#include "XFrameOutput.hpp"
 #include "XMixtureUI.hpp"
 #include "XTransform.hpp"
 #include "camera.h"
@@ -58,52 +59,69 @@ public:
         mBlendUIs.push_back(new XMixtureUI());
         mBlendUIs.push_back(new XMixtureUI());
 
-        mFrameLayers.push_back(new XFrameLayer(0));
+        XFrameOutput *spring = new XFrameOutput();
+        spring->setPath("images/spring.jpg");
+        mFrameOutputs.push_back(spring);
+        XFrameOutput *summer = new XFrameOutput();
+        summer->setPath("images/summer.jpg");
+        mFrameOutputs.push_back(summer);
+        XFrameOutput *autumn = new XFrameOutput();
+        autumn->setPath("images/autumn.jpg");
+        mFrameOutputs.push_back(autumn);
+        XFrameOutput *winter = new XFrameOutput();
+        winter->setPath("images/winter.jpg");
+        mFrameOutputs.push_back(winter);
+        XFrameOutput *leaves = new XFrameOutput();
+        leaves->setPath("images/leaves.jpg");
+        mFrameOutputs.push_back(leaves);
+
+
+        mLayers.push_back(new XLayer(0));
         XRect leftTop = {static_cast<int>(mHorizontalMargin), static_cast<int>(mVerticalMargin),
                          static_cast<unsigned int>(mLayerWidth), static_cast<unsigned int>(mLayerHeight)};
-        mFrameLayers[0]->setViewRect(leftTop);
-        mFrameLayers[0]->setPath("images/spring.jpg");
+        mLayers[0]->setViewRect(leftTop);
+        mLayers[0]->setSource(spring);
 
-        mFrameLayers.push_back(new XFrameLayer(1));
+        mLayers.push_back(new XLayer(1));
         XRect rightTop = {static_cast<int>(mLayerWidth + mHorizontalMargin * 2), static_cast<int>(mVerticalMargin),
                           static_cast<unsigned int>(mLayerWidth), static_cast<unsigned int>(mLayerHeight)};
-        mFrameLayers[1]->setViewRect(rightTop);
-        mFrameLayers[1]->setPath("images/summer.jpg");
+        mLayers[1]->setViewRect(rightTop);
+        mLayers[1]->setSource(summer);
 
-        mFrameLayers.push_back(new XFrameLayer(2));
+        mLayers.push_back(new XLayer(2));
         XRect leftBottom = {static_cast<int>(mHorizontalMargin), static_cast<int>(mLayerHeight + mVerticalMargin * 2),
                             static_cast<unsigned int>(mLayerWidth), static_cast<unsigned int>(mLayerHeight)};
-        mFrameLayers[2]->setViewRect(leftBottom);
-        mFrameLayers[2]->setPath("images/autumn.jpg");
+        mLayers[2]->setViewRect(leftBottom);
+        mLayers[2]->setSource(autumn);
 
-        mFrameLayers.push_back(new XFrameLayer(3));
+        mLayers.push_back(new XLayer(3));
         XRect rightBottom = {static_cast<int>(mLayerWidth + mHorizontalMargin * 2),
                              static_cast<int>(mLayerHeight + mVerticalMargin * 2),
                              static_cast<unsigned int>(mLayerWidth), static_cast<unsigned int>(mLayerHeight)};
-        mFrameLayers[3]->setViewRect(rightBottom);
-        mFrameLayers[3]->setPath("images/winter.jpg");
+        mLayers[3]->setViewRect(rightBottom);
+        mLayers[3]->setSource(winter);
 
-        mFrameLayers.push_back(new XFrameLayer(4));
+        mLayers.push_back(new XLayer(4));
         float centerWidth = mLayerWidth * 1.3f;
         float centerHeight = centerWidth / ratio;
         XRect center = {static_cast<int>((mWidth - mMenuWidth) / 2 - centerWidth / 2),
                              static_cast<int>(mHeight / 2 - centerHeight / 2),
                              static_cast<unsigned int>(centerWidth), static_cast<unsigned int>(centerHeight)};
-        mFrameLayers[4]->setViewRect(center);
-        mFrameLayers[4]->setPath("images/leaves.jpg");
+        mLayers[4]->setViewRect(center);
+        mLayers[4]->setSource(leaves);
 
         // 图层内遮罩临时Demo代码
 //        XFrameLayer *matte = new XFrameLayer(6);
 //        matte->setPath("images/winter.jpg");
 //        matte->setViewRect(center);
 //        matte->setMixer(new XMixer(XMixerType::BLEND_ADD));
-//        mFrameLayers[4]->addMatte(matte);
+//        mLayers[4]->addMatte(matte);
 
-        XImage::addLayer(mFrameLayers[0]);
-        XImage::addLayer(mFrameLayers[1]);
-        XImage::addLayer(mFrameLayers[2]);
-        XImage::addLayer(mFrameLayers[3]);
-        XImage::addLayer(mFrameLayers[4]);
+        XImage::addLayer(mLayers[0]);
+        XImage::addLayer(mLayers[1]);
+        XImage::addLayer(mLayers[2]);
+        XImage::addLayer(mLayers[3]);
+        XImage::addLayer(mLayers[4]);
 
         mTransformEffect = new XTransform();
         XImage::addGlobalEffect(mTransformEffect);
@@ -117,10 +135,14 @@ public:
     }
 
     virtual int shutdown() override {
-        for (XLayer *layer : mFrameLayers) {
+        for (XLayer *layer : mLayers) {
             SAFE_DELETE(layer);
         }
-        mFrameLayers.clear();
+        mLayers.clear();
+        for (XFrameOutput *frameOutput : mFrameOutputs) {
+            SAFE_DELETE(frameOutput);
+        }
+        mFrameOutputs.clear();
         for (XFilterEffectListUI *filterUi : mFilterEffectListUIs) {
             SAFE_DELETE(filterUi);
         }
@@ -166,21 +188,21 @@ public:
             );
 
             ImGui::Text("Layer:");
-            for (uint32_t ii = 0; ii < mFrameLayers.size(); ++ii) {
+            for (uint32_t ii = 0; ii < mLayers.size(); ++ii) {
                 ImGui::SameLine();
                 char name[16];
                 bx::snprintf(name, BX_COUNTOF(name), "%d", ii);
                 ImGui::RadioButton(name, &mCurrentLayer, ii);
             }
-            mFilterEffectListUIs[mCurrentLayer]->imgui(mFrameLayers[mCurrentLayer]);
-            mBlendUIs[mCurrentLayer]->imgui(mFrameLayers[mCurrentLayer]);
+            mFilterEffectListUIs[mCurrentLayer]->imgui(mLayers[mCurrentLayer]);
+            mBlendUIs[mCurrentLayer]->imgui(mLayers[mCurrentLayer]);
             if (mIsFirstRenderCall) {
                 mIsFirstRenderCall = false;
-                mFilterEffectListUIs[0]->imgui(mFrameLayers[0]);
-                mFilterEffectListUIs[1]->imgui(mFrameLayers[1]);
-                mFilterEffectListUIs[2]->imgui(mFrameLayers[2]);
-                mFilterEffectListUIs[3]->imgui(mFrameLayers[3]);
-                mFilterEffectListUIs[4]->imgui(mFrameLayers[4]);
+                mFilterEffectListUIs[0]->imgui(mLayers[0]);
+                mFilterEffectListUIs[1]->imgui(mLayers[1]);
+                mFilterEffectListUIs[2]->imgui(mLayers[2]);
+                mFilterEffectListUIs[3]->imgui(mLayers[3]);
+                mFilterEffectListUIs[4]->imgui(mLayers[4]);
             }
 
             ImGui::Separator();
@@ -251,7 +273,8 @@ private:
     uint32_t mDebug;
     uint32_t mReset;
 
-    std::vector<XFrameLayer *> mFrameLayers;
+    std::vector<XLayer *> mLayers;
+    std::vector<XFrameOutput *> mFrameOutputs;
     std::vector<XFilterEffectListUI *> mFilterEffectListUIs;
     std::vector<XMixtureUI *> mBlendUIs;
 

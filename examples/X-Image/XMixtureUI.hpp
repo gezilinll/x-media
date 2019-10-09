@@ -5,7 +5,8 @@
 #ifndef GPUIMAGE_X_XBLENDUI_HPP
 #define GPUIMAGE_X_XBLENDUI_HPP
 
-#include "XFrameLayer.hpp"
+#include "XLayer.hpp"
+#include "XFrameOutput.hpp"
 #include "XEffectUI.hpp"
 
 NS_X_IMAGE_BEGIN
@@ -27,7 +28,8 @@ private:
 
     int mCurrentMatteIndex;
     int mLastMatteIndex;
-    XFrameLayer *mMatteLayer;
+    XLayer *mMatteLayer;
+    XFrameOutput *mMatteOutput;
 
     std::unordered_map<std::string, XEffectUI*> mEffectUIs;
 };

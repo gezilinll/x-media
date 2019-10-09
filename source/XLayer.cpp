@@ -24,13 +24,16 @@ XLayer::XLayer(int id) {
 
 XLayer::~XLayer() {
     mEffects.clear();
-    SAFE_DELETE(mLayerSource);
     SAFE_DELETE(mMixer);
     XFrameBufferPool::recycle(mLayerResult);
 }
 
 int XLayer::getID() {
     return mID;
+}
+
+void XLayer::setSource(XOutput *source) {
+    mLayerSource = source;
 }
 
 void XLayer::addEffect(XEffect *effect) {
@@ -107,12 +110,7 @@ XRect XLayer::getViewRect() {
     return mViewRect;
 }
 
-void XLayer::updateSource() {
-    LOGE("[XLayer::updateSource] nothing happened when base class called.");
-}
-
 void XLayer::submit() {
-    updateSource();
     if (mLayerSource == nullptr) {
         LOGE("[XLayer::submit] layer source is nullptr. id=%d", mID);
         return;

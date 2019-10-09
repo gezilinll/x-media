@@ -39,6 +39,13 @@ public:
     int getID();
 
     /**
+     * @brief 设置图层源数据输出对象
+     * @param source 源数据输出对象
+     * @attention 该对象生命周期由外部管理
+     */
+    void setSource(XOutput *source);
+
+    /**
      * @brief 设置图层渲染区域
      * @param rect 渲染区域
      * @attention 宽高必须 > 0
@@ -160,13 +167,6 @@ public:
      * @return 渲染结果
      */
     XFrameBuffer* get();
-
-protected:
-    /**
-     * @brief 更新图层初始输出内容
-     * @attention 子类必须通过重该接口实现自身逻辑
-     */
-    virtual void updateSource();
 
 private:
     XLayer();
