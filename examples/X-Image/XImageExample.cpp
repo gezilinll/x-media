@@ -115,7 +115,7 @@ public:
 //        matte->setPath("images/winter.jpg");
 //        matte->setViewRect(center);
 //        matte->setMixer(new XMixer(XMixerType::BLEND_ADD));
-//        mLayers[4]->addMatte(matte);
+//        mLayers[4]->addMask(matte);
 
         XImage::addLayer(mLayers[0]);
         XImage::addLayer(mLayers[1]);

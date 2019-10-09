@@ -74,15 +74,15 @@ XMixer* XLayer::getMixer() {
     return mMixer;
 }
 
-void XLayer::addMatte(XLayer *matte) {
-    mMattes.push_back(matte);
+void XLayer::addMask(XLayer *mask) {
+    mMattes.push_back(mask);
 }
 
-void XLayer::clearMattes() {
+void XLayer::clearMasks() {
     mMattes.clear();
 }
 
-void XLayer::setMask(XLayer *mask) {
+void XLayer::setMatte(XLayer *matte) {
 
 }
 
@@ -135,7 +135,7 @@ void XLayer::submit() {
         // 先进行遮罩图层的资源初始化和渲染
         for (XLayer *matte: mMattes) {
             matte->clearEffects();
-            matte->clearMattes();
+            matte->clearMasks();
             matte->submit();
         }
         XMixer *mixer = mMattes[0]->getMixer();

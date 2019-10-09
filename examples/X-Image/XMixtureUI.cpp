@@ -52,7 +52,7 @@ void XMixtureUI::imgui(XLayer *layer) {
     int matteSize = BX_COUNTOF(MATTE_MODES);
     ImGui::Combo("Matte", &mCurrentMatteIndex, MATTE_MODES, matteSize, 3);
     if (mLastMatteIndex != mCurrentMatteIndex) {
-        layer->clearMattes();
+        layer->clearMasks();
         SAFE_DELETE(mMatteLayer);
         SAFE_DELETE(mMatteOutput);
         if (MATTE_MODES[mCurrentMatteIndex] == "Alpha") {
@@ -61,7 +61,7 @@ void XMixtureUI::imgui(XLayer *layer) {
             mMatteLayer->setMixer(XMixerType::MATTE_ALPHA);
             mMatteOutput->setPath("images/mask_alpha.png");
             mMatteLayer->setSource(mMatteOutput);
-            layer->addMatte(mMatteLayer);
+            layer->addMask(mMatteLayer);
         }
         mLastMatteIndex = mCurrentMatteIndex;
     }

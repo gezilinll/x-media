@@ -76,25 +76,25 @@ public:
 
     /**
      * @brief 添加图层内遮罩
-     * @param matte 遮罩层
+     * @param mask 遮罩层
      * @note 混合效果规则为，使用当前要混合的遮罩层的遮罩器将遮罩层（在上）被混合的帧（当前图层或上一次遮罩混合结果，在下）进行混合
      * @attention 用作图层内遮罩的图层将只用作遮罩混合，不再与其他图层叠加
      * @attention 用于图层内遮罩的图层暂不支持进行叠加特效，在渲染时会将其特效列表进行清空
      * @attention 用于图层内遮罩的图层暂不支持再该遮罩图层上添加遮罩图层，在渲染时会将其遮罩图层列表进行清空
      */
-    void addMatte(XLayer* matte);
+    void addMask(XLayer *mask);
 
     /**
-     * @brief 清空遮罩图层列表
+     * @brief 清空图层内遮罩列表
      */
-    void clearMattes();
+    void clearMasks();
 
     /**
      * @brief 设置图层间遮罩
-     * @param mask 遮罩图层
+     * @param matte 遮罩图层
      * @todo 该功能具体逻辑待补充
      */
-    void setMask(XLayer *mask);
+    void setMatte(XLayer *matte);
 
     /**
      * @brief 设置该图层是否可见
