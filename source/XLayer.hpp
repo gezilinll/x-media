@@ -92,7 +92,8 @@ public:
     /**
      * @brief 设置图层间遮罩
      * @param matte 遮罩图层
-     * @todo 该功能具体逻辑待补充
+     * @note 该遮罩图层的渲染将在当前图层渲染时进行并且与当前图层进行混合
+     * @attention 该遮罩图层的内存管理由外部负责
      */
     void setMatte(XLayer *matte);
 
@@ -180,7 +181,8 @@ private:
     int mID; /// 图层ID
     std::vector<XEffect *> mEffects; /// 叠加效果链
     XMixer *mMixer; /// 混合器
-    std::vector<XLayer *> mMattes; /// 图层件遮罩列表
+    std::vector<XLayer *> mMasks; /// 图层内遮罩列表
+    XLayer *mMatte; /// 图层间遮罩
     bool mIsVisible; /// 图层是否可见
     int mZOrder; /// 图层渲染层级
 };

@@ -18,6 +18,7 @@ XLayer::XLayer(int id) {
     mLayerSource = nullptr;
     mMixer = new XMixer(XMixerType::BLEND_NORMAL);
     mLayerResult = nullptr;
+    mMatte = nullptr;
     mIsVisible = true;
     mZOrder = 0;
 }
@@ -75,15 +76,15 @@ XMixer* XLayer::getMixer() {
 }
 
 void XLayer::addMask(XLayer *mask) {
-    mMattes.push_back(mask);
+    mMasks.push_back(mask);
 }
 
 void XLayer::clearMasks() {
-    mMattes.clear();
+    mMasks.clear();
 }
 
 void XLayer::setMatte(XLayer *matte) {
-
+    mMatte = matte;
 }
 
 void XLayer::setVisibility(bool isVisible) {
@@ -180,10 +181,15 @@ void XLayer::submit() {
             next->setViewRect(rect);
             next->setOutputSize(mViewRect.width, mViewRect.height);
         }
-        // 最后一次特效叠加结果需要全屏渲染
+
         mEffects[effectSize - 1]->get()->setOutputBuffer(mLayerResult);
         mEffects[effectSize - 1]->get()->setOutputSize(XImage::getCanvasWidth(), XImage::getCanvasHeight());
         mEffects[effectSize - 1]->get()->setViewRect(mViewRect);
+    }
+
+    if (mMatte != nullptr) {
+        mMatte->submit();
+
     }
 
     mLayerSource->submit();
