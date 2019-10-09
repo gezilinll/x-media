@@ -79,18 +79,21 @@ public:
         mLayers.push_back(new XLayer(0));
         XRect leftTop = {static_cast<int>(mHorizontalMargin), static_cast<int>(mVerticalMargin),
                          static_cast<unsigned int>(mLayerWidth), static_cast<unsigned int>(mLayerHeight)};
+        spring->setOutputSize(leftTop.width, leftTop.height);
         mLayers[0]->setViewRect(leftTop);
         mLayers[0]->setSource(spring);
 
         mLayers.push_back(new XLayer(1));
         XRect rightTop = {static_cast<int>(mLayerWidth + mHorizontalMargin * 2), static_cast<int>(mVerticalMargin),
                           static_cast<unsigned int>(mLayerWidth), static_cast<unsigned int>(mLayerHeight)};
+        summer->setOutputSize(rightTop.width, rightTop.height);
         mLayers[1]->setViewRect(rightTop);
         mLayers[1]->setSource(summer);
 
         mLayers.push_back(new XLayer(2));
         XRect leftBottom = {static_cast<int>(mHorizontalMargin), static_cast<int>(mLayerHeight + mVerticalMargin * 2),
                             static_cast<unsigned int>(mLayerWidth), static_cast<unsigned int>(mLayerHeight)};
+        autumn->setOutputSize(leftBottom.width, leftBottom.height);
         mLayers[2]->setViewRect(leftBottom);
         mLayers[2]->setSource(autumn);
 
@@ -98,6 +101,7 @@ public:
         XRect rightBottom = {static_cast<int>(mLayerWidth + mHorizontalMargin * 2),
                              static_cast<int>(mLayerHeight + mVerticalMargin * 2),
                              static_cast<unsigned int>(mLayerWidth), static_cast<unsigned int>(mLayerHeight)};
+        winter->setOutputSize(rightBottom.width, rightBottom.height);
         mLayers[3]->setViewRect(rightBottom);
         mLayers[3]->setSource(winter);
 
@@ -107,6 +111,7 @@ public:
         XRect center = {static_cast<int>((mWidth - mMenuWidth) / 2 - centerWidth / 2),
                              static_cast<int>(mHeight / 2 - centerHeight / 2),
                              static_cast<unsigned int>(centerWidth), static_cast<unsigned int>(centerHeight)};
+        leaves->setOutputSize(center.width, center.height);
         mLayers[4]->setViewRect(center);
         mLayers[4]->setSource(leaves);
 
