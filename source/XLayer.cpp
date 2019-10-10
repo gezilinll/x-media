@@ -119,8 +119,8 @@ void XLayer::submit() {
 
     mLayerSource->clearTargets();
     int effectSize = mEffects.size();
-    int matteSize = mMattes.size();
-    if (effectSize == 0 && matteSize == 0) {
+    int maskSize = mMasks.size();
+    if (effectSize == 0 && maskSize == 0) {
         mLayerSource->submit();
         return;
     }
@@ -132,25 +132,25 @@ void XLayer::submit() {
     XRect rect = {0, 0, mViewRect.width, mViewRect.height};
     XOutput *chain = mLayerSource;
     // 先进行抠图处理
-    if (matteSize > 0) {
+    if (maskSize > 0) {
         // 先进行遮罩图层的资源初始化和渲染
-        for (XLayer *matte: mMattes) {
+        for (XLayer *matte: mMasks) {
             matte->clearEffects();
             matte->clearMasks();
             matte->submit();
         }
-        XMixer *mixer = mMattes[0]->getMixer();
+        XMixer *mixer = mMasks[0]->getMixer();
         XTwoInputEffectProcessor *matteChain = dynamic_cast<XTwoInputEffectProcessor*>(mixer->get());
         // 此处必须清空Targets否则在复用时会出现无限叠加Target的情况
         matteChain->clearTargets();
-        matteChain->setSecondInputFrameBuffer(mMattes[0]->get());
+        matteChain->setSecondInputFrameBuffer(mMasks[0]->get());
         matteChain->setViewRect(rect);
         chain->addTarget(matteChain);
         chain = matteChain;
-        for (int i = 1; i < matteSize - 1; i++) {
-            mixer =  mMattes[i]->getMixer();
+        for (int i = 1; i < maskSize - 1; i++) {
+            mixer =  mMasks[i]->getMixer();
             matteChain = dynamic_cast<XTwoInputEffectProcessor*>(mixer->get());
-            matteChain->setSecondInputFrameBuffer(mMattes[i]->get());
+            matteChain->setSecondInputFrameBuffer(mMasks[i]->get());
             matteChain->setViewRect(rect);
             matteChain->clearTargets();
             chain->addTarget(matteChain);
@@ -196,7 +196,7 @@ void XLayer::submit() {
 }
 
 XFrameBuffer* XLayer::get() {
-    if (mEffects.empty() && mMattes.empty()) {
+    if (mEffects.empty() && mMasks.empty()) {
         return mLayerSource->get();
     }
     return mLayerResult;
