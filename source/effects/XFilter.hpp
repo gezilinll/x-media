@@ -21,7 +21,7 @@ struct XFilterParam {
 };
 
 enum XFilterType {
-    NORMAL,
+    DEFAULT,
     SATURATION,
     CONTRAST,
     BRIGHTNESS,

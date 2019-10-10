@@ -15,10 +15,10 @@ XMixtureUI::XMixtureUI() {
     mCurrentBlendIndex = 0;
     mLastBlendIndex = 0;
     mCurrentMatteIndex = 0;
-    XMixerType normal = XMixerType::BLEND_NORMAL;
-    XMixerType multiply = XMixerType::BLEND_MULTIPLY;
-    XMixerType add = XMixerType::BLEND_ADD;
-    XMixerType fade = XMixerType::TRANSITION_FADE;
+    XMixerType normal = XMixerType::NORMAL;
+    XMixerType multiply = XMixerType::MULTIPLY;
+    XMixerType add = XMixerType::ADD;
+    XMixerType fade = XMixerType::FADE;
     mBlends.push_back(normal);
     mBlends.push_back(multiply);
     mBlends.push_back(add);
@@ -58,7 +58,7 @@ void XMixtureUI::imgui(XLayer *layer) {
         if (MATTE_MODES[mCurrentMatteIndex] == "Alpha") {
             mMatteLayer = new XLayer(999);
             mMatteOutput = new XFrameOutput();
-            mMatteLayer->setMixer(XMixerType::MATTE_ALPHA);
+            mMatteLayer->setMixer(XMixerType::ALPHA);
             mMatteOutput->setPath("images/mask_alpha.png");
             mMatteLayer->setSource(mMatteOutput);
             layer->addMask(mMatteLayer);

@@ -10,13 +10,16 @@
 
 NS_X_IMAGE_BEGIN
 enum XMixerType {
-    BLEND_NORMAL,
-    BLEND_MULTIPLY,
-    BLEND_ADD,
+    /// 正常混合类型
+    NORMAL,
+    MULTIPLY,
+    ADD,
 
-    MATTE_ALPHA,
+    /// 抠图类型
+    ALPHA,
 
-    TRANSITION_FADE
+    /// 转场类型
+    FADE
 };
 
 class XMixer : public XFilter  {
@@ -27,12 +30,6 @@ public:
 
 private:
     void init();
-
-    bool initBlend();
-
-    bool initMatte();
-
-    bool initTransition();
 
 private:
     XMixerType mType;

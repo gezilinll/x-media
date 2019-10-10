@@ -55,7 +55,7 @@ void XImage::submit() {
 void XImage::frame() {
     XRect screen = {0, 0, static_cast<unsigned int>(XImage::getCanvasWidth()),
                     static_cast<unsigned int>(XImage::getCanvasHeight())};
-    XFilter *filterEffect = new XFilter(XFilterType::NORMAL);
+    XFilter *filterEffect = new XFilter(XFilterType::DEFAULT);
     XEffectProcessor *filter = dynamic_cast<XEffectProcessor*>(filterEffect->get());
     filter->setInputFrameBuffer(sFrame);
     filter->setViewRect(screen);

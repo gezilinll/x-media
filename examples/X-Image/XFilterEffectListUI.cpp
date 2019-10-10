@@ -103,7 +103,7 @@ XEffectUI* XFilterEffectListUI::getEffectUI(std::string name) {
     XEffectUI *effectUi = nullptr;
     if (iter == mEffectUIs.end()) {
         if (name == "None") {
-            effectUi = new XFilterEffectUI(new XFilter(XFilterType::NORMAL));
+            effectUi = new XFilterEffectUI(new XFilter(XFilterType::DEFAULT));
         } else if (name == "Saturation") {
             effectUi = new XFilterEffectUI(new XFilter(XFilterType::SATURATION));
         } else if (name == "Contrast") {
