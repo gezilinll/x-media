@@ -80,7 +80,10 @@ XMixer* XLayer::getMixer() {
 }
 
 void XLayer::addMask(XLayer *mask) {
-    mMasks.push_back(mask);
+    if (mask != nullptr) {
+        mask->setIsMask(true);
+        mMasks.push_back(mask);
+    }
 }
 
 void XLayer::setIsMask(bool isMask) {
@@ -150,6 +153,7 @@ void XLayer::submit() {
     int maskSize = mMasks.size();
     if (effectSize == 0 && maskSize == 0) {
         mLayerSource->submit();
+        processMatte(mLayerSource->get());
         return;
     }
 
@@ -220,6 +224,13 @@ void XLayer::submit() {
     mLayerSource->submit();
 
     if (mMatte != nullptr) {
+        processMatte(result);
+        XFrameBufferPool::recycle(result);
+    }
+}
+
+void XLayer::processMatte(XFrameBuffer *result) {
+    if (mMatte != nullptr) {
         XRect screen = {0, 0, static_cast<unsigned int>(XImage::getCanvasWidth()),
                         static_cast<unsigned int>(XImage::getCanvasHeight())};
         mMatte->submit();
@@ -230,13 +241,11 @@ void XLayer::submit() {
         processor->setSecondInputFrameBuffer(matteResult);
         processor->setOutputBuffer(mLayerResult);
         processor->submit();
-
-        XFrameBufferPool::recycle(result);
     }
 }
 
 XFrameBuffer* XLayer::get() {
-    if (mEffects.empty() && mMasks.empty()) {
+    if (mEffects.empty() && mMasks.empty() && mMatte == nullptr) {
         return mLayerSource->get();
     }
     return mLayerResult;

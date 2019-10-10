@@ -27,6 +27,7 @@ XMixtureUI::XMixtureUI() {
     mLastMatteIndex = 0;
     mMatteLayer = nullptr;
     mMatteOutput = nullptr;
+    mUsingMatte = true;
 }
 
 XMixtureUI::~XMixtureUI() {
@@ -51,6 +52,7 @@ void XMixtureUI::imgui(XLayer *layer) {
 
     int matteSize = BX_COUNTOF(MATTE_MODES);
     ImGui::Combo("Matte", &mCurrentMatteIndex, MATTE_MODES, matteSize, 3);
+    ImGui::Checkbox("Using Matte", &mUsingMatte);
     if (mLastMatteIndex != mCurrentMatteIndex) {
         layer->clearMasks();
         SAFE_DELETE(mMatteLayer);
@@ -61,9 +63,15 @@ void XMixtureUI::imgui(XLayer *layer) {
             mMatteLayer->setMixer(XMixerType::ALPHA);
             mMatteOutput->setPath("images/mask_alpha.png");
             mMatteLayer->setSource(mMatteOutput);
-            layer->addMask(mMatteLayer);
         }
         mLastMatteIndex = mCurrentMatteIndex;
+    }
+    layer->clearMasks();
+    layer->setMatte(nullptr);
+    if (mUsingMatte) {
+        layer->setMatte(mMatteLayer);
+    } else {
+        layer->addMask(mMatteLayer);
     }
 }
 

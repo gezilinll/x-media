@@ -30,6 +30,7 @@ private:
     int mLastMatteIndex;
     XLayer *mMatteLayer;
     XFrameOutput *mMatteOutput;
+    bool mUsingMatte;
 
     std::unordered_map<std::string, XEffectUI*> mEffectUIs;
 };

@@ -104,12 +104,12 @@ public:
     /**
      * @brief 设置图层间遮罩
      * @param matte 遮罩图层
-     * @param type 混合类型
+     * @param type 混合类型，默认为Alpha
      * @param stillBlend 遮罩图层是否仍参与最终的全局图层混合，默认不参与
      * @note 该遮罩图层的渲染将在当前图层渲染时进行并且与当前图层进行混合
      * @attention 该遮罩图层的内存管理由外部负责
      */
-    void setMatte(XLayer *matte, XMixerType type, bool stillBlend = false);
+    void setMatte(XLayer *matte, XMixerType type = XMixerType::ALPHA, bool stillBlend = false);
 
     /**
      * @brief 设置该图层是否从最终的全局所有图层渲染中剔除
@@ -197,6 +197,12 @@ public:
 
 private:
     XLayer();
+
+    /**
+     * @brief 处理图层间遮罩
+     * @param result 当前图层的处理结果
+     */
+    void processMatte(XFrameBuffer *result);
 
 protected:
     XOutput *mLayerSource; /// 存储图层初始内容，并作为效果链的开头
