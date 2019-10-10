@@ -36,8 +36,8 @@ void XFrameHelper::blend(std::vector<XLayer *> layers, XFrameBuffer *toResult) {
                     static_cast<unsigned int>(XImage::getCanvasHeight())};
     // 图层混合
     int layerSize = layers.size();
-    if (layerSize > 1) {
-        XMixer *mixer = layers[0]->getMixer();
+    if (layerSize >= 2) {
+        XMixer *mixer = layers[1]->getMixer();
         XTwoInputEffectProcessor *processor = dynamic_cast<XTwoInputEffectProcessor*>(mixer->get());
         XTwoInputEffectProcessor *blendChain = processor;
         // 此处必须清空Targets否则在复用时会出现无限叠加Target的情况
@@ -49,7 +49,7 @@ void XFrameHelper::blend(std::vector<XLayer *> layers, XFrameBuffer *toResult) {
             processor->setOutputBuffer(toResult);
         } else {
             for (int i = 1; i < layerSize - 1; i++) {
-                mixer = layers[i]->getMixer();
+                mixer = layers[i + 1]->getMixer();
                 XTwoInputEffectProcessor *blend = dynamic_cast<XTwoInputEffectProcessor*>(mixer->get());
                 blend->setSecondInputFrameBuffer(layers[i + 1]->get());
                 blend->setViewRect(screen);

@@ -85,6 +85,18 @@ public:
     void addMask(XLayer *mask);
 
     /**
+     * @brief 设置该图层是否为图层内遮罩
+     * @param isMask 是否为图层内遮罩
+     */
+    void setIsMask(bool isMask);
+
+    /**
+     * @brief 该图层是否为图层内遮罩
+     * @return 是否为图层内遮罩
+     */
+    bool isMask();
+
+    /**
      * @brief 清空图层内遮罩列表
      */
     void clearMasks();
@@ -92,10 +104,24 @@ public:
     /**
      * @brief 设置图层间遮罩
      * @param matte 遮罩图层
+     * @param type 混合类型
+     * @param stillBlend 遮罩图层是否仍参与最终的全局图层混合，默认不参与
      * @note 该遮罩图层的渲染将在当前图层渲染时进行并且与当前图层进行混合
      * @attention 该遮罩图层的内存管理由外部负责
      */
-    void setMatte(XLayer *matte);
+    void setMatte(XLayer *matte, XMixerType type, bool stillBlend = false);
+
+    /**
+     * @brief 设置该图层是否从最终的全局所有图层渲染中剔除
+     * @param isExclude 是否剔除
+     */
+    void setIsExcludeFromBlend(bool isExclude);
+
+    /**
+     * @brief 该图层是否从最终的全局所有图层渲染中剔除
+     * @return 是否剔除，默认为false
+     */
+    bool isExcludeFromBlend();
 
     /**
      * @brief 设置该图层是否可见
@@ -183,8 +209,11 @@ private:
     XMixer *mMixer; /// 混合器
     std::vector<XLayer *> mMasks; /// 图层内遮罩列表
     XLayer *mMatte; /// 图层间遮罩
-    bool mIsVisible; /// 图层是否可见
-    int mZOrder; /// 图层渲染层级
+    XMixer *mMatteMixer; /// 图层间遮罩混合器
+    bool mIsExcludeFromBlend; /// 是否从混合中剔除，默认false
+    bool mIsVisible; /// 图层是否可见，默认true
+    bool mIsMask; /// 该图层是否为图层内遮罩，默认false
+    int mZOrder; /// 图层渲染层级，默认值为0
 };
 NS_X_IMAGE_END
 

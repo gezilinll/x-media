@@ -141,7 +141,7 @@ void XImage::destroy(bgfx::UniformHandle &handle) {
 std::vector<XLayer *> XImage::filterSortLayers() {
     std::vector<XLayer *> result;
     for (XLayer *layer : sLayers) {
-        if (layer->isVisible()) {
+        if (!layer->isMask() && layer->isVisible() && !layer->isExcludeFromBlend()) {
             result.push_back(layer);
         }
     }
