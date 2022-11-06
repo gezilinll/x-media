@@ -14,9 +14,9 @@ use std::{
     thread::JoinHandle,
 };
 use winit::window::Window;
-use xvideo_renderer::footages::AFrameFootage;
-use xvideo_renderer::layer::ALayer;
-use xvideo_renderer::video_renderer::XVideoRenderer;
+use xme_renderer::footages::AFrameFootage;
+use xme_renderer::layer::ALayer;
+use xme_renderer::video_renderer::XVideoRenderer;
 
 pub struct XVideoEngine {
     timeline: Arc<Mutex<Timeline>>,

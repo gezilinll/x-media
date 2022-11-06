@@ -1,12 +1,9 @@
 [package]
-name = "xvideo_renderer"
+name = "xme_mpeg"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0"
-wgpu = "0.14.0"
-winit = "0.27.5"
-bytemuck = { version = "1.4", features = [ "derive" ] }
+ffmpeg-sys = { version = "4.3.3", features = ["build"] }

@@ -1495,6 +1495,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "49874b5167b65d7193b8aba1567f5c7d93d001cafc34600cee003eda787e483f"
 
 [[package]]
+name = "video_player"
+version = "0.1.0"
+dependencies = [
+ "pollster",
+ "winit",
+ "xme_engine",
+]
+
+[[package]]
 name = "wasi"
 version = "0.11.0+wasi-snapshot-preview1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1946,6 +1955,33 @@ dependencies = [
 ]
 
 [[package]]
+name = "xme_engine"
+version = "0.1.0"
+dependencies = [
+ "ffmpeg",
+ "rust-fsm",
+ "winit",
+ "xme_renderer",
+]
+
+[[package]]
+name = "xme_mpeg"
+version = "0.1.0"
+dependencies = [
+ "ffmpeg-sys",
+]
+
+[[package]]
+name = "xme_renderer"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "bytemuck",
+ "wgpu",
+ "winit",
+]
+
+[[package]]
 name = "xmedia"
 version = "0.1.0"
 
@@ -1954,39 +1990,3 @@ name = "xml-rs"
 version = "0.8.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d2d7d3948613f75c98fd9328cfdcc45acc4d360655289d0a7d4ec931392200a3"
-
-[[package]]
-name = "xvideo_engine"
-version = "0.1.0"
-dependencies = [
- "ffmpeg",
- "rust-fsm",
- "winit",
- "xvideo_renderer",
-]
-
-[[package]]
-name = "xvideo_example"
-version = "0.1.0"
-dependencies = [
- "pollster",
- "winit",
- "xvideo_engine",
-]
-
-[[package]]
-name = "xvideo_mpeg"
-version = "0.1.0"
-dependencies = [
- "ffmpeg-sys",
-]
-
-[[package]]
-name = "xvideo_renderer"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "bytemuck",
- "wgpu",
- "winit",
-]

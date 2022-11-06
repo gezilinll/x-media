@@ -1,5 +1,5 @@
 [package]
-name = "xvideo_engine"
+name = "xme_engine"
 version = "0.1.0"
 edition = "2021"
 
@@ -9,4 +9,4 @@ edition = "2021"
 rust-fsm = "0.6.0"
 ffmpeg = "0.3.0"
 winit = "0.27.5"
-xvideo_renderer = { path = "../xvideo_renderer" }
+xme_renderer = { path = "../xme_renderer" }

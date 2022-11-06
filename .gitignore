@@ -2,5 +2,5 @@ build/*
 .idea/*
 cmake-build-debug/*
 Target/*
-xvideo_engine/target/*
-xvideo_renderer/target/*
+xme_engine/target/*
+xme_renderer/target/*

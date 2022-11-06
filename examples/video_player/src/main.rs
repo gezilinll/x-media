@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use winit::{event_loop::EventLoop, window::WindowBuilder};
-use xvideo_engine::{video_engine::XVideoEngine, tracks::{ATrack, VideoSource}};
+use xme_engine::{video_engine::XVideoEngine, tracks::{ATrack, VideoSource}};
 
 fn main() {
     let event_loop = EventLoop::new();

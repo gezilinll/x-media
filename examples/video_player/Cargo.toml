@@ -1,5 +1,5 @@
 [package]
-name = "xvideo_example"
+name = "video_player"
 version = "0.1.0"
 edition = "2021"
 
@@ -8,4 +8,4 @@ edition = "2021"
 [dependencies]
 winit = "0.27.5"
 pollster = "0.2"
-xvideo_engine = { path = "../xvideo_engine" }
+xme_engine = { path = "../../xme_engine" }
