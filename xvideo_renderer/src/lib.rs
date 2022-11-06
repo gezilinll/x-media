@@ -1,4 +1,6 @@
-mod video_renderer;
-mod layer;
-mod footages;
+pub mod footages;
+pub mod layer;
 mod renderer;
+mod texture;
+mod vertex;
+pub mod video_renderer;

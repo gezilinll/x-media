@@ -1,12 +1,9 @@
 [package]
-name = "xvideo_engine"
+name = "xvideo_mpeg"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-rust-fsm = "0.6.0"
-ffmpeg = "0.3.0"
-winit = "0.27.5"
-xvideo_renderer = { path = "../xvideo_renderer" }
+ffmpeg-sys = { version = "4.3.3", features = ["build"] }

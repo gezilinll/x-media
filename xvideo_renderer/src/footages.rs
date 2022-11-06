@@ -1,45 +1,49 @@
-use crate::renderer::Renderer;
+use crate::{renderer::Renderer, texture::Texture};
 
 pub trait FootageSource {
-    fn update_texture(&mut self, renderer: &mut Renderer);
+    fn render(&mut self, renderer: &mut Renderer) -> &Texture;
 }
 
 pub struct AFrameFootage {
-    texture: Option<wgpu::Texture>,
+    texture: Option<Texture>,
     pixels: Vec<u8>,
     width: u32,
     height: u32,
 }
+unsafe impl Send for AFrameFootage {}
+unsafe impl Sync for AFrameFootage {}
 
 impl FootageSource for AFrameFootage {
-    fn update_texture(&mut self, renderer: &mut Renderer) {
-        let size = wgpu::Extent3d {
-            width: self.width,
-            height: self.height,
-            depth_or_array_layers: 1,
-        };
-        if (self.texture.is_none()) {
-            let tex_des = wgpu::TextureDescriptor {
-                label: None,
-                size,
-                mip_level_count: 1,
-                sample_count: 1,
-                dimension: wgpu::TextureDimension::D2,
-                format: wgpu::TextureFormat::Rgba8UnormSrgb,
-                usage: wgpu::TextureUsages::TEXTURE_BINDING | wgpu::TextureUsages::COPY_DST, //上传像素数据一定要有 COPY_DST
-            };
+    fn render(&mut self, renderer: &mut Renderer) -> &Texture {
+        if self.texture.is_none() {
+            self.texture = Some(
+                Texture::from_rgba(
+                    &renderer.device,
+                    &renderer.queue,
+                    &self.pixels,
+                    (self.width, self.height),
+                    None,
+                )
+                .unwrap(),
+            );
         }
+        return &self.texture.as_ref().unwrap();
     }
 }
 
 impl AFrameFootage {
-    fn set_pixels(&mut self, pixels: Vec<u8>, width: u32, height: u32) {
+    pub fn new() -> Self {
+        Self {
+            texture: None,
+            pixels: vec![],
+            width: 0,
+            height: 0,
+        }
+    }
+
+    pub fn set_pixels(&mut self, pixels: Vec<u8>, width: u32, height: u32) {
         self.pixels = pixels;
         self.width = width;
         self.height = height;
     }
-}
-
-pub struct AFootage {
-    source: Box<dyn FootageSource>,
 }

@@ -5,7 +5,7 @@ edition = "2021"
 
 [workspace]
 members = [
-    "xvideo_renderer", "xvideo_engine"
+    "xvideo_renderer", "xvideo_engine", "xvideo_mpeg", "xvideo_example"
 ]
 
 [dependencies]
