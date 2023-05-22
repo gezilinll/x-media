@@ -1,0 +1,14 @@
+prefix=/Users/lilinchao/gaoding/3rdpartyBuilder/FFMpeg/output/thin-ffmpeg
+exec_prefix=${prefix}
+libdir=/Users/lilinchao/gaoding/3rdpartyBuilder/FFMpeg/output/thin-ffmpeg/lib
+includedir=/Users/lilinchao/gaoding/3rdpartyBuilder/FFMpeg/output/thin-ffmpeg/include
+
+Name: libavcodec
+Description: FFmpeg codec library
+Version: 58.91.100
+Requires: 
+Requires.private: libavutil >= 56.51.100
+Conflicts:
+Libs: -L${libdir}  -lavcodec 
+Libs.private: -pthread -lm -lz -L/usr/local/Cellar/fdk-aac/2.0.1/lib -lfdk-aac -lmp3lame -lm -L/Users/lilinchao/gaoding/3rdpartyBuilder/FFMpeg/output/thin-x264/lib -lx264
+Cflags: -I${includedir}

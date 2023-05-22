@@ -1,0 +1,14 @@
+prefix=/Users/lilinchao/gaoding/3rdpartyBuilder/FFMpeg/output/thin-ffmpeg
+exec_prefix=${prefix}
+libdir=/Users/lilinchao/gaoding/3rdpartyBuilder/FFMpeg/output/thin-ffmpeg/lib
+includedir=/Users/lilinchao/gaoding/3rdpartyBuilder/FFMpeg/output/thin-ffmpeg/include
+
+Name: libavformat
+Description: FFmpeg container format library
+Version: 58.45.100
+Requires: 
+Requires.private: libavcodec >= 58.91.100, libavutil >= 56.51.100
+Conflicts:
+Libs: -L${libdir}  -lavformat 
+Libs.private: -lm -lz
+Cflags: -I${includedir}

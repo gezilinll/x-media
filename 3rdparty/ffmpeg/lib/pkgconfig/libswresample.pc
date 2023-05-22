@@ -1,0 +1,14 @@
+prefix=/Users/lilinchao/gaoding/3rdpartyBuilder/FFMpeg/output/thin-ffmpeg
+exec_prefix=${prefix}
+libdir=/Users/lilinchao/gaoding/3rdpartyBuilder/FFMpeg/output/thin-ffmpeg/lib
+includedir=/Users/lilinchao/gaoding/3rdpartyBuilder/FFMpeg/output/thin-ffmpeg/include
+
+Name: libswresample
+Description: FFmpeg audio resampling library
+Version: 3.7.100
+Requires: 
+Requires.private: libavutil >= 56.51.100
+Conflicts:
+Libs: -L${libdir}  -lswresample 
+Libs.private: -lm
+Cflags: -I${includedir}
