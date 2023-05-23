@@ -7,7 +7,8 @@
 
 #include <string>
 
-class VideoDecoder {
+class VideoDecoder
+{
 public:
     VideoDecoder(std::string filePath);
 
@@ -15,8 +16,4 @@ private:
     std::string mFilePath;
 };
 
-extern "C" long My_Test(char *a) {
-    return (long)(new VideoDecoder(std::string(a)));
-}
-
-#endif //X_MEDIA_VIDEODECODER_HPP
+#endif // X_MEDIA_VIDEODECODER_HPP

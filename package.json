@@ -1,0 +1,8 @@
+{
+    "name": "xme",
+    "scripts": {
+        "gyp-build": "node-gyp configure && node-gyp build"
+    },
+    "dependencies": {
+    }
+}
