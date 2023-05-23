@@ -3,16 +3,19 @@
 //
 
 #include "VideoDecoder.hpp"
-extern "C"
-{
+extern "C" {
 #include <libavformat/avformat.h>
 }
 
-VideoDecoder::VideoDecoder(std::string filePath) : mFilePath(filePath)
-{
-    printf("VideoDecoder constructor\n");
-    AVFormatContext *formatContext = nullptr;
+VideoDecoder::VideoDecoder(std::string filePath) : mFilePath(filePath) {
+    AVFormatContext* formatContext = nullptr;
     int ret = avformat_open_input(&formatContext, mFilePath.data(), nullptr, nullptr);
-    printf("VideoDecoder ret:%d\n", ret);
-    printf("VideoDecoder duration:%lld\n", (long long)formatContext->duration);
+}
+
+void VideoDecoder::open() {
+
+}
+
+void VideoDecoder::close() {
+    
 }

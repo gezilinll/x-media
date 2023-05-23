@@ -7,13 +7,16 @@
 
 #include <string>
 
-class VideoDecoder
-{
+class VideoDecoder {
 public:
     VideoDecoder(std::string filePath);
+
+    void open();
+
+    void close();
 
 private:
     std::string mFilePath;
 };
 
-#endif // X_MEDIA_VIDEODECODER_HPP
+#endif  // X_MEDIA_VIDEODECODER_HPP
