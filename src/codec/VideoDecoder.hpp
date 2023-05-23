@@ -6,6 +6,7 @@
 #define X_MEDIA_VIDEODECODER_HPP
 
 #include <string>
+#include "FFmpegWrapper.hpp"
 
 class VideoDecoder {
 public:
@@ -17,6 +18,8 @@ public:
 
 private:
     std::string mFilePath;
+    std::unique_ptr<AVFormatContext, AVFormatContextDeleterForDecoder> mFormatContext;
+    AVStream* mVideoStream = nullptr;
 };
 
 #endif  // X_MEDIA_VIDEODECODER_HPP
