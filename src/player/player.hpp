@@ -6,15 +6,16 @@
 #define X_MEDIA_PLAYER_HPP
 
 #include <memory>
-#include "VideoDecoder.hpp"
+#include "video_decoder.hpp"
 
 class Player {
 public:
     Player(std::string filePath);
 
     void start();
+
 private:
-    std::unique_ptr<VideoDecoder> mDecoder;
+    std::unique_ptr<VideoDecoder> decoder;
 };
 
 #endif  // X_MEDIA_PLAYER_HPP

@@ -2,8 +2,8 @@
 // Created by 林炳河 on 2023/5/23.
 //
 
-#ifndef X_MEDIA_FFMPEGWRAPPER_HPP
-#define X_MEDIA_FFMPEGWRAPPER_HPP
+#ifndef X_MEDIA_FFMPEG_WRAPPER_HPP
+#define X_MEDIA_FFMPEG_WRAPPER_HPP
 
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -72,4 +72,4 @@ struct AVFrameDeleter {
     }
 };
 
-#endif  // X_MEDIA_FFMPEGWRAPPER_HPP
+#endif  // X_MEDIA_FFMPEG_WRAPPER_HPP

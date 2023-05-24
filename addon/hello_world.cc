@@ -1,5 +1,5 @@
 #include <napi.h>
-#include "VideoDecoder.hpp"
+#include "video_decoder.hpp"
 
 using namespace Napi;
 
